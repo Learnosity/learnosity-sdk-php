@@ -21,12 +21,11 @@ class Remote
      *
      * @param  string $url      Full URL of where to POST the request
      * @param  array  $request  Payload of request
-     * @param  bool   $format   Whether to format the response
      * @param  bool   $options  Optional Curl options
      *
      * @return string           The response string
      */
-    public function get($url, $data = array(), $format = false, $options = array())
+    public function get($url, $data = array(), $options = array())
     {
         $query = http_build_query($data);
         if (!empty($query)) {
@@ -44,12 +43,11 @@ class Remote
      *
      * @param  string $url      Full URL of where to POST the request
      * @param  array  $request  Payload of request
-     * @param  bool   $format   Whether to format the response
      * @param  bool   $options  Optional Curl options
      *
      * @return string           The response string
      */
-    public function post($url, $data = array(), $format = false, $options = array())
+    public function post($url, $data = array(), $options = array())
     {
         $this->request($url, $data, $options);
 
@@ -129,17 +127,5 @@ class Remote
     public function getStatusCode()
     {
         return $this->result['http_code'];
-    }
-
-    public function format($format)
-    {
-        switch ($format) {
-            case 'array':
-                return json_decode($this->getBody(), true);
-                break;
-            default:
-                # no default
-                break;
-        }
     }
 }
