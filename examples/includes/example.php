@@ -75,12 +75,11 @@
         </div>
         <div class="preview"><pre><code id="code"></code></pre></div>
         <script>
-            try {
+            <?php if ($service !== 'data') { ?>
                 document.getElementById('code').innerHTML = library.json.prettyPrint(<?php echo $requestPacket; ?>);
-            } catch(e) {
-                // Not JSON (probably the Data API)
+            <?php } else { ?>
                 document.getElementById('code').innerHTML = <?php echo "'" . addslashes($requestPacket) . "'"; ?>;
-            }
+            <?php } ?>
         </script>
     <?php } ?>
 
