@@ -142,7 +142,7 @@ class Init
      */
     public function generate()
     {
-        $output = [];
+        $output = array();
 
         switch ($this->service) {
             case 'assess':
@@ -224,7 +224,7 @@ class Init
      */
     public function generateSignature()
     {
-        $signatureArray = [];
+        $signatureArray = array();
 
         // Create a pre-hash string based on the security credentials
         // The order is important
