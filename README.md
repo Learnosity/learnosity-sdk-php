@@ -11,6 +11,12 @@ Installation should be as simple as possible, there are no external dependancies
 git clone git@github.com:Learnosity/learnosity-sdk-php.git
 ```
 
+If you don't have an SSH key loaded into github you can clone via HTTPS (not recommended)
+
+```
+git clone https://github.com/Learnosity/learnosity-sdk-php.git
+```
+
 ### Examples
 To load any of the example, it's easier to use the PHP local server (assumes PHP >= 5.4)
 
