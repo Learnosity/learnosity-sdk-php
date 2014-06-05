@@ -1,6 +1,8 @@
 <?php
 namespace LearnositySdk\Request;
 
+use LearnositySdk\Utils\Conversion;
+
 /**
  *--------------------------------------------------------------------------
  * Learnosity SDK - Remote
@@ -16,14 +18,12 @@ class Remote
     private $result = null;
 
     /**
-     * Execute a resource request (GET) to an endpoint. Useful as a
-     * cross-domain proxy.
+     * Execute a resource request (GET) to an endpoint.
      *
-     * @param  string $url      Full URL of where to POST the request
+     * @param  string $url      Full URL of where to GET the request
      * @param  array  $request  Payload of request
      * @param  bool   $options  Optional Curl options
-     *
-     * @return string           The response string
+     * @return $this            The instance of this class
      */
     public function get($url, $data = array(), $options = array())
     {
@@ -38,14 +38,12 @@ class Remote
     }
 
     /**
-     * Execute a resource request (POST) to an endpoint. Useful as a
-     * cross-domain proxy.
+     * Execute a resource request (POST) to an endpoint.
      *
      * @param  string $url      Full URL of where to POST the request
      * @param  array  $request  Payload of request
      * @param  bool   $options  Optional Curl options
-     *
-     * @return string           The response string
+     * @return $this            The instance of this class
      */
     public function post($url, $data = array(), $options = array())
     {
@@ -54,6 +52,15 @@ class Remote
         return $this;
     }
 
+    /**
+     * Makes a cURL request to an endpoint with an optional request
+     * payload and cURL options.
+     *
+     * @param  string $url      Full URL of where to POST the request
+     * @param  array  $request  Payload of request
+     * @param  bool   $options  Optional Curl options
+     * @return void
+     */
     private function request($url, $post = false, $options = array())
     {
         $defaults = array(
@@ -101,11 +108,23 @@ class Remote
         $this->result = $response;
     }
 
+    /**
+     * Returns the body of the response payload as returned by the
+     * URL endpoint
+     *
+     * @return string Typically a JSON object
+     */
     public function getBody()
     {
         return $this->result['body'];
     }
 
+    /**
+     * Returns an associative array detailing any errors that may
+     * have been throwing during an endpoint request
+     *
+     * @return array
+     */
     public function getError()
     {
         return array(
@@ -114,18 +133,58 @@ class Remote
         );
     }
 
+    /**
+     * Returns part of the response headers
+     *
+     * @param  string $type Which key in the headers packet to return
+     * @return string       Header from the response packet
+     */
     public function getHeader($type = 'content_type')
     {
         return (array_key_exists($type, $this->result)) ? $this->result[$type] : null;
     }
 
-    public function getSize()
+    /**
+     * Returns the size in bytes of the request body
+     *
+     * @return mixed Formatted string or raw float (bytes)
+     */
+    public function getSize($format = true)
     {
+        if ($format) {
+            return Conversion::formatSizeUnits($this->result['size_download']);
+        }
         return $this->result['size_download'];
     }
 
+    /**
+     * The HTTP status code of the request response
+     *
+     * @return int
+     */
     public function getStatusCode()
     {
         return $this->result['http_code'];
+    }
+
+    /**
+     * Total transaction time in seconds for last transfer
+     *
+     * @return float
+     */
+    public function getTimeTaken()
+    {
+        return $this->result['total_time'];
+    }
+
+    /**
+     * Returns a decoded JSON array
+     *
+     * @param  boolean $assoc   Whether to return an associative array or object
+     * @return mixed            Either a PHP associative array or object
+     */
+    public function json($assoc = true)
+    {
+        return json_decode($this->getBody(), $assoc);
     }
 }
