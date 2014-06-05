@@ -313,6 +313,16 @@ class Init
                     );
                 }
                 break;
+            case 'items': {
+                // The Events API requires a user_id, so we make sure it's a part
+                // of the security packet as we share the signature in some cases
+                if (
+                    !array_key_exists('user_id', $this->securityPacket) &&
+                    array_key_exists('user_id', $this->requestPacket)
+                ) {
+                    $this->securityPacket['user_id'] = $this->requestPacket['user_id'];
+                }
+            }
             default:
                 // do nothing
                 break;
