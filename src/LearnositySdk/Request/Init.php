@@ -314,7 +314,7 @@ class Init
                     );
                 }
                 break;
-            case 'items': {
+            case 'items':
                 // The Events API requires a user_id, so we make sure it's a part
                 // of the security packet as we share the signature in some cases
                 if (
@@ -323,7 +323,7 @@ class Init
                 ) {
                     $this->securityPacket['user_id'] = $this->requestPacket['user_id'];
                 }
-            }
+                break;
             default:
                 // do nothing
                 break;
