@@ -1,4 +1,5 @@
 <?php
+
 namespace LearnositySdk\Utils;
 
 // Thanks to Andrew Moore http://www.php.net/manual/en/function.uniqid.php#94959

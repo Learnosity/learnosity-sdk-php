@@ -1,4 +1,5 @@
 <?php
+
 namespace LearnositySdk\Request;
 
 use LearnositySdk\Utils\Conversion;
