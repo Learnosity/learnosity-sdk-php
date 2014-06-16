@@ -193,5 +193,23 @@ Returns the size of the response payload in bytes.
 **getStatusCode()**<br>
 Returns the HTTP status code of the response.
 
-## Version
-Version v0.1.0 - June 2014
+<hr>
+
+### DataApi
+
+This is a helper class for use with the Data API. It creates the initialisation packet and sends a request to the Data API, returning an instance of Remote. You can then interact as you would with Remote, eg ```getBody()```
+
+```
+$dataapi = new DataApi();
+$response = $dataapi->request(
+    'https://data.learnosity.com/v0.27/itembank/items',
+    [
+       'consumer_key' => 'yis0TYCu7U9V4o7M',
+       'domain'       => 'localhost'
+    ],
+    'superfragilisticexpialidocious',
+    [
+       'limit' => 20
+    ]
+);
+```
