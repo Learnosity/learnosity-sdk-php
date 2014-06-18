@@ -128,7 +128,7 @@ class Init
 
             // Generate the signature based on the arguments provided
             $this->securityPacket['signature'] = $this->generateSignature();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // A validation or unknown error, this has purposefully been left
             // simple, you may enhance as needed
             die($e->getMessage());
@@ -210,7 +210,7 @@ class Init
         }
         $requestString = Json::encode($this->requestPacket);
         if (false === $requestString) {
-            throw new Exception('Invalid data, please check your request packet - ' . Json::checkError());
+            throw new \Exception('Invalid data, please check your request packet - ' . Json::checkError());
         }
         return $requestString;
     }
@@ -342,9 +342,9 @@ class Init
     public function validate($service, &$securityPacket, $secret, &$requestPacket, $action)
     {
         if (empty($service)) {
-            throw new Exception('The `service` argument wasn\'t found or was empty');
+            throw new \Exception('The `service` argument wasn\'t found or was empty');
         } elseif (!in_array(strtolower($service), $this->validServices)) {
-            throw new Exception("The service provided ($service) is not valid");
+            throw new \Exception("The service provided ($service) is not valid");
         }
 
         // In case the user gave us a JSON securityPacket, convert to an array
@@ -353,36 +353,40 @@ class Init
         }
 
         if (empty($securityPacket) || !is_array($securityPacket)) {
-            throw new Exception('The security packet must be an array');
+            throw new \Exception('The security packet must be an array');
         } else {
             foreach (array_keys($securityPacket) as $key) {
                 if (!in_array($key, $this->validSecurityKeys)) {
-                    throw new Exception('Invalid key found in the security packet: ' . $key);
+                    throw new \Exception('Invalid key found in the security packet: ' . $key);
                 }
             }
             if (!array_key_exists('timestamp', $securityPacket)) {
                 $securityPacket['timestamp'] = gmdate('Ymd-Hi');
             }
+
+            if ($service === "questions" && !array_key_exists('user_id', $securityPacket)) {
+                throw new \Exception('If using the question api, a user id needs to be specified');
+            }
         }
 
         if (empty($secret) || !is_string($secret)) {
-            throw new Exception('The `secret` argument must be a valid string');
+            throw new \Exception('The `secret` argument must be a valid string');
         }
 
         // In case the user gave us a JSON requestPacket, convert to an array
         if (!is_array($requestPacket) && is_string($requestPacket)) {
             $requestPacket = json_decode($requestPacket, true);
             if (empty($requestPacket)) {
-                throw new Exception('Invalid data, please check your request packet - ' . Json::checkError());
+                throw new \Exception('Invalid data, please check your request packet - ' . Json::checkError());
             }
         }
 
         if (!empty($requestPacket) && !is_array($requestPacket)) {
-            throw new Exception('The request packet must be an array');
+            throw new \Exception('The request packet must be an array');
         }
 
         if (!empty($action) && !is_string($action)) {
-            throw new Exception('The action parameter must be a string');
+            throw new \Exception('The action parameter must be a string');
         }
     }
 }
