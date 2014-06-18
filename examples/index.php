@@ -17,7 +17,12 @@ if (isset($_GET['service'])) {
         require_once __DIR__ . '/services/' . $_GET['service'] . '.php';
         if ($_GET['service'] !== 'schemas') {
             // Instantiate the Init class to generate initialisation data
-            $Init = new Init($service, $security, $secret, $request, $action);
+            try {
+                $Init = new Init($service, $security, $secret, $request, $action);
+            } catch (\Exception $e) {
+                echo $e->getMessage();
+            }
+
             $requestPacket = $Init->generate();
         }
     }
