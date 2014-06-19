@@ -170,7 +170,7 @@ class Init
                         $r .= '&request=' . Json::encode($output['request']);
                     }
                     if (array_key_exists('action', $output)) {
-                        $r .= '&action=' . Json::encode($output['action']);
+                        $r .= '&action=' . $output['action'];
                     }
                     return $r;
                 } elseif ($this->service === 'assess') {
