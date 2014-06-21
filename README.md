@@ -2,8 +2,11 @@
 
 Include this package into your own codebase to ease integration with any of the Learnosity APIs.
 
+This SDK should run on PHP 5.3+
+
 ## Installation
 Installation should be as simple as possible, there are no external dependancies and this package should integrate with any existing codebase.
+
 
 ### git clone
 
@@ -18,10 +21,10 @@ git clone https://github.com/Learnosity/learnosity-sdk-php.git
 ```
 
 ### Examples
-To load any of the example, it's easier to use the PHP local server (assumes PHP >= 5.4)
+To load any of the examples, it's easiest to use the PHP local server (assumes PHP >= 5.4)
 
 ```
-cd learnosity-sdk-php examples
+cd learnosity-sdk-php/examples
 php -S localhost:5555
 ```
 
@@ -34,7 +37,7 @@ You can play with the `examples` folder, and review the code to get a feel for h
     /learnosity-sdk-php/src/LearnositySdk
 ```
 
-With this in mind you'll likely have this in your `.gitignore`
+With this in mind you'll likely have this in your projects `.gitignore`
 
 ```
 learnosity-sdk-php/src/examples
@@ -101,7 +104,7 @@ $request = $Init->generate();
 LearnosityApp.init($request);
 ```
 
-#### Arguments
+#### Init() Arguments
 **service**<br>
 A string representing the Learnosity service (API) you want to integrate with. Valid options are:
 
@@ -116,14 +119,14 @@ A string representing the Learnosity service (API) you want to integrate with. V
 An array^ that includes your *consumer_key* but does not include your *secret*. The SDK sets defaults for you, but valid options are:
 
 * consumer_key
-* domain (optional)
-* timestamp (optional)
-* user_id (optional)
+* domain (optional - defaults to *localhost*)
+* timestamp (optional - the SDK will generate this for you)
+* user_id (optional - not necessary for all APIs)
 
 ^Note – the SDK accepts JSON and native PHP arrays.
 
 **secret**<br>
-Your secret key, as provided by Learnosity.
+Your private key, as provided by Learnosity.
 
 **request**<br>
 An optional associative array^ of data relevant to the API being used. This will be any data minus the security details that you would normally use to initialise an API.
@@ -144,7 +147,7 @@ An optional string used only if integrating with the Data API. Valid options are
 
 The Remote class is used to make server side, cross domain requests. Think of it as a cURL wrapper.
 
-You'll call either get() or post() with the following arguments:
+You'll call either get() or post() (mimicking the HTTP request type you want to make) with the following arguments:
 
 * [string] URL
 * [array]  Data payload
@@ -175,7 +178,7 @@ An optional array of data to be sent as a payload. For GET it will be a URL enco
 **Options**<br>
 An optional array of [cURL parameters](http://www.php.net/manual/en/curl.constants.php).
 
-### Remote methods
+#### Remote methods
 The following methods are available after making a `get()` or `post()`.
 
 **getBody()**<br>
@@ -199,9 +202,13 @@ Returns the HTTP status code of the response.
 
 This is a helper class for use with the Data API. It creates the initialisation packet and sends a request to the Data API, returning an instance of Remote. You can then interact as you would with Remote, eg ```getBody()```
 
+#### request()
+
+Used for a single request to the Data API. You can call as many times as necessary.
+
 ```
-$dataapi = new DataApi();
-$response = $dataapi->request(
+$DataApi = new DataApi();
+$response = $DataApi->request(
     'https://data.learnosity.com/v0.27/itembank/items',
     [
        'consumer_key' => 'yis0TYCu7U9V4o7M',
@@ -212,4 +219,34 @@ $response = $dataapi->request(
        'limit' => 20
     ]
 );
+```
+
+#### requestRecursive()
+
+Used to make recursive requests to the Data API, using the *next* token, for as much data is returned based on the request filtering provided.
+
+You can pass a callback as the 5th argument, that will be executed upon completion of every request.
+
+```
+$DataApi = new DataApi();
+
+$response = $DataApi->requestRecursive(
+    'https://data.learnosity.com/v0.27/itembank/items',
+    [
+       'consumer_key' => 'yis0TYCu7U9V4o7M',
+       'domain'       => 'localhost'
+    ],
+    'superfragilisticexpialidocious',
+    [
+       'limit' => 20
+    ],
+    function ($data) {
+        $this->processData($data);
+    }
+);
+
+function processData($data)
+{
+    // Do something with $data    
+}
 ```
