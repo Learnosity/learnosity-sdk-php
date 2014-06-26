@@ -1,3 +1,7 @@
+## v0.3.0 (2014-06-21)
+
+* Added requestRecursive() to the DataApi helper when communicating with the [http://docs.learnosity.com/dataapi/index.php](Data API)
+
 ## v0.2.0 (2014-06-16)
 
 * Added DataApi.php as a helper when communicating with the [http://docs.learnosity.com/dataapi/index.php](Data API)
