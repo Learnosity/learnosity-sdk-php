@@ -11,7 +11,7 @@ class ValidationException extends \Exception
      * @param Exception     $previous previous exception if nested exception
      * @param mixed         $data     data which caused this exception to raise
      */
-    public function __construct($message = '', $code = 0, $previous = null, $data = null)
+    public function __construct($data = null, $message = '', $code = 0, $previous = null)
     {
         $this->data = $data;
         parent::__construct($message, $code, $previous);
