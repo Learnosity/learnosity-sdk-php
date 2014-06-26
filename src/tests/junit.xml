@@ -1,27 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="Learnosity PHP SDK Test Suite" tests="3" assertions="1" failures="0" errors="2" time="0.005665">
-    <testsuite name="tests\LearnositySdk\Request\InitTest" file="/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/tests/LearnositySdk/Request/InitTest.php" tests="3" assertions="1" failures="0" errors="2" time="0.005665">
-      <testsuite name="tests\LearnositySdk\Request\InitTest::testConstructor" tests="3" assertions="1" failures="0" errors="2" time="0.005665">
-        <testcase name="testConstructor with data set #0" assertions="1" time="0.003917"/>
-        <testcase name="testConstructor with data set #1" assertions="0" time="0.000980">
-          <error type="LearnositySdk\Exceptions\ValidationException">tests\LearnositySdk\Request\InitTest::testConstructor with data set #1 ('', array('yis0TYCu7U9V4o7M', 'localhost'), '74c5fd430cf1242a527f6223aebd42d30464be22', array(100), 'get', NULL, '\\LearnositySdk\\Exceptions\\ValidationException', 'The `service` argument wasn\'t found or was empty')
-LearnositySdk\Exceptions\ValidationException: The `service` argument wasn't found or was empty
-
-/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/LearnositySdk/Request/Init.php:340
-/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/LearnositySdk/Request/Init.php:116
-/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/tests/LearnositySdk/Request/InitTest.php:44
-</error>
-        </testcase>
-        <testcase name="testConstructor with data set #2" assertions="0" time="0.000768">
-          <error type="LearnositySdk\Exceptions\ValidationException">tests\LearnositySdk\Request\InitTest::testConstructor with data set #2 ('wrongService', array('yis0TYCu7U9V4o7M', 'localhost'), '74c5fd430cf1242a527f6223aebd42d30464be22', array(100), 'get', NULL, '\\LearnositySdk\\Exceptions\\ValidationException', 'The service provided (wrongService) is not valid')
-LearnositySdk\Exceptions\ValidationException: The service provided (wrongService) is not valid
-
-/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/LearnositySdk/Request/Init.php:342
-/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/LearnositySdk/Request/Init.php:116
-/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/tests/LearnositySdk/Request/InitTest.php:44
-</error>
-        </testcase>
+  <testsuite name="Learnosity PHP SDK Test Suite" tests="26" assertions="46" failures="0" errors="0" time="0.017252">
+    <testsuite name="tests\LearnositySdk\Request\InitTest" file="/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/tests/LearnositySdk/Request/InitTest.php" tests="26" assertions="46" failures="0" errors="0" time="0.017252">
+      <testsuite name="tests\LearnositySdk\Request\InitTest::testGenerateSignature" tests="2" assertions="2" failures="0" errors="0" time="0.003082">
+        <testcase name="testGenerateSignature with data set #0" assertions="1" time="0.002243"/>
+        <testcase name="testGenerateSignature with data set #1" assertions="1" time="0.000839"/>
+      </testsuite>
+      <testsuite name="tests\LearnositySdk\Request\InitTest::testGenerate" tests="2" assertions="2" failures="0" errors="0" time="0.001404">
+        <testcase name="testGenerate with data set #0" assertions="1" time="0.000675"/>
+        <testcase name="testGenerate with data set #1" assertions="1" time="0.000729"/>
+      </testsuite>
+      <testsuite name="tests\LearnositySdk\Request\InitTest::testConstructor" tests="11" assertions="21" failures="0" errors="0" time="0.007733">
+        <testcase name="testConstructor with data set #0" assertions="1" time="0.001510"/>
+        <testcase name="testConstructor with data set #1" assertions="2" time="0.001172"/>
+        <testcase name="testConstructor with data set #2" assertions="2" time="0.000688"/>
+        <testcase name="testConstructor with data set #3" assertions="2" time="0.000636"/>
+        <testcase name="testConstructor with data set #4" assertions="2" time="0.000913"/>
+        <testcase name="testConstructor with data set #5" assertions="2" time="0.000613"/>
+        <testcase name="testConstructor with data set #6" assertions="2" time="0.000488"/>
+        <testcase name="testConstructor with data set #7" assertions="2" time="0.000527"/>
+        <testcase name="testConstructor with data set #8" assertions="2" time="0.000418"/>
+        <testcase name="testConstructor with data set #9" assertions="2" time="0.000361"/>
+        <testcase name="testConstructor with data set #10" assertions="2" time="0.000406"/>
+      </testsuite>
+      <testsuite name="tests\LearnositySdk\Request\InitTest::testValidate" tests="11" assertions="21" failures="0" errors="0" time="0.005034">
+        <testcase name="testValidate with data set #0" assertions="1" time="0.000930"/>
+        <testcase name="testValidate with data set #1" assertions="2" time="0.000442"/>
+        <testcase name="testValidate with data set #2" assertions="2" time="0.000437"/>
+        <testcase name="testValidate with data set #3" assertions="2" time="0.000433"/>
+        <testcase name="testValidate with data set #4" assertions="2" time="0.000370"/>
+        <testcase name="testValidate with data set #5" assertions="2" time="0.000355"/>
+        <testcase name="testValidate with data set #6" assertions="2" time="0.000382"/>
+        <testcase name="testValidate with data set #7" assertions="2" time="0.000365"/>
+        <testcase name="testValidate with data set #8" assertions="2" time="0.000509"/>
+        <testcase name="testValidate with data set #9" assertions="2" time="0.000404"/>
+        <testcase name="testValidate with data set #10" assertions="2" time="0.000407"/>
       </testsuite>
     </testsuite>
   </testsuite>
