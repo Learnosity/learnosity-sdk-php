@@ -205,7 +205,7 @@ class Init
         }
         $requestString = Json::encode($this->requestPacket);
         if (false === $requestString) {
-            throw new \Exception('Invalid data, please check your request packet - ' . Json::checkError());
+            throw new ValidationException('Invalid data, please check your request packet - ' . Json::checkError());
         }
         return $requestString;
     }
