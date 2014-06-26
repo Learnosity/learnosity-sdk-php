@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Learnosity PHP SDK Test Suite" tests="3" assertions="1" failures="0" errors="2" time="0.005665">
+    <testsuite name="tests\LearnositySdk\Request\InitTest" file="/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/tests/LearnositySdk/Request/InitTest.php" tests="3" assertions="1" failures="0" errors="2" time="0.005665">
+      <testsuite name="tests\LearnositySdk\Request\InitTest::testConstructor" tests="3" assertions="1" failures="0" errors="2" time="0.005665">
+        <testcase name="testConstructor with data set #0" assertions="1" time="0.003917"/>
+        <testcase name="testConstructor with data set #1" assertions="0" time="0.000980">
+          <error type="LearnositySdk\Exceptions\ValidationException">tests\LearnositySdk\Request\InitTest::testConstructor with data set #1 ('', array('yis0TYCu7U9V4o7M', 'localhost'), '74c5fd430cf1242a527f6223aebd42d30464be22', array(100), 'get', NULL, '\\LearnositySdk\\Exceptions\\ValidationException', 'The `service` argument wasn\'t found or was empty')
+LearnositySdk\Exceptions\ValidationException: The `service` argument wasn't found or was empty
+
+/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/LearnositySdk/Request/Init.php:340
+/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/LearnositySdk/Request/Init.php:116
+/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/tests/LearnositySdk/Request/InitTest.php:44
+</error>
+        </testcase>
+        <testcase name="testConstructor with data set #2" assertions="0" time="0.000768">
+          <error type="LearnositySdk\Exceptions\ValidationException">tests\LearnositySdk\Request\InitTest::testConstructor with data set #2 ('wrongService', array('yis0TYCu7U9V4o7M', 'localhost'), '74c5fd430cf1242a527f6223aebd42d30464be22', array(100), 'get', NULL, '\\LearnositySdk\\Exceptions\\ValidationException', 'The service provided (wrongService) is not valid')
+LearnositySdk\Exceptions\ValidationException: The service provided (wrongService) is not valid
+
+/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/LearnositySdk/Request/Init.php:342
+/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/LearnositySdk/Request/Init.php:116
+/Users/karoltarasiuk/salt-developer/code/site/demos/src/sdk/src/tests/LearnositySdk/Request/InitTest.php:44
+</error>
+        </testcase>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
