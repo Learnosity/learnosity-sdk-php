@@ -111,28 +111,22 @@ class Init
      */
     public function __construct($service, $securityPacket, $secret, $requestPacket = null, $action = null)
     {
-        try {
-            // First validate the arguments passed
-            $this->validate($service, $securityPacket, $secret, $requestPacket, $action);
+        // First validate the arguments passed
+        $this->validate($service, $securityPacket, $secret, $requestPacket, $action);
 
-            // Set instance variables based off the arguments passed
-            $this->service        = $service;
-            $this->securityPacket = $securityPacket;
-            $this->secret         = $secret;
-            $this->requestPacket  = $requestPacket;
-            $this->requestString  = $this->generateRequestString();
-            $this->action         = $action;
+        // Set instance variables based off the arguments passed
+        $this->service        = $service;
+        $this->securityPacket = $securityPacket;
+        $this->secret         = $secret;
+        $this->requestPacket  = $requestPacket;
+        $this->requestString  = $this->generateRequestString();
+        $this->action         = $action;
 
-            // Set any service specific options
-            $this->setServiceOptions();
+        // Set any service specific options
+        $this->setServiceOptions();
 
-            // Generate the signature based on the arguments provided
-            $this->securityPacket['signature'] = $this->generateSignature();
-        } catch (\Exception $e) {
-            // A validation or unknown error, this has purposefully been left
-            // simple, you may enhance as needed
-            die($e->getMessage());
-        }
+        // Generate the signature based on the arguments provided
+        $this->securityPacket['signature'] = $this->generateSignature();
     }
 
     /**
