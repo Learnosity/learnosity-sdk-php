@@ -6,13 +6,18 @@ use LearnositySdk\Request\Init;
 
 class InitTest extends \PHPUnit_Framework_TestCase
 {
-    public function getWorkingParams($assoc = false)
+    /**
+     * WARNING: RemoteTest is also using this params
+     *
+     * @param  boolean $assoc If true, associative array will be returned
+     * @return array
+     */
+    public static function getWorkingDataApiParams($assoc = false)
     {
         $service = 'data';
         $security = array(
             'consumer_key' => 'yis0TYCu7U9V4o7M',
-            'domain'       => 'localhost',
-            'timestamp'    => '20140626-0528'
+            'domain'       => 'localhost'
         );
         $secret = '74c5fd430cf1242a527f6223aebd42d30464be22';
         $request = array(
@@ -41,7 +46,8 @@ class InitTest extends \PHPUnit_Framework_TestCase
 
     public function dataProviderGenerateSignature()
     {
-        list($service, $security, $secret, $request, $action) = $this->getWorkingParams();
+        list($service, $security, $secret, $request, $action) = self::getWorkingDataApiParams();
+        $security['timestamp'] = '20140626-0528';
 
         return [
             [
@@ -68,7 +74,8 @@ class InitTest extends \PHPUnit_Framework_TestCase
 
     public function dataProviderGenerate()
     {
-        list($service, $security, $secret, $request, $action) = $this->getWorkingParams();
+        list($service, $security, $secret, $request, $action) = self::getWorkingDataApiParams();
+        $security['timestamp'] = '20140626-0528';
 
         return [
             [
@@ -95,7 +102,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
 
     public function dataProviderConstructor()
     {
-        list($service, $security, $secret, $request, $action) = $this->getWorkingParams();
+        list($service, $security, $secret, $request, $action) = self::getWorkingDataApiParams();
 
         $wrongSecurity = $security;
         $wrongSecurity['wrongParam'] = '';
