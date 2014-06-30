@@ -83,6 +83,6 @@ class Json
      */
     public static function isJson($val)
     {
-        return !is_null( json_decode($val, true) );
+        return !is_null(json_decode($val, true));
     }
 }
