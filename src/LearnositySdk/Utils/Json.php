@@ -81,8 +81,8 @@ class Json
      *
      * @return boolean
      */
-    public function isJson($val)
+    public static function isJson($val)
     {
-        return !!(json_decode($val) instanceof stdClass);
+        return !is_null(json_decode($val, true));
     }
 }

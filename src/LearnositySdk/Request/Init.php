@@ -3,6 +3,7 @@
 namespace LearnositySdk\Request;
 
 use LearnositySdk\Utils\Json;
+use LearnositySdk\Exceptions\ValidationException;
 
 /**
  *--------------------------------------------------------------------------
@@ -111,28 +112,22 @@ class Init
      */
     public function __construct($service, $securityPacket, $secret, $requestPacket = null, $action = null)
     {
-        try {
-            // First validate the arguments passed
-            $this->validate($service, $securityPacket, $secret, $requestPacket, $action);
+        // First validate the arguments passed
+        $this->validate($service, $securityPacket, $secret, $requestPacket, $action);
 
-            // Set instance variables based off the arguments passed
-            $this->service        = $service;
-            $this->securityPacket = $securityPacket;
-            $this->secret         = $secret;
-            $this->requestPacket  = $requestPacket;
-            $this->requestString  = $this->generateRequestString();
-            $this->action         = $action;
+        // Set instance variables based off the arguments passed
+        $this->service        = $service;
+        $this->securityPacket = $securityPacket;
+        $this->secret         = $secret;
+        $this->requestPacket  = $requestPacket;
+        $this->requestString  = $this->generateRequestString();
+        $this->action         = $action;
 
-            // Set any service specific options
-            $this->setServiceOptions();
+        // Set any service specific options
+        $this->setServiceOptions();
 
-            // Generate the signature based on the arguments provided
-            $this->securityPacket['signature'] = $this->generateSignature();
-        } catch (\Exception $e) {
-            // A validation or unknown error, this has purposefully been left
-            // simple, you may enhance as needed
-            die($e->getMessage());
-        }
+        // Generate the signature based on the arguments provided
+        $this->securityPacket['signature'] = $this->generateSignature();
     }
 
     /**
@@ -210,7 +205,7 @@ class Init
         }
         $requestString = Json::encode($this->requestPacket);
         if (false === $requestString) {
-            throw new \Exception('Invalid data, please check your request packet - ' . Json::checkError());
+            throw new ValidationException('Invalid data, please check your request packet - ' . Json::checkError());
         }
         return $requestString;
     }
@@ -342,9 +337,9 @@ class Init
     public function validate($service, &$securityPacket, $secret, &$requestPacket, $action)
     {
         if (empty($service)) {
-            throw new \Exception('The `service` argument wasn\'t found or was empty');
+            throw new ValidationException('The `service` argument wasn\'t found or was empty');
         } elseif (!in_array(strtolower($service), $this->validServices)) {
-            throw new \Exception("The service provided ($service) is not valid");
+            throw new ValidationException("The service provided ($service) is not valid");
         }
 
         // In case the user gave us a JSON securityPacket, convert to an array
@@ -353,11 +348,11 @@ class Init
         }
 
         if (empty($securityPacket) || !is_array($securityPacket)) {
-            throw new \Exception('The security packet must be an array');
+            throw new ValidationException('The security packet must be an array');
         } else {
             foreach (array_keys($securityPacket) as $key) {
                 if (!in_array($key, $this->validSecurityKeys)) {
-                    throw new \Exception('Invalid key found in the security packet: ' . $key);
+                    throw new ValidationException('Invalid key found in the security packet: ' . $key);
                 }
             }
             if (!array_key_exists('timestamp', $securityPacket)) {
@@ -365,28 +360,28 @@ class Init
             }
 
             if ($service === "questions" && !array_key_exists('user_id', $securityPacket)) {
-                throw new \Exception('If using the question api, a user id needs to be specified');
+                throw new ValidationException('If using the question api, a user id needs to be specified');
             }
         }
 
         if (empty($secret) || !is_string($secret)) {
-            throw new \Exception('The `secret` argument must be a valid string');
+            throw new ValidationException('The `secret` argument must be a valid string');
         }
 
         // In case the user gave us a JSON requestPacket, convert to an array
         if (!is_array($requestPacket) && is_string($requestPacket)) {
             $requestPacket = json_decode($requestPacket, true);
             if (empty($requestPacket)) {
-                throw new \Exception('Invalid data, please check your request packet - ' . Json::checkError());
+                throw new ValidationException('Invalid data, please check your request packet - ' . Json::checkError());
             }
         }
 
         if (!empty($requestPacket) && !is_array($requestPacket)) {
-            throw new \Exception('The request packet must be an array');
+            throw new ValidationException('The request packet must be an array');
         }
 
         if (!empty($action) && !is_string($action)) {
-            throw new \Exception('The action parameter must be a string');
+            throw new ValidationException('The action parameter must be a string');
         }
     }
 }
