@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="./includes/static/vendor/bootstrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="./includes/static/vendor/codemirror/codemirror.css">
     <link rel="stylesheet" href="./includes/static/css/main.css">
-    <script src="./includes/static/js/main.js"></script>
+    <script src="./includes/static/js/prettyPrint.js"></script>
 </head>
 <body>
 
@@ -76,7 +76,7 @@
         <div class="preview"><pre><code id="code"></code></pre></div>
         <script>
             <?php if ($service !== 'data') { ?>
-                document.getElementById('code').innerHTML = library.json.prettyPrint(<?php echo $requestPacket; ?>);
+                document.getElementById('code').innerHTML = prettyPrint.render(<?php echo $requestPacket; ?>);
             <?php } else { ?>
                 document.getElementById('code').innerHTML = <?php echo "'" . addslashes($requestPacket) . "'"; ?>;
             <?php } ?>
