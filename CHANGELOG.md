@@ -1,3 +1,7 @@
+## v0.3.1 (2014-07-07)
+
+* Made sure to copy user_id into the security packet for Reports API if it wasn't in the security body, but was in the request body.
+
 ## v0.3.0 (2014-06-21)
 
 * Added requestRecursive() to the DataApi helper when communicating with the [http://docs.learnosity.com/dataapi/index.php](Data API)
