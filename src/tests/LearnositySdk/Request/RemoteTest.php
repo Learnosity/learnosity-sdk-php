@@ -35,7 +35,7 @@ class RemoteTest extends \PHPUnit_Framework_TestCase
     public function testGet()
     {
         $remote = new Remote();
-        $response = $remote->get('http://schemas.learnosity.com/stable/questions/templates');
+        $response = $remote->get('http://schemas.learnosity.com/latest/questions/templates');
         $requestPacket = $response->getBody();
         $arr = json_decode($requestPacket, true);
 

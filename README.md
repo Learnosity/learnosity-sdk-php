@@ -157,7 +157,7 @@ You'll call either get() or post() (mimicking the HTTP request type you want to 
 // Instantiate the SDK Remote class:
 $Remote = new Remote();
 // Call get() or post() with a URL:
-$response = $Remote->get('http://schemas.learnosity.com/stable/questions/templates');
+$response = $Remote->get('http://schemas.learnosity.com/latest/questions/templates');
 
 // getBody() gives you to body of the request
 $requestPacket = $response->getBody();
@@ -169,7 +169,7 @@ $requestPacket = $response->getBody();
 A string URL, including schema and path. Eg:
 
 ```
-https://schemas.learnosity.com/stable/questions/templates
+https://schemas.learnosity.com/latest/questions/templates
 ```
 
 **Data**<br>
@@ -247,6 +247,6 @@ $response = $DataApi->requestRecursive(
 
 function processData($data)
 {
-    // Do something with $data    
+    // Do something with $data
 }
 ```

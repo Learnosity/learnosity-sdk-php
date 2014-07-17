@@ -17,7 +17,7 @@
 use LearnositySdk\Request\Remote;
 
 $Remote = new Remote();
-$response = $Remote->get('http://schemas.learnosity.com/stable/questions/templates');
+$response = $Remote->get('http://schemas.learnosity.com/latest/questions/templates');
 
 $requestPacket = $response->getBody();
 
