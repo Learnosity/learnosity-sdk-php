@@ -65,9 +65,10 @@ class Remote
     private function request($url, $post = false, $options = array())
     {
         $defaults = array(
-            'timeout'  => 10,
-            'headers'  => array(),
-            'encoding' => 'utf-8'
+            'connect_timeout'   => 10,
+            'timeout'           => 50,
+            'headers'           => array(),
+            'encoding'          => 'utf-8'
         );
 
         $options = array_merge($defaults, $options);
@@ -79,7 +80,7 @@ class Remote
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_ENCODING       => $options['encoding'],
             CURLOPT_AUTOREFERER    => true,
-            CURLOPT_CONNECTTIMEOUT => $options['timeout'],
+            CURLOPT_CONNECTTIMEOUT => $options['connect_timeout'],
             CURLOPT_TIMEOUT        => $options['timeout'],
             CURLOPT_MAXREDIRS      => 10
         );
