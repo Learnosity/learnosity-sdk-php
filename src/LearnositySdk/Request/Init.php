@@ -372,9 +372,6 @@ class Init
         // In case the user gave us a JSON requestPacket, convert to an array
         if (!is_array($requestPacket) && is_string($requestPacket)) {
             $requestPacket = json_decode($requestPacket, true);
-            if (empty($requestPacket)) {
-                throw new ValidationException('Invalid data, please check your request packet - ' . Json::checkError());
-            }
         }
 
         if (!empty($requestPacket) && !is_array($requestPacket)) {
