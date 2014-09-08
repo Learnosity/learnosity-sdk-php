@@ -78,7 +78,7 @@
             <?php if ($service !== 'data') { ?>
                 document.getElementById('code').innerHTML = prettyPrint.render(<?php echo $requestPacket; ?>);
             <?php } else { ?>
-                document.getElementById('code').innerHTML = <?php echo "'" . addslashes($requestPacket) . "'"; ?>;
+                document.getElementById('code').innerHTML = <?php echo "'" . json_encode($requestPacket) . "'"; ?>;
             <?php } ?>
         </script>
     <?php } ?>

@@ -160,12 +160,12 @@ class Init
                 }
 
                 if ($this->service === 'data') {
-                    $r = 'security=' . Json::encode($output['security']);
+                    $r['security'] = Json::encode($output['security']);
                     if (array_key_exists('request', $output)) {
-                        $r .= '&request=' . Json::encode($output['request']);
+                        $r['request'] = Json::encode($output['request']);
                     }
                     if (array_key_exists('action', $output)) {
-                        $r .= '&action=' . $output['action'];
+                        $r['action'] = $output['action'];
                     }
                     return $r;
                 } elseif ($this->service === 'assess') {
