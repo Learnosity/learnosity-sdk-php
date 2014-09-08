@@ -66,7 +66,7 @@ class Remote
     {
         $defaults = array(
             'connect_timeout'   => 10,
-            'timeout'           => 50,
+            'timeout'           => 40,
             'headers'           => array(),
             'encoding'          => 'utf-8'
         );
