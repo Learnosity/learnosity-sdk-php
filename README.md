@@ -1,5 +1,4 @@
 # Learnosity SDK - PHP
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Learnosity/learnosity-sdk-php?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Include this package into your own codebase to ease integration with any of the Learnosity APIs.
 
