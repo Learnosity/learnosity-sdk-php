@@ -134,9 +134,11 @@ class Init
      * Generate the data necessary to make a request to one of the
      * Learnosity products/services.
      *
-     * @return string A JSON string
+     * @param boolean $encode Encode the result as a JSON string
+     *
+     * @return mixed The data to pass to a Learnosity API
      */
-    public function generate()
+    public function generate($encode = true)
     {
         $output = array();
 
@@ -189,7 +191,7 @@ class Init
                 break;
         }
 
-        return Json::encode($output);
+        return $encode ? Json::encode($output) : $output;
     }
 
     /**
