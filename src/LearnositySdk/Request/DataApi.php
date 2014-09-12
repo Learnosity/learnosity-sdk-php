@@ -61,7 +61,7 @@ class DataApi
 
         do {
             $request = $this->request($endpoint, $securityPacket, $secret, $requestPacket, $action);
-            $data = json_decode($request->getBody(), true);
+            $data = Json::isJson($request->getBody()) ? json_decode($request->getBody(), true) : $request->getBody();
             if ($data['meta']['status'] === true) {
                 if (!empty($callback) && is_callable($callback)) {
                     call_user_func($callback, $data);
