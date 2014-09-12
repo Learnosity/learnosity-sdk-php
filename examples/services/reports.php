@@ -26,100 +26,107 @@ $security = array(
 $secret    = '74c5fd430cf1242a527f6223aebd42d30464be22';
 $sessionId = 'FF59DDD4-9E9E-4581-A74C60D791B4172C';
 $request   = array(
-    array(
-        'id'          => 'report-1',
-        'type'        => 'user-sessions-summary',
-        'session_ids' => array(
-            'AC023456-2C73-44DC-82DA28894FCBC3BF'
-        )
-    ),
-    array(
-        'id'        => 'report-2',
-        'session_id'=> $sessionId,
-        'type'      => 'user-session-detail'
-    ),
-    array(
-        'id'        => 'report-3',
-        'type'      => 'user-progress-by-tag',
-        'hierarchy' => 'author'
-    ),
-    array(
-        'id'        => 'report-4',
-        'type'      => 'user-sessions-summary-by-tag',
-        'ui'        => 'bar-chart',
-        'hierarchy' => 'author',
-        'session_ids' => array(
-            'B146BA2C-C2D0-4368-B90FFBA2B245F2BA'
-        )
-    ),
-    array(
-        'id'    => 'report-5',
-        'type'  => 'group-lastscore-by-activity',
-        'users' => array(
-            array(
-                'id' => 'brianmoser',
-                'name' => 'Brian Moser'
-            ),
-            array(
-                'id' => '12345678',
-                'name' => 'John Carter'
+    'reports' => array(
+        array(
+            'id'          => 'report-1',
+            'type'        => 'sessions-summary',
+            'user_id'     => '12345678',
+            'session_ids' => array(
+                'AC023456-2C73-44DC-82DA28894FCBC3BF'
             )
         ),
-        'activities' => array(
-            array(
-                'id' => 'edde56e8-ff65-e42e-b4fe49caad796bd',
-                'name' => 'Mid Term'
-            ),
-            array(
-                'id' => 'emberDemo2013',
-                'name' => 'Final'
-            )
-        )
-    ),
-    array(
-        'id'    => 'report-6',
-        'type'  => 'user-lastscore-by-activity',
-        'activities' => array(
-            array(
-                'id' => 'edde56e8-ff65-e42e-b4fe49caad796bd',
-                'name' => 'Mid Term'
-            ),
-            array(
-                'id' => 'emberDemo2013',
-                'name' => 'Final'
-            )
-        )
-    ),
-    array(
-        'id'    => 'report-7',
-        'type'  => 'group-lastscore-by-item',
-        'users' => array(
-            array(
-                'id' => 'brianmoser',
-                'name' => 'Brian Moser'
-            ),
-            array(
-                'id' => '12345678',
-                'name' => 'John Carter'
+        array(
+            'id'         => 'report-2',
+            'type'       => 'session-detail-by-question',
+            'user_id'    => '12345678',
+            'session_id' => $sessionId
+        ),
+        array(
+            'id'        => 'report-3',
+            'type'      => 'progress-by-tag',
+            'user_id'   => '12345678',
+            'hierarchy' => 'author'
+        ),
+        array(
+            'id'          => 'report-4',
+            'type'        => 'sessions-summary-by-tag',
+            'user_id'     => '12345678',
+            'ui'          => 'bar-chart',
+            'hierarchy'   => 'author',
+            'session_ids' => array(
+                'B146BA2C-C2D0-4368-B90FFBA2B245F2BA'
             )
         ),
-        'activity_id' => '52f5b81d-9270-914a-7094a1ada4d55e6e'
-    ),
-    array(
-        'id'    => 'report-8',
-        'type'  => 'group-lastscore-by-tag',
-        'users' => array(
-            array(
-                'id' => 'brianmoser',
-                'name' => 'Brian Moser'
+        array(
+            'id'    => 'report-5',
+            'type'  => 'lastscore-by-activity-by-user',
+            'users' => array(
+                array(
+                    'id'   => 'brianmoser',
+                    'name' => 'Brian Moser'
+                ),
+                array(
+                    'id'   => '12345678',
+                    'name' => 'John Carter'
+                )
             ),
-            array(
-                'id' => '12345678',
-                'name' => 'John Carter'
+            'activities' => array(
+                array(
+                    'id'   => 'edde56e8-ff65-e42e-b4fe49caad796bd',
+                    'name' => 'Mid Term'
+                ),
+                array(
+                    'id'   => 'emberDemo2013',
+                    'name' => 'Final'
+                )
             )
         ),
-        'activity_id' => '52f5b81d-9270-914a-7094a1ada4d55e6e',
-        'hierarchy' => 'questiontype'
+        array(
+            'id'         => 'report-6',
+            'type'       => 'lastscore-by-activity',
+            'user_id'    => '12345678',
+            'activities' => array(
+                array(
+                    'id'   => 'edde56e8-ff65-e42e-b4fe49caad796bd',
+                    'name' => 'Mid Term'
+                ),
+                array(
+                    'id'   => 'emberDemo2013',
+                    'name' => 'Final'
+                )
+            )
+        ),
+        array(
+            'id'    => 'report-7',
+            'type'  => 'lastscore-by-item-by-user',
+            'users' => array(
+                array(
+                    'id'   => 'brianmoser',
+                    'name' => 'Brian Moser'
+                ),
+                array(
+                    'id'   => '12345678',
+                    'name' => 'John Carter'
+                )
+            ),
+            'activity_id' => '52f5b81d-9270-914a-7094a1ada4d55e6e'
+        ),
+        array(
+            'id'    => 'report-8',
+            'type'  => 'lastscore-by-tag-by-user',
+            'users' => array(
+                array(
+                    'id'   => 'brianmoser',
+                    'name' => 'Brian Moser'
+                ),
+                array(
+                    'id'   => '12345678',
+                    'name' => 'John Carter'
+                )
+            ),
+            'activity_id' => '52f5b81d-9270-914a-7094a1ada4d55e6e',
+            'hierarchy'   => 'questiontype'
+        )
     )
 );
 
