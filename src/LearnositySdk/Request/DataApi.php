@@ -20,9 +20,14 @@ use LearnositySdk\Utils\Json;
 class DataApi
 {
     private $remote;
+    private $remoteOptions;
 
-    public function __construct()
+    /**
+     * @param array $remoteOptions Overrides options array for a cURL request
+     */
+    public function __construct($remoteOptions = array())
     {
+        $this->remoteOptions = $remoteOptions;
         $this->remote = new Remote();
     }
 
@@ -40,7 +45,7 @@ class DataApi
     {
         $init = new Init('data', $securityPacket, $secret, $requestPacket, $action);
         $params = $init->generate();
-        return $this->remote->post($endpoint, $params);
+        return $this->remote->post($endpoint, $params, $this->remoteOptions);
     }
 
     /**

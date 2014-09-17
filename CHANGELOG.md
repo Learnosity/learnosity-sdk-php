@@ -1,6 +1,11 @@
+## v0.4.0 (2014-09-17)
+
+* Added ability to pass cURL overrides to the DataAPI.php constructor
+
 ## v0.3.3 (2014-09-09)
 
 * Changed postfields argument passed to cURL from url string to array - reflected in data api example
+
 
 ## v0.3.2 (2014-09-05)
 

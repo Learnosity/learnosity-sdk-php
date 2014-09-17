@@ -250,3 +250,16 @@ function processData($data)
     // Do something with $data
 }
 ```
+
+#### Overriding the remote options
+
+You can send an array to the DataAPI constructor to override any remote (cURL) options, eg:
+
+```
+$options = array(
+    'connect_timeout' => 20
+    'timeout' => 60
+);
+
+$dataapi = new DataApi($options);
+```
