@@ -82,14 +82,14 @@ $Init = new Init(
        'state'     => 'initial',
        'questions' => [
            [
-               "response_id"        => "60005",
-               "type"               => "association",
-               "stimulus"           => "Match the cities to the parent nation.",
-               "stimulus_list"      => ["London", "Dublin", "Paris", "Sydney"],
-               "possible_responses" => ["Australia", "France", "Ireland", "England"],
-               "validation" => [
-                   "valid_responses" => [
-                       ["England"], ["Ireland"], ["France"], ["Australia"]
+               'response_id'        => '60005',
+               'type'               => 'association',
+               'stimulus'           => 'Match the cities to the parent nation.',
+               'stimulus_list'      => ['London', 'Dublin', 'Paris', 'Sydney'],
+               'possible_responses' => ['Australia', 'France', 'Ireland', 'England'],
+               'validation' => [
+                   'valid_responses' => [
+                       ['England'], ['Ireland'], ['France'], ['Australia']
                    ]
                ]
            ]
@@ -123,7 +123,7 @@ An array^ that includes your *consumer_key* but does not include your *secret*. 
 * timestamp (optional - the SDK will generate this for you)
 * user_id (optional - not necessary for all APIs)
 
-^Note – the SDK accepts JSON and native PHP arrays.
+^Note – the SDK accepts a JSON string and native PHP arrays.
 
 **secret**<br>
 Your private key, as provided by Learnosity.
@@ -131,7 +131,7 @@ Your private key, as provided by Learnosity.
 **request**<br>
 An optional associative array^ of data relevant to the API being used. This will be any data minus the security details that you would normally use to initialise an API.
 
-^Note – the SDK accepts JSON and native PHP arrays.
+^Note – the SDK accepts a JSON string and native PHP arrays.
 
 **action**<br>
 An optional string used only if integrating with the Data API. Valid options are:
