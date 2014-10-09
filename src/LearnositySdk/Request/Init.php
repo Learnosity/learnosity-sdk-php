@@ -23,6 +23,7 @@ class Init
      *  - assess
      *  - author
      *  - data
+     *  - events
      *  - items
      *  - questions
      *  - reports
@@ -93,7 +94,7 @@ class Init
      * Service names that are valid for `$service`
      * @var array
      */
-    private $validServices = array('assess', 'author', 'data', 'items', 'questions', 'reports');
+    private $validServices = array('assess', 'author', 'data', 'events', 'items', 'questions', 'reports');
 
     /**
      * The algorithm used in the hashing function to create the signature
@@ -185,6 +186,11 @@ class Init
                 if (!empty($this->requestPacket)) {
                     $output = array_merge_recursive($output, $this->requestPacket);
                 }
+                break;
+            case 'events':
+                // Add the security packet (with signature) to the output
+                $output['security'] = $this->securityPacket;
+                $output['config'] = $this->requestPacket;
                 break;
             default:
                 // no default
@@ -321,6 +327,17 @@ class Init
                 ) {
                     $this->securityPacket['user_id'] = $this->requestPacket['user_id'];
                 }
+                break;
+            case 'events':
+                $this->signRequestData = false;
+                $hashedUsers = array();
+                foreach ($this->requestPacket['users'] as $user) {
+                    $hashedUsers[$user] = hash(
+                        $this->algorithm,
+                        $user . $this->securityPacket['consumer_key']
+                    );
+                }
+                $this->requestPacket['users'] = $hashedUsers;
                 break;
             default:
                 // do nothing
