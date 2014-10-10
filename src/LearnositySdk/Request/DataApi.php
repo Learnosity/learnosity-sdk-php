@@ -76,10 +76,12 @@ class DataApi
             } else {
                 throw new Exception(Json::encode($data));
             }
-            if (array_key_exists('next', $data['meta'])) {
+            if (array_key_exists('next', $data['meta']) && !empty($data['data'])) {
                 $requestPacket['next'] = $data['meta']['next'];
+            } else {
+                unset($requestPacket['next']);
             }
-        } while (array_key_exists('next', $data['meta']));
+        } while (array_key_exists('next', $requestPacket));
 
         return $response;
     }
