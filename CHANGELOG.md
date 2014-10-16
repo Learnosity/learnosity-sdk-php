@@ -1,3 +1,7 @@
+## v0.5.0 (2014-10-16)
+
+* Added support for the Events API
+
 ## v0.4.0 (2014-09-17)
 
 * Added ability to pass cURL overrides to the DataAPI.php constructor

@@ -111,6 +111,7 @@ A string representing the Learnosity service (API) you want to integrate with. V
 * assess
 * author
 * data
+* events
 * items
 * questions
 * reports
