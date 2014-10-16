@@ -337,7 +337,9 @@ class Init
                         $user . $this->securityPacket['consumer_key']
                     );
                 }
-                $this->requestPacket['users'] = $hashedUsers;
+                if (count($hashedUsers)) {
+                    $this->requestPacket['users'] = $hashedUsers;
+                }
                 break;
             default:
                 // do nothing
