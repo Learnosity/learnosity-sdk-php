@@ -57,7 +57,15 @@ require_once __DIR__ . '/LearnositySdk/autoload.php';
 
 ### Init
 
+
+
+
 The Init class is used to create the necessary *security* and *request* details used to integrate with a Learnosity API. Most often this will be a JavaScript object.
+
+```
+//Include the Init classes.
+use LearnositySdk\Request\Init;
+```
 
 The Init constructor takes up to 5 arguments:
 
@@ -146,6 +154,8 @@ An optional string used only if integrating with the Data API. Valid options are
 
 ### Remote
 
+
+
 The Remote class is used to make server side, cross domain requests. Think of it as a cURL wrapper.
 
 You'll call either get() or post() (mimicking the HTTP request type you want to make) with the following arguments:
@@ -153,6 +163,12 @@ You'll call either get() or post() (mimicking the HTTP request type you want to 
 * [string] URL
 * [array]  Data payload
 * [array]  Options
+
+
+```
+//Include the Remote classes.
+use LearnositySdk\Request\Remote;
+```
 
 ```
 // Instantiate the SDK Remote class:
@@ -206,6 +222,7 @@ This is a helper class for use with the Data API. It creates the initialisation 
 #### request()
 
 Used for a single request to the Data API. You can call as many times as necessary.
+
 
 ```
 $DataApi = new DataApi();
