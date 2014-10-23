@@ -7,6 +7,30 @@ This SDK should run on PHP 5.3+
 ## Installation
 Installation should be as simple as possible, there are no external dependancies and this package should integrate with any existing codebase.
 
+### Composer
+
+Using Composer is the recommended way to install the Learnosity SDK for PHP. In order to use the SDK with Composer, you must add "learnosity/learnosity-sdk-php" as a dependency in your project's composer.json file. Consider tightening your dependencies to a known version (e.g., ~5.0.0).
+
+```
+  {
+    "repositories": [
+        {
+            "type": "git",
+            "url": "git://github.com/Learnosity/learnosity-sdk-php"
+        }
+    ],
+    "require": {
+        "learnosity/learnosity-sdk-php": "dev-master"
+    }
+  }
+```
+
+Then, install your dependencies 
+
+```
+composer install
+```
+
 
 ### git clone
 
