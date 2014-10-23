@@ -1,0 +1,10 @@
+{
+    "name": "learnosity/learnosity-sdk-php",
+    "description": "Include this package into your own codebase to ease integration with any of the Learnosity APIs",
+    "autoload": {
+        "psr-0": {
+            "": "src/"
+        }
+    },
+    "require": {}
+}
