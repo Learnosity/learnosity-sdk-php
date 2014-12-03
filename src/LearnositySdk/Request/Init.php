@@ -273,7 +273,6 @@ class Init
     {
         switch ($this->service) {
             case 'assess':
-            case 'author':
             case 'questions':
                 $this->signRequestData = false;
                 // The Assess API holds data for the Questions API that includes
