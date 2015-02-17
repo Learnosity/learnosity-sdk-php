@@ -184,7 +184,7 @@ class Init
 
                 // Stringify the request packet if necessary
                 if (!empty($this->requestPacket)) {
-                    $output = array_merge_recursive($output, $this->requestPacket);
+                    $output = array_merge($output, $this->requestPacket);
                 }
                 break;
             case 'events':
