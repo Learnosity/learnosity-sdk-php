@@ -276,6 +276,7 @@ $response = $DataApi->requestRecursive(
     [
        'limit' => 20
     ],
+    'get'
     function ($data) {
         $this->processData($data);
     }
