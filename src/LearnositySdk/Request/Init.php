@@ -333,7 +333,7 @@ class Init
                 foreach ($this->requestPacket['users'] as $user) {
                     $hashedUsers[$user] = hash(
                         $this->algorithm,
-                        $user . $this->securityPacket['consumer_key']
+                        $user . $this->$secret
                     );
                 }
                 if (count($hashedUsers)) {
