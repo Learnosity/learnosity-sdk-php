@@ -25,9 +25,43 @@ $security = array(
 );
 $secret = '74c5fd430cf1242a527f6223aebd42d30464be22';
 $request = array(
-    'limit' => 100,
-    'tags' => array(
-      array('type' => 'course', 'name' => 'commoncore')
+    'mode'      => 'item_edit',
+    'reference' => 'my-item-reference',
+    'config'    => array(
+        'item_edit' => array(
+            'item' => array(
+                'tags' => array(
+                    'include_tags_on_edit' => array(
+                        array(
+                            'type' => 'course',
+                            'name' => 'commoncore'
+                        )
+                    )
+                )
+            ),
+            'widget' => array(
+                'delete' => true,
+                'edit' => true
+            )
+        ),
+        'question_editor_init_options' => array(
+            'ui' => array(
+                'public_methods'     => array(),
+                'question_tiles'     => false,
+                'documentation_link' => false,
+                'change_button'      => true,
+                'source_button'      => false,
+                'fixed_preview'      => true,
+                'advanced_group'     => false,
+                'search_field'       => false
+            )
+        )
+    ),
+    'user' => array(
+        'id'        => 'demos-site',
+        'firstname' => 'Demos',
+        'lastname'  => 'User',
+        'email'     => 'demos@learnosity.com'
     )
 );
 
