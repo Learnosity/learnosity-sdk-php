@@ -68,7 +68,8 @@ class Remote
             'connect_timeout'   => 10,
             'timeout'           => 40,
             'headers'           => array(),
-            'encoding'          => 'utf-8'
+            'encoding'          => 'utf-8',
+            'ssl_verify'        => true
         );
 
         $options = array_merge($defaults, $options);
@@ -82,7 +83,8 @@ class Remote
             CURLOPT_AUTOREFERER    => true,
             CURLOPT_CONNECTTIMEOUT => $options['connect_timeout'],
             CURLOPT_TIMEOUT        => $options['timeout'],
-            CURLOPT_MAXREDIRS      => 10
+            CURLOPT_MAXREDIRS      => 10,
+            CURLOPT_SSL_VERIFYPEER => $options['ssl_verify']
         );
 
         if (!empty($options['headers'])) {
