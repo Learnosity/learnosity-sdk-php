@@ -39,28 +39,9 @@ git clone https://github.com/Learnosity/learnosity-sdk-php.git
 ```
 
 ### Examples
-To load any of the examples, it's easiest to use the PHP local server (assumes PHP >= 5.4)
+You can find a complete PHP site with examples of Learnosity APIs integration in our [demos site](http://demos.learnosity.com/).
 
-```
-cd learnosity-sdk-php/examples
-php -S localhost:5555
-```
-
-You can play with the `examples` folder, and review the code to get a feel for how things work. In production you'll likely just use the contents of `src` in your own project. Eg:
-
-```
-/yourProjectRoot
-  /src
-  /vendor
-    /learnosity-sdk-php/src/LearnositySdk
-```
-
-With this in mind you'll likely have this in your projects `.gitignore`
-
-```
-learnosity-sdk-php/src/examples
-learnosity-sdk-php/src/*.md
-```
+You can download the entire site or browse the code directly on [github](https://github.com/Learnosity/learnosity-demos/).
 
 ### Autoload
 
