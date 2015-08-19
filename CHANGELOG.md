@@ -1,3 +1,15 @@
+## v0.5.3 (2015-06-15)
+* [BUG] Questions API request is merging request with security incorrectly
+* [BUG] requestRecursive requires an action parameter
+* [BUG] Fix events api's request hash
+
+## v0.5.2 (2014-12-15)
+* Author API is now using fully signed security pattern
+
+## v0.5.1 (2014-12-01)
+* Updated composer.json
+* Added to .gitignore
+
 ## v0.5.0 (2014-10-16)
 
 * Added support for the Events API
