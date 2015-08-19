@@ -14,7 +14,7 @@ Using Composer is the recommended way to install the Learnosity SDK for PHP. In 
 ```
   {
     "require": {
-        "learnosity/learnosity-sdk-php": "0.5.1"
+        "learnosity/learnosity-sdk-php": "0.*"
     }
   }
 ```
