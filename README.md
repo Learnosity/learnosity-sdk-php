@@ -106,9 +106,13 @@ $Init = new Init(
 
 // Call the generate() method to retrieve a JavaScript object
 $request = $Init->generate();
+?>
 
-// Pass the object to the initialisation of any Learnosity API
-LearnosityApp.init($request);
+// Pass the object to the initialisation of any Learnosity API, in this example the Questions API
+<script src="//questions.learnosity.com"></script>
+<script>
+questionsApp = LearnosityApp.init(<?php echo$request; ?>);
+<script>
 ```
 
 #### Init() Arguments
