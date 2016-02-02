@@ -19,7 +19,7 @@ Using Composer is the recommended way to install the Learnosity SDK for PHP. In 
   }
 ```
 
-Then, install your dependencies 
+Then, install your dependencies
 
 ```
 composer install
@@ -57,8 +57,6 @@ require_once __DIR__ . '/LearnositySdk/autoload.php';
 ### Init
 
 
-
-
 The Init class is used to create the necessary *security* and *request* details used to integrate with a Learnosity API. Most often this will be a JavaScript object.
 
 ```
@@ -75,6 +73,8 @@ The Init constructor takes up to 5 arguments:
  * [string]  action *(optional)*
 
 ```
+<?php
+
 // Instantiate the SDK Init class with your security and request data:
 $Init = new Init(
    'questions',
@@ -111,7 +111,7 @@ $request = $Init->generate();
 // Pass the object to the initialisation of any Learnosity API, in this example the Questions API
 <script src="//questions.learnosity.com"></script>
 <script>
-questionsApp = LearnosityApp.init(<?php echo$request; ?>);
+var questionsApp = LearnosityApp.init(<?php echo $request; ?>);
 <script>
 ```
 
