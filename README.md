@@ -21,20 +21,20 @@ Using Composer is the recommended way to install the Learnosity SDK for PHP. In 
 
 Then, install your dependencies
 
-```
+``` shell
 composer install
 ```
 
 
 ### git clone
 
-```
+``` shell
 git clone git@github.com:Learnosity/learnosity-sdk-php.git
 ```
 
 If you don't have an SSH key loaded into github you can clone via HTTPS (not recommended)
 
-```
+``` shell
 git clone https://github.com/Learnosity/learnosity-sdk-php.git
 ```
 
@@ -47,7 +47,7 @@ You can download the entire site or browse the code directly on [github](https:/
 
 This packages follows the PSR code convention which includes namespaces and import statements. Add the LearnositySdk autoloader or use your own (use *LearnositySdk* as the namespace):
 
-```
+``` php
 require_once __DIR__ . '/LearnositySdk/autoload.php';
 ```
 
@@ -59,7 +59,7 @@ require_once __DIR__ . '/LearnositySdk/autoload.php';
 
 The Init class is used to create the necessary *security* and *request* details used to integrate with a Learnosity API. Most often this will be a JavaScript object.
 
-```
+``` php
 //Include the Init classes.
 use LearnositySdk\Request\Init;
 ```
@@ -72,7 +72,7 @@ The Init constructor takes up to 5 arguments:
  * [request] request details *(optional)*
  * [string]  action *(optional)*
 
-```
+``` php
 <?php
 
 // Instantiate the SDK Init class with your security and request data:
@@ -168,12 +168,12 @@ You'll call either get() or post() (mimicking the HTTP request type you want to 
 * [array]  Options
 
 
-```
+``` php
 //Include the Remote classes.
 use LearnositySdk\Request\Remote;
 ```
 
-```
+``` php
 // Instantiate the SDK Remote class:
 $Remote = new Remote();
 // Call get() or post() with a URL:
@@ -227,7 +227,7 @@ This is a helper class for use with the Data API. It creates the initialisation 
 Used for a single request to the Data API. You can call as many times as necessary.
 
 
-```
+``` php
 $DataApi = new DataApi();
 $response = $DataApi->request(
     'https://data.learnosity.com/v0.27/itembank/items',
@@ -248,7 +248,7 @@ Used to make recursive requests to the Data API, using the *next* token, for as 
 
 You can pass a callback as the 5th argument, that will be executed upon completion of every request.
 
-```
+``` php
 $DataApi = new DataApi();
 
 $response = $DataApi->requestRecursive(
@@ -277,7 +277,7 @@ function processData($data)
 
 You can send an array to the DataAPI constructor to override any remote (cURL) options, eg:
 
-```
+``` php
 $options = array(
     'connect_timeout' => 20
     'timeout' => 60
