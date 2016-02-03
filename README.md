@@ -112,7 +112,7 @@ $request = $Init->generate();
 <script src="//questions.learnosity.com"></script>
 <script>
     var questionsApp = LearnosityApp.init(<?php echo $request; ?>);
-<script>
+</script>
 ```
 
 #### Init() Arguments
