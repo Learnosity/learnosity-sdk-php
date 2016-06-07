@@ -283,37 +283,29 @@ class Init
                     $this->service === 'assess' &&
                     array_key_exists('questionsApiActivity', $this->requestPacket)
                 ) {
-                    $questionsApi = $this->requestPacket['questionsApiActivity'];
-                    $domain = 'assess.learnosity.com';
-                    if (array_key_exists('domain', $this->securityPacket)) {
-                        $domain = $this->securityPacket['domain'];
-                    } elseif (array_key_exists('domain', $questionsApi)) {
-                        $domain = $questionsApi['domain'];
+                    // prepare signature parts
+                    $signatureParts = array();
+                    $signatureParts['consumer_key'] = $this->securityPacket['consumer_key'];
+                    if (isset($this->securityPacket['domain'])) {
+                        $signatureParts['domain'] = $this->securityPacket['domain'];
+                    } elseif (isset($this->requestPacket['questionsApiActivity']['domain'])) {
+                        $signatureParts['domain'] = $this->requestPacket['questionsApiActivity']['domain'];
+                    } else {
+                        $signatureParts['domain'] = 'assess.learnosity.com';
                     }
+                    $signatureParts['timestamp'] = $this->securityPacket['timestamp'];
+                    $signatureParts['user_id'] = $this->securityPacket['user_id'];
+                    $signatureParts['secret'] = $this->secret;
 
-                    $this->requestPacket['questionsApiActivity'] = array(
-                        'consumer_key' => $this->securityPacket['consumer_key'],
-                        'timestamp'    => $this->securityPacket['timestamp'],
-                        'user_id'      => $this->securityPacket['user_id'],
-                        'signature'    => $this->hashValue(
-                            array(
-                                'consumer_key' => $this->securityPacket['consumer_key'],
-                                'domain'       => $domain,
-                                'timestamp'    => $this->securityPacket['timestamp'],
-                                'user_id'      => $this->securityPacket['user_id'],
-                                'secret'       => $this->secret
-                            )
-                        )
-                    );
-                    unset($questionsApi['consumer_key']);
+                    // override security parameters in questionsApiActivity
+                    $questionsApi = $this->requestPacket['questionsApiActivity'];
+                    $questionsApi['consumer_key'] = $signatureParts['consumer_key'];
                     unset($questionsApi['domain']);
-                    unset($questionsApi['timestamp']);
-                    unset($questionsApi['user_id']);
-                    unset($questionsApi['signature']);
-                    $this->requestPacket['questionsApiActivity'] = array_merge(
-                        $this->requestPacket['questionsApiActivity'],
-                        $questionsApi
-                    );
+                    $questionsApi['timestamp'] = $signatureParts['timestamp'];
+                    $questionsApi['user_id'] = $signatureParts['user_id'];
+                    $questionsApi['signature'] = $this->hashValue($signatureParts);
+
+                    $this->requestPacket['questionsApiActivity'] = $questionsApi;
                 }
                 break;
             case 'items':
