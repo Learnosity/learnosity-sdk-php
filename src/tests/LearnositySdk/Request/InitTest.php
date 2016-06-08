@@ -125,8 +125,6 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $wrongSecurity = $security;
         $wrongSecurity['wrongParam'] = '';
 
-        $wrongRequest = '{{"a":"b"]}';
-
         return [
             [$service, $security, $secret, $request, $action, new Init($service, $security, $secret, $request, $action)],
             ['', $security, $secret, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The `service` argument wasn\'t found or was empty'],
@@ -136,7 +134,6 @@ class InitTest extends \PHPUnit_Framework_TestCase
             ['questions', $security, $secret, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'If using the question api, a user id needs to be specified'],
             [$service, $security, 25, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The `secret` argument must be a valid string'],
             [$service, $security, '', $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The `secret` argument must be a valid string'],
-            [$service, $security, $secret, $wrongRequest, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'Invalid data, please check your request packet - Syntax error, malformed JSON'],
             [$service, $security, $secret, 25, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The request packet must be an array'],
             [$service, $security, $secret, $request, 25, null, '\LearnositySdk\Exceptions\ValidationException', 'The action parameter must be a string']
         ];
