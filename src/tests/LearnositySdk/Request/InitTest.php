@@ -49,6 +49,9 @@ class InitTest extends \PHPUnit_Framework_TestCase
         list($service, $security, $secret, $request, $action) = self::getWorkingDataApiParams();
         $security['timestamp'] = '20140626-0528';
 
+        $securityExpires = $security;
+        $securityExpires['expires'] = '20160621-1716';
+
         return [
             [
                 'e1eae0b86148df69173cb3b824275ea73c9c93967f7d17d6957fcdd299c8a4fe',
@@ -57,6 +60,10 @@ class InitTest extends \PHPUnit_Framework_TestCase
             [
                 '18e5416041a13f95681f747222ca7bdaaebde057f4f222083881cd0ad6282c38',
                 new Init($service, $security, $secret, $request, 'post')
+            ],
+            [
+                '5d962d5fea8e5413bddc0f304650c4b58ed4419015e47934452127dc2120fd8a',
+                new Init($service, $securityExpires, $secret, $request, $action)
             ]
         ];
     }

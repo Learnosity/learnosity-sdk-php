@@ -88,7 +88,7 @@ class Init
      * the correct order for signature generation.
      * @var array
      */
-    private $validSecurityKeys = array('consumer_key', 'domain', 'timestamp', 'user_id');
+    private $validSecurityKeys = array('consumer_key', 'domain', 'timestamp', 'expires', 'user_id');
 
     /**
      * Service names that are valid for `$service`
@@ -294,6 +294,9 @@ class Init
                         $signatureParts['domain'] = 'assess.learnosity.com';
                     }
                     $signatureParts['timestamp'] = $this->securityPacket['timestamp'];
+                    if (isset($this->securityPacket['expires'])) {
+                        $signatureParts['expires'] = $this->securityPacket['expires'];
+                    }
                     $signatureParts['user_id'] = $this->securityPacket['user_id'];
                     $signatureParts['secret'] = $this->secret;
 
@@ -302,6 +305,11 @@ class Init
                     $questionsApi['consumer_key'] = $signatureParts['consumer_key'];
                     unset($questionsApi['domain']);
                     $questionsApi['timestamp'] = $signatureParts['timestamp'];
+                    if (isset($signatureParts['expires'])) {
+                        $questionsApi['expires'] = $signatureParts['expires'];
+                    } else {
+                        unset($questionsApi['expires']);
+                    }
                     $questionsApi['user_id'] = $signatureParts['user_id'];
                     $questionsApi['signature'] = $this->hashValue($signatureParts);
 
