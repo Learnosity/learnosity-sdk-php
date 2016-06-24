@@ -238,7 +238,8 @@ $response = $DataApi->request(
     'superfragilisticexpialidocious',
     [
        'limit' => 20
-    ]
+    ],
+    'get'
 );
 ```
 
