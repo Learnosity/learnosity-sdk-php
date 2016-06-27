@@ -224,8 +224,7 @@ This is a helper class for use with the Data API. It creates the initialisation 
 
 #### request()
 
-Used for a single request to the Data API. You can call as many times as necessary.
-
+Used for a single request to the Data API. You can call as many times as necessary. It will return a `Remote` object, on which `getBody()` needs to be called to get the contents of the response.
 
 ``` php
 $DataApi = new DataApi();
@@ -239,7 +238,7 @@ $response = $DataApi->request(
     [
        'limit' => 20
     ],
-    'get'
+    'get' // optional, will default to 'get' in the backend if unspecified
 );
 ```
 
