@@ -3,9 +3,9 @@
 namespace LearnositySdk\Request;
 
 use \Exception;
-use LearnositySdk\Request\Init;
-use LearnositySdk\Request\Remote;
-use LearnositySdk\Utils\Json;
+use \LearnositySdk\Request\Init;
+use \LearnositySdk\Request\Remote;
+use \LearnositySdk\Utils\Json;
 
 /**
  *--------------------------------------------------------------------------
@@ -39,7 +39,8 @@ class DataApi
      * @param  string  $secret         Private key
      * @param  array   $requestPacket  Request packet
      * @param  string  $action         Action for the request
-     * @return Remote                  Instance of the Remote class
+     * @return Remote                  Instance of the Remote class,
+     *                                 the response can be obtained with the getBody() method
      */
     public function request($endpoint, $securityPacket, $secret, $requestPacket = null, $action = null)
     {
