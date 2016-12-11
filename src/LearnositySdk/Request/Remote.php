@@ -54,6 +54,47 @@ class Remote
     }
 
     /**
+     * Determine whether a header is an 'Expect' header.
+     * @param string $header
+     * @return boolean
+     */
+    private function isExpectHeader($header)
+    {
+        return (strpos(strtolower($header), 'expect:') === 0);
+    }
+
+    /**
+     * Normalize the headers to be used for a request.
+     *
+     * @param array $headers - the array of headers. Each element is a string.
+     *
+     * @return array
+     */
+    private function normalizeRequestHeaders(array $headers)
+    {
+        // Explicitly set an empty Expect header, so that the server will not
+        // respond with a "100 Continue" status code for large uploads.
+        $emptyExpectHeader = 'Expect: ';
+        $haveExpectHeader = false;
+
+        for ($i = 0; $i < count($headers); $i++) {
+            if ($this->isExpectHeader($headers[$i])) {
+                // There is already an expect header - let's set it to empty
+                $headers[$i] = $emptyExpectHeader;
+                $haveExpectHeader = true;
+                break;
+            }
+        }
+
+        if (!$haveExpectHeader) {
+            // There is no expect header - let's add one
+            $headers[] = $emptyExpectHeader;
+        }
+
+        return $headers;
+    }
+
+    /**
      * Makes a cURL request to an endpoint with an optional request
      * payload and cURL options.
      *
@@ -73,6 +114,10 @@ class Remote
         );
 
         $options = array_merge($defaults, $options);
+
+        // normalize the headers
+        $options['headers'] = $this->normalizeRequestHeaders($options['headers']);
+
         $ch = curl_init();
 
         $params = array(
