@@ -229,7 +229,7 @@ Used for a single request to the Data API. You can call as many times as necessa
 ``` php
 $DataApi = new DataApi();
 $response = $DataApi->request(
-    'https://data.learnosity.com/v0.27/itembank/items',
+    'https://data.learnosity.com/v1/itembank/items',
     [
        'consumer_key' => 'yis0TYCu7U9V4o7M',
        'domain'       => 'localhost'
@@ -252,7 +252,7 @@ You can pass a callback as the 5th argument, that will be executed upon completi
 $DataApi = new DataApi();
 
 $response = $DataApi->requestRecursive(
-    'https://data.learnosity.com/v0.27/itembank/items',
+    'https://data.learnosity.com/v1/itembank/items',
     [
        'consumer_key' => 'yis0TYCu7U9V4o7M',
        'domain'       => 'localhost'
