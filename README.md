@@ -277,3 +277,14 @@ $options = array(
 
 $dataapi = new DataApi($options);
 ```
+
+## Tests
+
+A few more dependencies are needed to run tests. They can be installed from the
+root of this repo with
+
+    composer install
+
+Test can then be run with
+
+     ./vendor/bin/phpunit
