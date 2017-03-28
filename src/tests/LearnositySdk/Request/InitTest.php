@@ -25,7 +25,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         );
         $action = 'get';
 
-        if($assoc) {
+        if ($assoc) {
             return array(
                 'service' => $service,
                 'security' => $security,
@@ -138,11 +138,11 @@ class InitTest extends \PHPUnit_Framework_TestCase
             ['wrongService', $security, $secret, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The service provided (wrongService) is not valid'],
             [$service, '', $secret, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The security packet must be an array'],
             [$service, $wrongSecurity, $secret, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'Invalid key found in the security packet: wrongParam'],
-            ['questions', $security, $secret, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'If using the question api, a user id needs to be specified'],
+            ['questions', $security, $secret, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'Questions API requires a `user_id` in the security packet'],
             [$service, $security, 25, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The `secret` argument must be a valid string'],
             [$service, $security, '', $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The `secret` argument must be a valid string'],
             [$service, $security, $secret, 25, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The request packet must be an array'],
-            [$service, $security, $secret, $request, 25, null, '\LearnositySdk\Exceptions\ValidationException', 'The action parameter must be a string']
+            [$service, $security, $secret, $request, 25, null, '\LearnositySdk\Exceptions\ValidationException', 'The `action` argument must be a string']
         ];
     }
 
@@ -153,8 +153,15 @@ class InitTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider dataProviderConstructor
      */
-    public function testConstructor($service, $securityPacket, $secret, $requestPacket = null, $action = null,
-        $expectedResult, $expectedException = null, $expectedExceptionMessage = null
+    public function testConstructor(
+        $service,
+        $securityPacket,
+        $secret,
+        $requestPacket = null,
+        $action = null,
+        $expectedResult = null,
+        $expectedException = null,
+        $expectedExceptionMessage = null
     ) {
         if (!empty($expectedException)) {
             $this->setExpectedException($expectedException, $expectedExceptionMessage);
@@ -180,8 +187,15 @@ class InitTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider dataProviderConstructor
      */
-    public function testValidate($service, $securityPacket, $secret, $requestPacket = null, $action = null,
-        $expectedResult, $expectedException = null, $expectedExceptionMessage = null
+    public function testValidate(
+        $service,
+        $securityPacket,
+        $secret,
+        $requestPacket = null,
+        $action = null,
+        $expectedResult = null,
+        $expectedException = null,
+        $expectedExceptionMessage = null
     ) {
         if (!empty($expectedException)) {
             $this->setExpectedException($expectedException, $expectedExceptionMessage);
