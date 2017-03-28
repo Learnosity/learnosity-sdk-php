@@ -157,18 +157,13 @@ class Init
                     $output['request'] = $this->requestPacket;
                 }
 
-                // Add the action if necessary (Data API)
-                if (!empty($this->action)) {
-                    $output['action'] = $this->action;
-                }
-
                 if ($this->service === 'data') {
                     $r['security'] = Json::encode($output['security']);
                     if (array_key_exists('request', $output)) {
                         $r['request'] = Json::encode($output['request']);
                     }
-                    if (array_key_exists('action', $output)) {
-                        $r['action'] = $output['action'];
+                    if (!empty($this->action)) {
+                        $r['action'] = $this->action;
                     }
                     return $r;
                 } elseif ($this->service === 'assess') {
@@ -310,7 +305,8 @@ class Init
                         unset($questionsApi['expires']);
                     }
                     $questionsApi['user_id'] = $signatureParts['user_id'];
-                    $questionsApi['signature'] = $this->hashValue($signatureParts);
+                    $this->securityPacket = $signatureParts;
+                    $questionsApi['signature'] = $this->generateSignature();
 
                     $this->requestPacket['questionsApiActivity'] = $questionsApi;
                 }
@@ -319,8 +315,8 @@ class Init
             case 'reports':
                 // The Events API requires a user_id, so we make sure it's a part
                 // of the security packet as we share the signature in some cases
-                if (!array_key_exists('user_id', $this->securityPacket) &&
-                    array_key_exists('user_id', $this->requestPacket)
+                if (array_key_exists('user_id', $this->requestPacket)
+                    && !array_key_exists('user_id', $this->securityPacket)
                 ) {
                     $this->securityPacket['user_id'] = $this->requestPacket['user_id'];
                 }
