@@ -20,7 +20,7 @@ class RemoteTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('LearnositySdk\Request\Remote', $ret);
 
-        $body = self::$remoteInstance->getBody();
+        $body = static::$remoteInstance->getBody();
         $arr = json_decode($body, true);
 
         $this->assertNotEmpty($arr['meta']['status']);
@@ -60,8 +60,8 @@ class RemoteTest extends \PHPUnit_Framework_TestCase
      * To avoid warning that no tests found.
      * We're deferring testing data connections, like api or db requests.
      */
-   public function test()
-   {
+    public function test()
+    {
         $this->assertTrue(true);
-   }
+    }
 }
