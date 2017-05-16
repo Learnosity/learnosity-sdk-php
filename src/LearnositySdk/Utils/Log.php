@@ -15,10 +15,9 @@ use \Monolog\Handler\ErrorLogHandler;
  *--------------------------------------------------------------------------
  *
  * Used to log the (optional) following types:
- *     request
- *     response
- *     errror
+ *     request_response
  *     summary
+ *     errror
  *
  * Can be logged using the following handlers:
  *     file
@@ -30,8 +29,7 @@ class Log
 {
     private $enabled;
     private $basePath;
-    private $RequestLogger;
-    private $ResponseLogger;
+    private $RequestResponseLogger;
     private $SummaryLogger;
     private $ErrorLogger;
     private $SyslogLogger;
@@ -40,10 +38,9 @@ class Log
     private $syslogValueTypesEnabled = array();
     private $stdOutValueTypesEnabled = array();
     private $files = array(
-        'request'  => 'dataapi-request.log',
-        'response' => 'dataapi-response.log',
-        'summary'  => 'dataapi-summary.log',
-        'error'    => 'dataapi-error.log'
+        'request_response' => 'dataapi-request_response.log',
+        'summary'          => 'dataapi-summary.log',
+        'error'            => 'dataapi-error.log'
     );
 
     /**
@@ -70,26 +67,14 @@ class Log
                 }
 
                 switch ($type) {
-                    case 'request':
-                        if (in_array('request', $this->fileValueTypesEnabled)) {
-                            $this->RequestLogger->addInfo($value);
+                    case 'request_response':
+                        if (in_array('request_response', $this->fileValueTypesEnabled)) {
+                            $this->RequestResponseLogger->addInfo($value);
                         }
-                        if (in_array('request', $this->syslogValueTypesEnabled)) {
+                        if (in_array('request_response', $this->syslogValueTypesEnabled)) {
                             $this->SyslogLogger->addInfo($value);
                         }
-                        if (in_array('request', $this->stdOutValueTypesEnabled)) {
-                            $this->StdOutLogger->addInfo($value);
-                        }
-                        break;
-
-                    case 'response':
-                        if (in_array('response', $this->fileValueTypesEnabled)) {
-                            $this->ResponseLogger->addInfo($value);
-                        }
-                        if (in_array('response', $this->syslogValueTypesEnabled)) {
-                            $this->SyslogLogger->addInfo($value);
-                        }
-                        if (in_array('response', $this->stdOutValueTypesEnabled)) {
+                        if (in_array('request_response', $this->stdOutValueTypesEnabled)) {
                             $this->StdOutLogger->addInfo($value);
                         }
                         break;
@@ -189,16 +174,10 @@ class Log
             $formatter = new LineFormatter($format, null, false, true);
 
             if (!empty($this->fileValueTypesEnabled)) {
-                if (in_array('request', $this->fileValueTypesEnabled)) {
-                    $this->RequestLogger = new Logger('request');
-                    $stream = new StreamHandler($this->files['request'], Logger::INFO);
-                    $this->RequestLogger->pushHandler($stream->setFormatter($formatter));
-                }
-
-                if (in_array('response', $this->fileValueTypesEnabled)) {
-                    $this->ResponseLogger = new Logger('response');
-                    $stream = new StreamHandler($this->files['response'], Logger::INFO);
-                    $this->ResponseLogger->pushHandler($stream->setFormatter($formatter));
+                if (in_array('request_response', $this->fileValueTypesEnabled)) {
+                    $this->RequestResponseLogger = new Logger('request_response');
+                    $stream = new StreamHandler($this->files['request_response'], Logger::INFO);
+                    $this->RequestResponseLogger->pushHandler($stream->setFormatter($formatter));
                 }
 
                 if (in_array('summary', $this->fileValueTypesEnabled)) {

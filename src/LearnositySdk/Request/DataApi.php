@@ -47,25 +47,17 @@ class DataApi
      */
     public function request($endpoint, $securityPacket, $secret, $requestPacket = null, $action = null)
     {
-        $this->log->write(
-            'request',
-            array(
-                parse_url($endpoint, PHP_URL_PATH),
-                $action,
-                json_encode($requestPacket)
-            )
-        );
-
         $init = new Init('data', $securityPacket, $secret, $requestPacket, $action);
         $params = $init->generate();
         $response = $this->remote->post($endpoint, $params, $this->remoteOptions);
 
         $this->log->write(
-            'response',
+            'request_response',
             array(
                 parse_url($endpoint, PHP_URL_PATH),
                 $response->getStatusCode(),
                 (string)round($response->getTimeTaken(), 2),
+                json_encode($requestPacket),
                 $response->getBody()
             )
         );
