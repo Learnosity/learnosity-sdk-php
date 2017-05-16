@@ -25,6 +25,11 @@ Then, install your dependencies
 composer install
 ```
 
+Alternatively you can simply run the following from the root of your project:
+
+```
+composer require learnosity/learnosity-sdk-php
+```
 
 ### git clone
 
