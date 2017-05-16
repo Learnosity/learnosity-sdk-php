@@ -6,6 +6,7 @@ use \Exception;
 use \LearnositySdk\Request\Init;
 use \LearnositySdk\Request\Remote;
 use \LearnositySdk\Utils\Json;
+use \LearnositySdk\Utils\Log;
 
 /**
  *--------------------------------------------------------------------------
@@ -19,16 +20,18 @@ use \LearnositySdk\Utils\Json;
 
 class DataApi
 {
+    private $log;
     private $remote;
     private $remoteOptions;
 
     /**
      * @param array $remoteOptions Overrides options array for a cURL request
      */
-    public function __construct($remoteOptions = array())
+    public function __construct($remoteOptions = array(), $logOptions = null)
     {
-        $this->remoteOptions = $remoteOptions;
+        $this->log = new Log($logOptions);
         $this->remote = new Remote();
+        $this->remoteOptions = $remoteOptions;
     }
 
     /**
@@ -46,7 +49,28 @@ class DataApi
     {
         $init = new Init('data', $securityPacket, $secret, $requestPacket, $action);
         $params = $init->generate();
-        return $this->remote->post($endpoint, $params, $this->remoteOptions);
+        $response = $this->remote->post($endpoint, $params, $this->remoteOptions);
+
+        $this->log->write(
+            'request_response',
+            array(
+                parse_url($endpoint, PHP_URL_PATH),
+                $response->getStatusCode(),
+                (string)round($response->getTimeTaken(), 2),
+                json_encode($requestPacket),
+                $response->getBody()
+            )
+        );
+        $this->log->write(
+            'summary',
+            array(
+                parse_url($endpoint, PHP_URL_PATH),
+                $response->getStatusCode(),
+                (string)round($response->getTimeTaken(), 2)
+            )
+        );
+
+        return $response;
     }
 
     /**
@@ -75,6 +99,7 @@ class DataApi
                     $response = array_merge($response, $data['data']);
                 }
             } else {
+                $this->log->write('error', $data);
                 throw new Exception(Json::encode($data));
             }
             if (array_key_exists('next', $data['meta']) && !empty($data['data'])) {
