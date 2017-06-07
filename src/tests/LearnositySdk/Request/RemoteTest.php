@@ -4,8 +4,9 @@ namespace tests\LearnositySdk\Request;
 
 use LearnositySdk\Request\Remote;
 use LearnositySdk\Request\Init;
+use PHPUnit\Framework\TestCase;
 
-class RemoteTest extends \PHPUnit_Framework_TestCase
+class RemoteTest extends TestCase
 {
     /*
     public function testPost()

@@ -363,9 +363,12 @@ class Init
             throw new ValidationException("The service provided ($service) is not valid");
         }
 
-        // In case the user gave us a JSON securityPacket, convert to an array
-        if (!is_array($securityPacket) && is_string($securityPacket)) {
-            $securityPacket = json_decode($securityPacket, true);
+        // In case the user gave us a JSON (string) securityPacket, convert to an array
+        if (is_string($securityPacket) && strlen(trim($securityPacket))) {
+            $securityPacket = Json::decode(trim($securityPacket), true);
+            if (empty($securityPacket)) {
+                throw new ValidationException('Error decoding security packet: ' . Json::checkError());
+            }
         }
 
         if (empty($securityPacket) || !is_array($securityPacket)) {
@@ -389,9 +392,12 @@ class Init
             throw new ValidationException('The `secret` argument must be a valid string');
         }
 
-        // In case the user gave us a JSON requestPacket, convert to an array
-        if (!is_array($requestPacket) && is_string($requestPacket)) {
-            $requestPacket = json_decode($requestPacket, true);
+        // In case the user gave us a JSON (string) requestPacket, convert to an array
+        if (is_string($requestPacket) && strlen(trim($requestPacket))) {
+            $requestPacket = Json::decode(trim($requestPacket), true);
+            if (empty($requestPacket)) {
+                throw new ValidationException('Error decoding request packet: ' . Json::checkError());
+            }
         }
 
         if (!empty($requestPacket) && !is_array($requestPacket)) {

@@ -3,13 +3,50 @@
 namespace tests\LearnositySdk\Utils;
 
 use LearnositySdk\Utils\Json;
+use PHPUnit\Framework\TestCase;
 
-class JsonTest extends \PHPUnit_Framework_TestCase
+class JsonTest extends TestCase
 {
     public function testCheckError()
     {
         $result = Json::checkError();
         $this->assertTrue( is_null($result) || is_string($result) );
+    }
+
+    public function dataProviderDecode()
+    {
+        return [
+            ['1', 1],
+            ['true', true],
+            ['"a"', 'a'],
+            [
+                '[
+                    {
+                        "a": "a"
+                    },
+                    {
+                        "b": 1
+                    },
+                    {
+                        "c": true
+                    }
+                ]',
+                [
+                    ['a' => 'a'],
+                    ['b' => 1],
+                    ['c' => true]
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderDecode
+     */
+    public function testDecode($data, $expectedResult)
+    {
+        $result = Json::decode($data);
+        $this->assertEquals($expectedResult, $result);
     }
 
     public function dataProviderEncode()

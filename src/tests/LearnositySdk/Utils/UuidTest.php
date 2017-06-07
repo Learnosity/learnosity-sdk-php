@@ -3,8 +3,9 @@
 namespace tests\LearnositySdk\Utils;
 
 use LearnositySdk\Utils\Uuid;
+use PHPUnit\Framework\TestCase;
 
-class UuidTest extends \PHPUnit_Framework_TestCase
+class UuidTest extends TestCase
 {
     public function dataProviderGenerate()
     {

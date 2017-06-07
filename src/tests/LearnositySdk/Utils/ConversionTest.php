@@ -3,8 +3,9 @@
 namespace tests\LearnositySdk\Utils;
 
 use LearnositySdk\Utils\Conversion;
+use PHPUnit\Framework\TestCase;
 
-class ConversionTest extends \PHPUnit_Framework_TestCase
+class ConversionTest extends TestCase
 {
     public function dataProviderFormatSizeUnits()
     {
