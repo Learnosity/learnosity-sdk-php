@@ -2,7 +2,7 @@
 
 Include this package into your own codebase to ease integration with any of the Learnosity APIs.
 
-This SDK should run on PHP 5.3+
+This SDK should run on PHP 5.6+
 
 ## Installation
 Installation should be as simple as possible, there are no external dependancies and this package should integrate with any existing codebase.
@@ -14,7 +14,7 @@ Using Composer is the recommended way to install the Learnosity SDK for PHP. In 
 ```
   {
     "require": {
-        "learnosity/learnosity-sdk-php": "0.*"
+        "learnosity/learnosity-sdk-php": "1.*"
     }
   }
 ```
@@ -25,8 +25,15 @@ Then, install your dependencies
 composer install
 ```
 
+Alternatively you can simply run the following from the root of your project:
+
+```
+composer require learnosity/learnosity-sdk-php
+```
+
 
 ### git clone
+If you don't use Composer, you can simply clone the repo from GitHub:
 
 ``` shell
 git clone git@github.com:Learnosity/learnosity-sdk-php.git
@@ -39,7 +46,7 @@ git clone https://github.com/Learnosity/learnosity-sdk-php.git
 ```
 
 ### Examples
-You can find a complete PHP site with examples of Learnosity APIs integration in our [demos site](http://demos.learnosity.com/).
+You can find a complete PHP site with examples of Learnosity APIs integration in our [demos site](https://demos.learnosity.com/).
 
 You can download the entire site or browse the code directly on [github](https://github.com/Learnosity/learnosity-demos/).
 
@@ -177,7 +184,7 @@ use LearnositySdk\Request\Remote;
 // Instantiate the SDK Remote class:
 $Remote = new Remote();
 // Call get() or post() with a URL:
-$response = $Remote->get('http://schemas.learnosity.com/latest/questions/templates');
+$response = $Remote->get('https://schemas.learnosity.com/latest/questions/templates');
 
 // getBody() gives you to body of the request
 $requestPacket = $response->getBody();
@@ -278,10 +285,10 @@ function processData($data)
 You can send an array to the DataAPI constructor to override any remote (cURL) options, eg:
 
 ``` php
-$options = array(
+$options = [
     'connect_timeout' => 20
     'timeout' => 60
-);
+];
 
 $dataapi = new DataApi($options);
 ```

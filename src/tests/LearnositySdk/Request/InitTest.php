@@ -3,8 +3,9 @@
 namespace tests\LearnositySdk\Request;
 
 use LearnositySdk\Request\Init;
+use PHPUnit\Framework\TestCase;
 
-class InitTest extends \PHPUnit_Framework_TestCase
+class InitTest extends TestCase
 {
     /**
      * WARNING: RemoteTest is also using this params

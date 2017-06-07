@@ -30,11 +30,40 @@ class Json
             case JSON_ERROR_UTF8:
                 $msg = 'Malformed UTF-8 characters, possibly incorrectly encoded';
                 break;
+            case JSON_ERROR_RECURSION:
+                $msg = 'One or more recursive references in the value to be encoded';
+                break;
+            case JSON_ERROR_INF_OR_NAN:
+                $msg = 'One or more NAN or INF values in the value to be encoded';
+                break;
+            case JSON_ERROR_UNSUPPORTED_TYPE:
+                $msg = 'A value of a type that cannot be encoded was given';
+                break;
+            case JSON_ERROR_INVALID_PROPERTY_NAME:
+                $msg = 'A property name that cannot be encoded was given';
+                break;
+            case JSON_ERROR_UTF16:
+                $msg = 'Malformed UTF-16 characters, possibly incorrectly encoded';
+                break;
             default:
                 $msg = 'Unknown error';
                 break;
         }
         return $msg;
+    }
+
+    /**
+     * Decodes a PHP string into a PHP array. By default
+     * will return an associative array rather than native
+     * object.
+     *
+     * @param  string  $string Value to convert to PHP array
+     *
+     * @return array PHP object or associative array
+     */
+    public static function decode($string, $convertToAssoc = true)
+    {
+        return json_decode($string, $convertToAssoc);
     }
 
     /**
@@ -102,6 +131,7 @@ class Json
      */
     public static function isJson($val)
     {
-        return !is_null(json_decode($val, true));
+        self::decode($val);
+        return (json_last_error() === JSON_ERROR_NONE);
     }
 }
