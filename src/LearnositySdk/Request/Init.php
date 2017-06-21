@@ -323,8 +323,17 @@ class Init
                 break;
             case 'events':
                 $this->signRequestData = false;
+                $users = $this->requestPacket['users'];
                 $hashedUsers = array();
-                foreach ($this->requestPacket['users'] as $user) {
+                if (!$this->isAssocArray($users)) {
+                    /* Backward compatibility: if we get a non-associative array,
+                     * we assume that it's already an array of user IDs */
+                    error_log('Warning: Passing an array of user IDs to ' . __CLASS__ . '::' . __FUNCTION__ .
+                        '("events", ...) is deprecated; it should be an associative array with user IDs as keys');
+                } else {
+                    $users = array_keys($users);
+                }
+                foreach ($users as $user) {
                     $hashedUsers[$user] = hash(
                         $this->algorithm,
                         $user . $this->secret
@@ -395,5 +404,11 @@ class Init
         if (!empty($action) && !is_string($action)) {
             throw new ValidationException('The `action` argument must be a string');
         }
+    }
+
+    private function isAssocArray(array $array)
+    {
+        $array = array_keys($array);
+        return ($array !== array_keys($array));
     }
 }
