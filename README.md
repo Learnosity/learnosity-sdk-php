@@ -11,34 +11,26 @@ Installation should be as simple as possible, there are no external dependancies
 
 Using Composer is the recommended way to install the Learnosity SDK for PHP. In order to use the SDK with Composer, you must add "learnosity/learnosity-sdk-php" as a dependency in your project's composer.json file.
 
-```
-  {
-    "require": {
-        "learnosity/learnosity-sdk-php": "0.*"
+    {
+      "require": {
+          "learnosity/learnosity-sdk-php": "0.*"
+      }
     }
-  }
-```
 
 Then, install your dependencies
 
-``` shell
-composer install
-```
-
+    composer install
 
 ### git clone
 
-``` shell
-git clone git@github.com:Learnosity/learnosity-sdk-php.git
-```
+    git clone git@github.com:Learnosity/learnosity-sdk-php.git
 
 If you don't have an SSH key loaded into github you can clone via HTTPS (not recommended)
 
-``` shell
-git clone https://github.com/Learnosity/learnosity-sdk-php.git
-```
+    git clone https://github.com/Learnosity/learnosity-sdk-php.git
 
 ### Examples
+
 You can find a complete PHP site with examples of Learnosity APIs integration in our [demos site](http://demos.learnosity.com/).
 
 You can download the entire site or browse the code directly on [github](https://github.com/Learnosity/learnosity-demos/).
@@ -54,8 +46,12 @@ require_once __DIR__ . '/LearnositySdk/autoload.php';
 
 ## Usage
 
-### Init
+There are three main classes:
+ * Init, which creates the signed security packets to initialise the Javascript APIs;
+ * Remote, which encapsulate remote calls to the APIs and their responses;
+ * DataAPI, which allows to interact with the Data API from PHP code.
 
+### Init
 
 The Init class is used to create the necessary *security* and *request* details used to integrate with a Learnosity API. Most often this will be a JavaScript object.
 
@@ -157,11 +153,9 @@ An optional string used only if integrating with the Data API. Valid options are
 
 ### Remote
 
-
-
 The Remote class is used to make server side, cross domain requests. Think of it as a cURL wrapper.
 
-You'll call either get() or post() (mimicking the HTTP request type you want to make) with the following arguments:
+You'll call either `get()` or `post()` (mimicking the HTTP request type you want to make) with the following arguments:
 
 * [string] URL
 * [array]  Data payload
@@ -188,9 +182,7 @@ $requestPacket = $response->getBody();
 **URL**<br>
 A string URL, including schema and path. Eg:
 
-```
-https://schemas.learnosity.com/latest/questions/templates
-```
+    https://schemas.learnosity.com/latest/questions/templates
 
 **Data**<br>
 An optional array of data to be sent as a payload. For GET it will be a URL encoded query string.
@@ -220,7 +212,7 @@ Returns the HTTP status code of the response.
 
 ### DataApi
 
-This is a helper class for use with the Data API. It creates the initialisation packet and sends a request to the Data API, returning an instance of Remote. You can then interact as you would with Remote, eg ```getBody()```
+This is a helper class for use with the Data API. It creates the initialisation packet and sends a request to the Data API, returning an instance of Remote. You can then interact as you would with Remote, e.g., `getBody()`
 
 #### request()
 
@@ -275,7 +267,7 @@ function processData($data)
 
 #### Overriding the remote options
 
-You can send an array to the DataAPI constructor to override any remote (cURL) options, eg:
+You can send an array to the DataAPI constructor to override any remote (cURL) options, e.g.:
 
 ``` php
 $options = array(
@@ -285,3 +277,14 @@ $options = array(
 
 $dataapi = new DataApi($options);
 ```
+
+## Tests
+
+A few more dependencies are needed to run tests. They can be installed from the
+root of this repo with
+
+    composer install
+
+Test can then be run with
+
+     ./vendor/bin/phpunit

@@ -157,18 +157,13 @@ class Init
                     $output['request'] = $this->requestPacket;
                 }
 
-                // Add the action if necessary (Data API)
-                if (!empty($this->action)) {
-                    $output['action'] = $this->action;
-                }
-
                 if ($this->service === 'data') {
                     $r['security'] = Json::encode($output['security']);
                     if (array_key_exists('request', $output)) {
                         $r['request'] = Json::encode($output['request']);
                     }
-                    if (array_key_exists('action', $output)) {
-                        $r['action'] = $output['action'];
+                    if (!empty($this->action)) {
+                        $r['action'] = $this->action;
                     }
                     return $r;
                 } elseif ($this->service === 'assess') {
@@ -279,8 +274,7 @@ class Init
                 // security information and a signature. Retrieve the security
                 // information from $this and generate a signature for the
                 // Questions API
-                if (
-                    $this->service === 'assess' &&
+                if ($this->service === 'assess' &&
                     array_key_exists('questionsApiActivity', $this->requestPacket)
                 ) {
                     // prepare signature parts
@@ -311,7 +305,8 @@ class Init
                         unset($questionsApi['expires']);
                     }
                     $questionsApi['user_id'] = $signatureParts['user_id'];
-                    $questionsApi['signature'] = $this->hashValue($signatureParts);
+                    $this->securityPacket = $signatureParts;
+                    $questionsApi['signature'] = $this->generateSignature();
 
                     $this->requestPacket['questionsApiActivity'] = $questionsApi;
                 }
@@ -320,17 +315,25 @@ class Init
             case 'reports':
                 // The Events API requires a user_id, so we make sure it's a part
                 // of the security packet as we share the signature in some cases
-                if (
-                    !array_key_exists('user_id', $this->securityPacket) &&
-                    array_key_exists('user_id', $this->requestPacket)
+                if (array_key_exists('user_id', $this->requestPacket)
+                    && !array_key_exists('user_id', $this->securityPacket)
                 ) {
                     $this->securityPacket['user_id'] = $this->requestPacket['user_id'];
                 }
                 break;
             case 'events':
                 $this->signRequestData = false;
+                $users = $this->requestPacket['users'];
                 $hashedUsers = array();
-                foreach ($this->requestPacket['users'] as $user) {
+                if (!$this->isAssocArray($users)) {
+                    /* Backward compatibility: if we get a non-associative array,
+                     * we assume that it's already an array of user IDs */
+                    error_log('Warning: Passing an array of user IDs to ' . __CLASS__ . '::' . __FUNCTION__ .
+                        '("events", ...) is deprecated; it should be an associative array with user IDs as keys');
+                } else {
+                    $users = array_keys($users);
+                }
+                foreach ($users as $user) {
                     $hashedUsers[$user] = hash(
                         $this->algorithm,
                         $user . $this->secret
@@ -376,12 +379,12 @@ class Init
                     throw new ValidationException('Invalid key found in the security packet: ' . $key);
                 }
             }
-            if (!array_key_exists('timestamp', $securityPacket)) {
-                $securityPacket['timestamp'] = gmdate('Ymd-Hi');
+            if ($service === "questions" && !array_key_exists('user_id', $securityPacket)) {
+                throw new ValidationException('Questions API requires a `user_id` in the security packet');
             }
 
-            if ($service === "questions" && !array_key_exists('user_id', $securityPacket)) {
-                throw new ValidationException('If using the question api, a user id needs to be specified');
+            if (!array_key_exists('timestamp', $securityPacket)) {
+                $securityPacket['timestamp'] = gmdate('Ymd-Hi');
             }
         }
 
@@ -399,7 +402,13 @@ class Init
         }
 
         if (!empty($action) && !is_string($action)) {
-            throw new ValidationException('The action parameter must be a string');
+            throw new ValidationException('The `action` argument must be a string');
         }
+    }
+
+    private function isAssocArray(array $array)
+    {
+        $array = array_keys($array);
+        return ($array !== array_keys($array));
     }
 }
