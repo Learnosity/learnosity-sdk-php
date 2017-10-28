@@ -11,6 +11,7 @@ class UuidTest extends \PHPUnit_Framework_TestCase
         return [
             ['/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'],
             ['/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', null, 'v4'],
+            ['/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', null, 'uuidv4'],
             [null, false, 'v3', 'namespace'],
             [null, false, 'v3', 'namespace', 'name'],
             ['/^[0-9A-F]{8}-[0-9A-F]{4}-3[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', null, 'v3', 'f47ac10b-58cc-4372-a567-0e02b2c3d479'],
@@ -28,10 +29,9 @@ class UuidTest extends \PHPUnit_Framework_TestCase
     public function testGenerate($expectedFormat, $expectedResult = null, $type = 'v4', $namespace = null, $name = null)
     {
         $result = Uuid::generate($type, $namespace, $name);
-        if(!is_null($expectedResult)) {
+        if (!is_null($expectedResult)) {
             $this->assertEquals($expectedResult, $result);
-        }
-        else {
+        } else {
             $this->assertTrue(preg_match($expectedFormat, $result) === 1);
         }
     }
