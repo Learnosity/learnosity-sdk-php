@@ -5,48 +5,37 @@ Include this package into your own codebase to ease integration with any of the 
 This SDK should run on PHP 5.5+
 
 ## Installation
-Installation should be as simple as possible, there are no external dependancies and this package should integrate with any existing codebase.
+Installation should be as simple as possible, note that as of `v0.8` there is a dependency on a PHP5 polyfill so it's recommended to use Composer.
 
 ### Composer
 
 Using Composer is the recommended way to install the Learnosity SDK for PHP. In order to use the SDK with Composer, you must add "learnosity/learnosity-sdk-php" as a dependency in your project's composer.json file.
 
     {
-      "require": {
-          "learnosity/learnosity-sdk-php": "0.*"
-      }
+        "require": {
+            "learnosity/learnosity-sdk-php": "0.*"
+        }
     }
 
 Then, install your dependencies
 
     composer install
 
-### git clone
+The other way is to run this from your parent project folder:
 
-    git clone git@github.com:Learnosity/learnosity-sdk-php.git
-
-If you don't have an SSH key loaded into github you can clone via HTTPS (not recommended)
-
-    git clone https://github.com/Learnosity/learnosity-sdk-php.git
+	composer require "learnosity/learnosity-sdk-php"
 
 ### Examples
 
-You can find a complete PHP site with examples of Learnosity APIs integration in our [demos site](http://demos.learnosity.com/).
+You can find a complete PHP site with examples of Learnosity APIs integration in our [demos site](https://demos.learnosity.com/).
 
 You can download the entire site or browse the code directly on [github](https://github.com/Learnosity/learnosity-demos/).
-
-### Autoload
-
-This packages follows the PSR code convention which includes namespaces and import statements. Add the LearnositySdk autoloader or use your own (use *LearnositySdk* as the namespace):
-
-``` php
-require_once __DIR__ . '/LearnositySdk/autoload.php';
-```
 
 
 ## Usage
 
 There are three main classes:
+
  * Init, which creates the signed security packets to initialise the Javascript APIs;
  * Remote, which encapsulate remote calls to the APIs and their responses;
  * DataAPI, which allows to interact with the Data API from PHP code.

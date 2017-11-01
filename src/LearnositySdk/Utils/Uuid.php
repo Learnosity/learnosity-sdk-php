@@ -3,7 +3,7 @@
 namespace LearnositySdk\Utils;
 
 // Loads PHP5 polyfill for random_bytes(). See self::uuidv4() declaration for more.
-require_once __DIR__ . '/../../../vendor/paragonie/random_compat/lib/random.php';
+require_once __DIR__ . '/../../../../../paragonie/random_compat/lib/random.php';
 
 // Thanks to Andrew Moore http://www.php.net/manual/en/function.uniqid.php#94959
 
