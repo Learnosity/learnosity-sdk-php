@@ -4,12 +4,17 @@ Include this package into your own codebase to ease integration with any of the 
 
 This SDK should run on PHP 5.5+
 
+
 ## Installation
 Installation should be as simple as possible, note that as of `v0.8` there is a dependency on a PHP5 polyfill so it's recommended to use Composer.
 
 ### Composer
 
-Using Composer is the recommended way to install the Learnosity SDK for PHP. In order to use the SDK with Composer, you must add "learnosity/learnosity-sdk-php" as a dependency in your project's composer.json file.
+Using Composer is the recommended way to install the Learnosity SDK for PHP. The easiest way is to run this from your parent project folder:
+
+    composer require "learnosity/learnosity-sdk-php"
+
+You can also specify the requirement manually by adding "learnosity/learnosity-sdk-php" as a dependency in your project's composer.json file.
 
     {
         "require": {
@@ -17,19 +22,9 @@ Using Composer is the recommended way to install the Learnosity SDK for PHP. In 
         }
     }
 
-Then, install your dependencies
+Then, install the new dependency with
 
-    composer install
-
-The other way is to run this from your parent project folder:
-
-	composer require "learnosity/learnosity-sdk-php"
-
-### Examples
-
-You can find a complete PHP site with examples of Learnosity APIs integration in our [demos site](https://demos.learnosity.com/).
-
-You can download the entire site or browse the code directly on [github](https://github.com/Learnosity/learnosity-demos/).
+    composer update learnosity/learnosity-sdk-php
 
 
 ## Usage
@@ -39,6 +34,12 @@ There are three main classes:
  * Init, which creates the signed security packets to initialise the Javascript APIs;
  * Remote, which encapsulate remote calls to the APIs and their responses;
  * DataAPI, which allows to interact with the Data API from PHP code.
+
+### Examples
+
+You can find a complete PHP site with examples of Learnosity APIs integration in our [demos site](https://demos.learnosity.com/).
+
+You can download the entire site or browse the code directly on [github](https://github.com/Learnosity/learnosity-demos/).
 
 ### Init
 
@@ -166,7 +167,7 @@ $response = $Remote->get('http://schemas.learnosity.com/latest/questions/templat
 $requestPacket = $response->getBody();
 ```
 
-#### Arguments
+#### Remote() arguments
 
 **URL**<br>
 A string URL, including schema and path. Eg:
@@ -267,13 +268,38 @@ $options = array(
 $dataapi = new DataApi($options);
 ```
 
-## Tests
 
-A few more dependencies are needed to run tests. They can be installed from the
-root of this repo with
+## Autoload
+
+If you're not using Composer and/or you don't have your own autoloader, you can use the one provided by this package.  It follows the PSR code convention which includes namespaces and import statements.
+
+Add the LearnositySdk autoloader or use your own (use *LearnositySdk* as the namespace):
+
+``` php
+require_once __DIR__ . '/LearnositySdk/autoload.php';
+```
+
+
+## Development
+
+You can ask composer to download the latest sources
+
+    composer create-project --prefer-source learnosity/learnosity-sdk-php
+
+or get it manually with Git.
+
+    git clone git@github.com:Learnosity/learnosity-sdk-php.git
+
+If you don't have an SSH key loaded into github you can clone via HTTPS (not recommended)
+
+    git clone https://github.com/Learnosity/learnosity-sdk-php.git
+
+In the second case, you'll need to install the dependencies afterwards.
 
     composer install
 
-Test can then be run with
+### Tests
+
+Test can be run from a development checkout with
 
      ./vendor/bin/phpunit
