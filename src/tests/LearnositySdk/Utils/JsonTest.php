@@ -15,6 +15,23 @@ class JsonTest extends \PHPUnit_Framework_TestCase
     public function dataProviderEncode()
     {
         return [
+            [0.00000012, '0.00000012'],
+            [
+                [
+                    'value0' => 0.0000000032,
+                    'test' => [
+                        'value' => 0.0000000032,
+                        'test2' => [
+                            'value1' => 0.0000000032,
+                            'value2' => 23.32,
+                            'value3' => 1.000000021,
+                            'value4' => -0.00000032,
+                            'value5' => 1.2E-6
+                        ]
+                    ]
+                ],
+                '{"value0":0.0000000032,"test":{"value":0.0000000032,"test2":{"value1":0.0000000032,"value2":23.32,"value3":1.000000021,"value4":-0.00000032,"value5":0.0000012}}}'
+            ],
             [1, '1'],
             [true, 'true'],
             ['a', '"a"'],
