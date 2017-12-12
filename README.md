@@ -6,11 +6,11 @@ This SDK should run on PHP 5.5+
 
 
 ## Installation
-Installation should be as simple as possible, note that as of `v0.8` there is a dependency on a PHP5 polyfill so it's recommended to use Composer.
+Installation should be as simple as possible, note that as of `v0.8` there is a dependency on a PHP5 polyfill so it's recommended to use [Compose].
 
 ### Composer
 
-Using Composer is the recommended way to install the Learnosity SDK for PHP. The easiest way is to run this from your parent project folder:
+Using [Composer] is the recommended way to install the Learnosity SDK for PHP. The easiest way is to run this from your parent project folder:
 
     composer require "learnosity/learnosity-sdk-php"
 
@@ -36,6 +36,14 @@ There are three main classes:
  * DataAPI, which allows to interact with the Data API from PHP code.
 
 ### Examples
+
+A couple of basic examples are included in the `examples/` directory. You can run them with, e.g.,
+
+    php examples/simple/init_items.php
+
+or
+
+    php examples/simple/init_data.php
 
 You can find a complete PHP site with examples of Learnosity APIs integration in our [demos site](https://demos.learnosity.com/).
 
@@ -303,3 +311,5 @@ In the second case, you'll need to install the dependencies afterwards.
 Test can be run from a development checkout with
 
      ./vendor/bin/phpunit
+
+[Composer]: https://getcomposer.org/
