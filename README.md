@@ -6,11 +6,11 @@ This SDK should run on PHP 5.5+
 
 
 ## Installation
-Installation should be as simple as possible, note that as of `v0.8` there is a dependency on a PHP5 polyfill so it's recommended to use Composer.
+Installation should be as simple as possible, note that as of `v0.8` there is a dependency on a PHP5 polyfill so it's recommended to use [Compose].
 
 ### Composer
 
-Using Composer is the recommended way to install the Learnosity SDK for PHP. The easiest way is to run this from your parent project folder:
+Using [Composer] is the recommended way to install the Learnosity SDK for PHP. The easiest way is to run this from your parent project folder:
 
     composer require "learnosity/learnosity-sdk-php"
 
@@ -311,3 +311,5 @@ In the second case, you'll need to install the dependencies afterwards.
 Test can be run from a development checkout with
 
      ./vendor/bin/phpunit
+
+[Composer]: https://getcomposer.org/
