@@ -37,6 +37,14 @@ There are three main classes:
 
 ### Examples
 
+A couple of basic examples are included in the `examples/` directory. You can run them with, e.g.,
+
+    php examples/simple/init_items.php
+
+or
+
+    php examples/simple/init_data.php
+
 You can find a complete PHP site with examples of Learnosity APIs integration in our [demos site](https://demos.learnosity.com/).
 
 You can download the entire site or browse the code directly on [github](https://github.com/Learnosity/learnosity-demos/).
