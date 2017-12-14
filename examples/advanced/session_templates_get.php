@@ -13,18 +13,19 @@ $security_packet = [
 
 # XXX: The consumer secret should be in a properly secured credential store, and *NEVER* checked in in revision control
 $consumer_secret = '74c5fd430cf1242a527f6223aebd42d30464be22';
-$data_request = [ 'items' => [ 'dataapiMCQ10' ] ];
+
+$sessionsTemplatesUri = 'https://data.learnosity.com/v1/sessions/templates';
+$sessionsTemplatesRequest = [ 'items' => [ 'dataapiMCQ10' ] ];
 
 $DataApi = new DataApi();
 
-$sessionTemplatesUri = 'https://data.learnosity.com/v1/sessions/templates';
-print(">>> [{$sessionTemplatesUri}] " . json_encode($data_request) . PHP_EOL);
+print(">>> [{$sessionsTemplatesUri}] " . json_encode($sessionsTemplatesRequest) . PHP_EOL);
 
 $res = $DataApi->request(
-    $sessionTemplatesUri,
+    $sessionsTemplatesUri,
     $security_packet,
     $consumer_secret,
-    $data_request,
+    $sessionsTemplatesRequest,
     'get'
 );
 
