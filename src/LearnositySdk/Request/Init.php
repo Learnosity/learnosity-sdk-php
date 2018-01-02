@@ -113,6 +113,15 @@ class Init
      */
     public function __construct($service, $securityPacket, $secret, $requestPacket = null, $action = null)
     {
+        $this->requestPassedAsString = false;
+        if (is_string($requestPacket)) {
+            $requestString = $requestPacket;
+            $requestPacket = json_decode($this->requestString);
+            $this->requestPassedAsString = true;
+        } else {
+            $requestString = $this->generateRequestString($requestPacket);
+        }
+
         // First validate the arguments passed
         $this->validate($service, $securityPacket, $secret, $requestPacket, $action);
 
@@ -121,7 +130,7 @@ class Init
         $this->securityPacket = $securityPacket;
         $this->secret         = $secret;
         $this->requestPacket  = $requestPacket;
-        $this->requestString  = $this->generateRequestString();
+        $this->requestString  = $requestString;
         $this->action         = $action;
 
         // Set any service specific options
@@ -153,14 +162,20 @@ class Init
                 $output['security'] = $this->securityPacket;
 
                 // Stringify the request packet if necessary
-                if (!empty($this->requestPacket)) {
+                if ($this->requestPassedAsString) {
+                    $output['request'] = $this->requestString;
+                } else {
                     $output['request'] = $this->requestPacket;
                 }
 
                 if ($this->service === 'data') {
                     $r['security'] = Json::encode($output['security']);
                     if (array_key_exists('request', $output)) {
-                        $r['request'] = Json::encode($output['request']);
+                        if ($this->requestPassedAsString) {
+                            $r['request'] = $output['request'];
+                        } else {
+                            $r['request'] = Json::encode($output['request']);
+                        }
                     }
                     if (!empty($this->action)) {
                         $r['action'] = $this->action;
@@ -199,17 +214,18 @@ class Init
      * Generate a JSON string from the requestPacket (array) or null
      * if no requestPacket is required for this request
      *
+     * @param mixed    $requestPacket
+     *
      * @return mixed
      */
-    private function generateRequestString()
+    private function generateRequestString($requestPacket)
     {
-        if (empty($this->requestPacket)) {
-            return null;
-        }
-        $requestString = Json::encode($this->requestPacket);
+        $requestString = Json::encode($requestPacket);
+
         if (false === $requestString) {
             throw new ValidationException('Invalid data, please check your request packet - ' . Json::checkError());
         }
+
         return $requestString;
     }
 
@@ -358,7 +374,7 @@ class Init
      * @param  array    $requestPacket
      * @param  string   $action
      */
-    public function validate($service, &$securityPacket, $secret, &$requestPacket, $action)
+    public function validate($service, &$securityPacket, $secret, $requestPacket, $action)
     {
         if (empty($service)) {
             throw new ValidationException('The `service` argument wasn\'t found or was empty');
@@ -392,13 +408,8 @@ class Init
             throw new ValidationException('The `secret` argument must be a valid string');
         }
 
-        // In case the user gave us a JSON requestPacket, convert to an array
-        if (!is_array($requestPacket) && is_string($requestPacket)) {
-            $requestPacket = json_decode($requestPacket, true);
-        }
-
         if (!empty($requestPacket) && !is_array($requestPacket)) {
-            throw new ValidationException('The request packet must be an array');
+            throw new ValidationException('The request packet must be an array or a valid JSON string');
         }
 
         if (!empty($action) && !is_string($action)) {
