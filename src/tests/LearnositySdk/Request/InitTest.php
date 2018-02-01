@@ -18,7 +18,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
     }
 
     /*
-     * Tests 
+     * Tests
      */
 
     /**
@@ -545,6 +545,14 @@ class InitTest extends \PHPUnit_Framework_TestCase
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $reportsApi;
+
+        /* Passing request as string */
+        list($service, $security, $secret, $request, $action) = static::getWorkingAuthorApiParams();
+        $authorApiAsString = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"108b985a4db36ef03905572943a514fc02ed7cc6b700926183df7babc2cd1c96"},"request":"{\"mode\":\"item_list\",\"config\":{\"item_list\":{\"item\":{\"status\":true}}},\"user\":{\"id\":\"walterwhite\",\"firstname\":\"walter\",\"lastname\":\"white\"}}"}',
+            new Init($service, $security, $secret, json_encode($request), $action)
+        ];
+        $testCases[] = $authorApiAsString;
 
         return $testCases;
     }
