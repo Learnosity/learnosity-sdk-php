@@ -116,7 +116,7 @@ class Init
         $this->requestPassedAsString = false;
         if (is_string($requestPacket)) {
             $requestString = $requestPacket;
-            $requestPacket = json_decode($this->requestString);
+            $requestPacket = json_decode($requestString, true);
             $this->requestPassedAsString = true;
         } else {
             $requestString = $this->generateRequestString($requestPacket);

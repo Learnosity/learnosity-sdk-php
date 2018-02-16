@@ -554,6 +554,14 @@ class InitTest extends \PHPUnit_Framework_TestCase
         ];
         $testCases[] = $authorApiAsString;
 
+        /* Items */
+        list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
+        $itemsApiAsString = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"d61a62083712f8136e92b40a2c5ea340c77c81a30482da6c19b9c27e72d1f5eb"},"request":"{\"limit\":50}"}',
+            new Init($service, $security, $secret, json_encode($request), $action)
+        ];
+        $testCases[] = $itemsApiAsString;
+
         return $testCases;
     }
 
