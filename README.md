@@ -2,7 +2,7 @@
 
 Include this package into your own codebase to ease integration with any of the Learnosity APIs.
 
-This SDK should run on PHP 5.5+
+This SDK should run on PHP 5.5+ and is compatible with PHP 7 (tested on PHP 7.2).
 
 
 ## Installation
