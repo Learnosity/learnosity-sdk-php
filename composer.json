@@ -1,4 +1,9 @@
 {
+    "config": {
+        "platform": {
+            "php": "5.6"
+        }
+    },
     "name": "learnosity/learnosity-sdk-php",
     "type": "library",
     "description": "Include this package into your own codebase to ease integration with any of the Learnosity APIs",
