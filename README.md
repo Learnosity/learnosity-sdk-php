@@ -1,8 +1,10 @@
 # Learnosity SDK - PHP
 
+[![Build Status](https://travis-ci.org/Learnosity/learnosity-sdk-php.svg?branch=master)](https://travis-ci.org/Learnosity/learnosity-sdk-php)
+
 Include this package into your own codebase to ease integration with any of the Learnosity APIs.
 
-This SDK should run on PHP 5.5+ and is compatible with PHP 7 (tested on PHP 7.2).
+This SDK should run on PHP 5.6 and is compatible with PHP 7.
 
 
 ## Installation
