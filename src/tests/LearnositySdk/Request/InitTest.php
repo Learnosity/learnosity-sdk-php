@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\LearnositySdk\Request;
+namespace LearnositySdk\Request;
 
 use LearnositySdk\Request\Init;
 
@@ -9,11 +9,12 @@ class InitTest extends \PHPUnit_Framework_TestCase
     const SECRET = '74c5fd430cf1242a527f6223aebd42d30464be22';
 
     /** @return array $security */
-    public static function getSecurity() {
+    public static function getSecurity()
+    {
         return [
-	    'consumer_key' => 'yis0TYCu7U9V4o7M',
-	    'domain'       => 'localhost',
-	    'timestamp'    => '20140626-0528',
+        'consumer_key' => 'yis0TYCu7U9V4o7M',
+        'domain'       => 'localhost',
+        'timestamp'    => '20140626-0528',
         ];
     }
 

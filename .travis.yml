@@ -6,8 +6,8 @@ php:
   - '7.2'
 
 env:
-  - COMPOSER_COMMAND=update
   - COMPOSER_COMMAND=install
+  - COMPOSER_COMMAND=update
 
 install:
   - composer ${COMPOSER_COMMAND}

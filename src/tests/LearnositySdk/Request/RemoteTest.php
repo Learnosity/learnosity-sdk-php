@@ -1,26 +1,27 @@
 <?php
 
-namespace tests\LearnositySdk\Request;
+namespace LearnositySdk\Request;
 
 use LearnositySdk\Request\Remote;
 use LearnositySdk\Request\Init;
+use LearnositySdk\Request\InitTest;
 
 class RemoteTest extends \PHPUnit_Framework_TestCase
 {
-    /*
     public function testPost()
     {
         list($service, $security, $secret, $request, $action) = InitTest::getWorkingDataApiParams();
+        unset($security['timestamp']);
         $init = new Init($service, $security, $secret, $request, $action);
 
-        $url = 'https://data.learnosity.com/latest/sessions/responses';
+        $url = $this->buildBaseDataUrl() . '/sessions/responses';
 
         $remote = new Remote();
         $ret = $remote->post($url, $init->generate());
 
         $this->assertInstanceOf('LearnositySdk\Request\Remote', $ret);
 
-        $body = static::$remoteInstance->getBody();
+        $body = $remote->getBody();
         $arr = json_decode($body, true);
 
         $this->assertNotEmpty($arr['meta']['status']);
@@ -35,33 +36,44 @@ class RemoteTest extends \PHPUnit_Framework_TestCase
     public function testGet()
     {
         $remote = new Remote();
-        $response = $remote->get('http://schemas.learnosity.com/latest/questions/templates');
-        $requestPacket = $response->getBody();
-        $arr = json_decode($requestPacket, true);
+        $ret = $remote->get($this->buildBaseSchemasUrl() . '/questions/templates');
+        $body = $ret->getBody();
+        $arr = json_decode($body, true);
 
         $this->assertNotEmpty($arr['meta']['status']);
         $this->assertNotEmpty($arr['meta']['timestamp']);
         $this->assertTrue($arr['meta']['status']);
         $this->assertArrayHasKey('data', $arr);
 
-        return $remote;
+        return $ret;
     }
 
-    /**
-     * @depends testPost
-     * /
-    public function testGetBody($remote)
+    private function buildBaseDataUrl()
     {
-        //
-    }
-    */
+        $versionPath = 'v1';
+        if (isset($_SERVER['ENV']) && $_SERVER['ENV'] != 'prod') {
+            $versionPath = 'latest';
+        } elseif (isset($_SERVER['VER'])) {
+            $versionPath = $_SERVER['VER'];
+        }
 
-    /**
-     * To avoid warning that no tests found.
-     * We're deferring testing data connections, like api or db requests.
-     */
-    public function test()
+        return 'https://data' . $this->buildBaseDomain() . '/' . $versionPath;
+    }
+
+    private function buildBaseSchemasUrl()
     {
-        $this->assertTrue(true);
+        return 'https://schemas' . $this->buildBaseDomain() . '/latest';
+    }
+
+    private function buildBaseDomain()
+    {
+        $envDomain = '';
+        $regionDomain = '.learnosity.com';
+        if (isset($_SERVER['ENV']) && $_SERVER['ENV'] != 'prod') {
+            $envDomain = '.' . $_SERVER['ENV'];
+        } elseif (isset($_SERVER['REGION'])) {
+            $regionDomain = $_SERVER['REGION'];
+        }
+        return $envDomain . $regionDomain;
     }
 }
