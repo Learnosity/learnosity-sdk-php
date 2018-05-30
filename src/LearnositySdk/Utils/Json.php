@@ -48,6 +48,8 @@ class Json
     public static function encode($array, $options = null)
     {
         $result = false;
+        $highPrecisionFloatMap = static::getHighPrecisionFloatMap($array);
+
         if (version_compare(PHP_VERSION, '5.4', '>=')) {
             $jsonOptions = JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES;
             if (!empty($options)) {
@@ -71,6 +73,10 @@ class Json
             $result = str_replace('\/', '/', $result);
         }
 
+        foreach($highPrecisionFloatMap as $scientificValueString => $floatValueString) {
+            // Replace all scientific values by equivalent floatValues
+            $result = str_ireplace($scientificValueString, $floatValueString, $result);
+        }
         return $result;
     }
 
@@ -103,5 +109,62 @@ class Json
     public static function isJson($val)
     {
         return !is_null(json_decode($val, true));
+    }
+
+    /**
+     * This function builds up a map of float values in scientific notation and the equivalent float
+     * notations. json_encode encodes float values in scientific notation, but we want to make sure
+     * they are in float notation
+     *
+     * @param $value the $json to be encoded
+     * @return array mapping scientific values to float values
+     */
+    private static function getHighPrecisionFloatMap($value)
+    {
+        if (!is_array($value)) {
+            return static::getFloatMap($value);
+        }
+
+        $floatMap = [];
+        foreach ($value as $entry) {
+            $floatMap = array_merge(static::getHighPrecisionFloatMap($entry), $floatMap);
+        }
+        return $floatMap;
+    }
+
+    /**
+     * Helper function to build up the float map
+     *
+     * @param $value
+     * @return array
+     */
+    private static function getFloatMap($value)
+    {
+        if (!is_float($value)) {
+            return [];
+        }
+
+        $stringValue = json_encode($value);
+
+        // If the string value is in scientific notation it should have a negative exponent. Split it there.
+        $explodedValue = explode('E-', strtoupper($stringValue));
+        if (count($explodedValue) === 2) {
+            // The second entry tells us how many decimal places are created via the exponent
+            $decimalsFromExponent = (int)$explodedValue[1];
+
+            // The base hase the form x.xxxxx where x is any digit. We need to get the number of decimals after
+            // the dot
+            $decimalsFromBase = 0;
+            $explodedBase = explode('.', $explodedValue[0]);
+            if (count($explodedBase) === 2) {
+                $decimalsFromBase = strlen($explodedBase[1]);
+            }
+            $totalDecimals = $decimalsFromBase + $decimalsFromExponent;
+            $stringValueAsFloat = number_format($value, $totalDecimals);
+            return [
+                $stringValue => $stringValueAsFloat
+            ];
+        }
+        return [];
     }
 }
