@@ -27,8 +27,12 @@
         </blacklist>
     </filter>
     <testsuites>
-        <testsuite name="Learnosity PHP SDK Test Suite">
-            <directory>./src/tests/</directory>
+        <testsuite name="unit">
+            <directory>./src/tests</directory>
+            <exclude>./src/tests/LearnositySdk/Request/RemoteTest.php</exclude>
+        </testsuite>
+        <testsuite name="integration">
+            <file>./src/tests/LearnositySdk/Request/RemoteTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

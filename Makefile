@@ -12,10 +12,13 @@ devbuild: install-vendor-dev
 
 prodbuild: dist
 
-test: test-unit
+test: test-unit test-integration-env
 
 test-unit:
-	$(PHPUNIT)
+	$(PHPUNIT) --testsuite unit
+
+test-integration-env:
+	$(PHPUNIT) --testsuite integration
 
 test-dist: dist-test
 
