@@ -8,7 +8,7 @@ This SDK should run on PHP 5.6 and is compatible with PHP 7.
 
 
 ## Installation
-Installation should be as simple as possible, note that as of `v0.8` there is a dependency on a PHP5 polyfill so it's recommended to use [Compose].
+Installation should be as simple as possible, note that as of `v0.8` there is a dependency on a PHP5 polyfill so it's recommended to use [Composer].
 
 ### Composer
 
