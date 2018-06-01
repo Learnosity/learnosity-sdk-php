@@ -1,5 +1,6 @@
-VERSION=$(shell cat .version 2>/dev/null || git describe | sed s/^v//)
-DIST=learnosity_sdk-$(VERSION)
+VERSION=$(shell git describe --long | sed s/^v//)
+DIST_PREFIX=learnosity_sdk-
+DIST=$(DIST_PREFIX)$(VERSION)
 
 COMPOSER=composer
 COMPOSER_INSTALL_FLAGS=--no-suggest --no-interaction
@@ -8,6 +9,9 @@ PHPUNIT=./vendor/bin/phpunit
 
 all: test dist
 
+###
+# internal tooling rules
+####
 devbuild: install-vendor-dev
 
 prodbuild: dist
@@ -37,8 +41,8 @@ dist-zip: clean
 	mkdir -p .$(DIST) # use a hidden directory so that it doesn't get copied into itself
 	cp -R * .$(DIST)
 	mv .$(DIST) $(DIST)
-	echo $(VERSION) > $(DIST)/.version # save the version so we can rerun the same tag
 	$(MAKE) -C $(DIST) install-vendor # install the composer vendor inside the dist dir
+	rm $(DIST)/Makefile # this step needs to be the last step before zipping
 	zip -qr $(DIST).zip $(DIST)
 
 # run tests in the distdir
@@ -58,11 +62,10 @@ install-vendor-dev:
 # cleaning rules
 ###
 clean: clean-dist clean-test clean-vendor
-	test ! -e $(DIST).zip || rm $(DIST).zip
+	rm -rf $(DIST_PREFIX)*.zip
 
 clean-dist:
-	test ! -d .$(DIST)/ || rm -r .$(DIST)/
-	test ! -d $(DIST)/ || rm -r $(DIST)/
+	rm -rf $(DIST_PREFIX)*/
 
 clean-test:
 	rm -f src/tests/junit.xml
