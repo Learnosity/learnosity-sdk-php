@@ -6,9 +6,17 @@ Include this package into your own codebase to ease integration with any of the 
 
 This SDK should run on PHP 5.6 and is compatible with PHP 7.
 
-
 ## Installation
-Installation should be as simple as possible, note that as of `v0.8` there is a dependency on a PHP5 polyfill so it's recommended to use [Compose].
+
+### Quick Start
+
+For early test and proof of concepts, the easiest it to follow our [Quick Start Guide].
+
+You can find the latest version of the SDK as a self-contained ZIP file in the [GitHub Releases].
+The distribution zipfile will contain all the necessary depencies.
+
+For more production-ready deployment, you should use `composer`, as described
+next.
 
 ### Composer
 
@@ -281,37 +289,12 @@ $dataapi = new DataApi($options);
 
 ## Autoload
 
-If you're not using Composer and/or you don't have your own autoloader, you can use the one provided by this package.  It follows the PSR code convention which includes namespaces and import statements.
-
-Add the LearnositySdk autoloader or use your own (use *LearnositySdk* as the namespace):
+If you're not using Composer and/or you don't have your own autoloader, you can use the bootstrap provided by this package. It follows the PSR code convention which includes namespaces and import statements.
 
 ``` php
-require_once __DIR__ . '/LearnositySdk/autoload.php';
+require_once __DIR__ . '/PATH/TO/learnosity_sdk/bootstrap.php';
 ```
 
-
-## Development
-
-You can ask composer to download the latest sources
-
-    composer create-project --prefer-source learnosity/learnosity-sdk-php
-
-or get it manually with Git.
-
-    git clone git@github.com:Learnosity/learnosity-sdk-php.git
-
-If you don't have an SSH key loaded into github you can clone via HTTPS (not recommended)
-
-    git clone https://github.com/Learnosity/learnosity-sdk-php.git
-
-In the second case, you'll need to install the dependencies afterwards.
-
-    composer install
-
-### Tests
-
-Test can be run from a development checkout with
-
-     ./vendor/bin/phpunit
-
+[Quick Start Guide]: https://docs.learnosity.com/assessment/items/quickstart
+[GitHub Releases]: https://github.com/Learnosity/learnosity-sdk-php/releases
 [Composer]: https://getcomposer.org/
