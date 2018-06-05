@@ -14,4 +14,20 @@
  *
  */
 
-require_once __DIR__ . '/vendor/autoload.php';
+/**
+ * NOTE: Composer imports required libraries to
+ * vendor/<organization_namespace>/<project_namespace>
+ */
+$autoloadVendorDirs = [
+    __DIR__ . '/vendor', // standalone package
+    __DIR__ . '/../../../vendor', // composer vendored package
+];
+
+foreach ($autoloadVendorDirs as $vendorDir) {
+    $autoloadFile = "{$vendorDir}/autoload.php";
+
+    if (file_exists($autoloadFile)) {
+        require_once($autoloadFile);
+        break;
+    }
+}
