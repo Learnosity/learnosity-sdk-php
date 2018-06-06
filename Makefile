@@ -1,4 +1,4 @@
-VERSION=$(shell git describe --long | sed s/^v//)
+VERSION=$(shell git describe | sed s/^v//)
 DIST_PREFIX=learnosity_sdk-
 DIST=$(DIST_PREFIX)$(VERSION)
 
