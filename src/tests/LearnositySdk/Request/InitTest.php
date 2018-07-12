@@ -49,6 +49,28 @@ class InitTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param  string $pathToMeta
+     * @param  array  $generated
+     *
+     * @dataProvider generateWithMetaProvider
+     */
+    public function testGenerateWithMeta($pathToMeta, $generated)
+    {
+        $pathParts = explode('.', $pathToMeta);
+        // in case of Author API, Assess API, Events API, Items API, Questions API and Reports API
+        // generated value is a string, and therefore needs to be decoded
+        $temp = is_string($generated) ? json_decode($generated, true) : $generated;
+
+        for ($i = 0; $i < count($pathParts) && isset($temp[$pathParts[$i]]); $i++) {
+            // in case of Data API, request is a string, and therefore needs to be decoded
+            $temp = is_string($temp[$pathParts[$i]]) ? json_decode($temp[$pathParts[$i]], true) : $temp[$pathParts[$i]];
+        }
+
+        $this->assertEquals($i, count($pathParts));
+        $this->assertNotEmpty($temp);
+    }
+
+    /**
      * @param  string $expectedResult
      * @param  Init   $initObject
      *
@@ -79,7 +101,6 @@ class InitTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedResult, $generated);
     }
-
 
     /*
      * Pseudo fixtures for parameters
@@ -464,6 +485,10 @@ class InitTest extends \PHPUnit_Framework_TestCase
 
     public function generateProvider()
     {
+        // We disable telemetry to be able to reliably test signature generation. Added telemetry
+        // will differ on each platform tests would be run, and therefore fail.
+        Init::disableTelemetry();
+
         $testCases = [];
 
         /* Author */
@@ -563,11 +588,17 @@ class InitTest extends \PHPUnit_Framework_TestCase
         ];
         $testCases[] = $itemsApiAsString;
 
+        Init::enableTelemetry();
+
         return $testCases;
     }
 
     public function generateSignatureProvider()
     {
+        // We disable telemetry to be able to reliably test signature generation. Added telemetry
+        // will differ on each platform tests would be run, and therefore fail.
+        Init::disableTelemetry();
+
         $testCases = [];
 
         /* Author */
@@ -638,6 +669,71 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $reportsApi = [
             '217d82b0eb98b53e49f9367bed5a8c29d61e661946341c83cb2fcdbead78a8b2',
             new Init($service, $security, $secret, $request, $action)
+        ];
+        $testCases[] = $reportsApi;
+
+        Init::enableTelemetry();
+
+        return $testCases;
+    }
+
+    public function generateWithMetaProvider()
+    {
+        $testCases = [];
+
+        /* Author */
+        list($service, $security, $secret, $request, $action) = static::getWorkingAuthorApiParams();
+        $authorApi = [
+            'request.meta',
+            (new Init($service, $security, $secret, $request, $action))->generate()
+        ];
+        $testCases[] = $authorApi;
+
+        /* Assess */
+        list($service, $security, $secret, $request, $action) = static::getWorkingAssessApiParams();
+        $assessApi = [
+            'meta',
+            (new Init($service, $security, $secret, $request, $action))->generate()
+        ];
+        $testCases[] = $assessApi;
+
+        /* Data */
+        list($service, $security, $secret, $request, $action) = static::getWorkingDataApiParams();
+        $dataApi = [
+            'request.meta',
+            (new Init($service, $security, $secret, $request, $action))->generate()
+        ];
+        $testCases[] = $dataApi;
+
+        /* Events */
+        list($service, $security, $secret, $request, $action) = static::getWorkingEventsApiParams();
+        $eventsApi = [
+            'config.meta',
+            (new Init($service, $security, $secret, $request, $action))->generate()
+        ];
+        $testCases[] = $eventsApi;
+
+        /* Items */
+        list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
+        $itemsApi = [
+            'request.meta',
+            (new Init($service, $security, $secret, $request, $action))->generate()
+        ];
+        $testCases[] = $itemsApi;
+
+        /* Questions */
+        list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
+        $questionsApi = [
+            'meta',
+            (new Init($service, $security, $secret, $request, $action))->generate()
+        ];
+        $testCases[] = $questionsApi;
+
+        /* Reports */
+        list($service, $security, $secret, $request, $action) = static::getWorkingReportsApiParams();
+        $reportsApi = [
+            'request.meta',
+            (new Init($service, $security, $secret, $request, $action))->generate()
         ];
         $testCases[] = $reportsApi;
 

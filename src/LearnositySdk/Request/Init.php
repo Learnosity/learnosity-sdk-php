@@ -17,6 +17,15 @@ use LearnositySdk\Exceptions\ValidationException;
 
 class Init
 {
+    const VERSION_FILE_PATH = __DIR__ . '/../../../.version';
+
+    /**
+     * We use telemetry to enable better support and feature planning. It is however not advised to
+     * disable it, and it will not interfere with any usage.
+     * @var boolean
+     */
+    protected static $telemetryEnabled = true;
+
     /**
      * Which Learnosity service to generate a request packet for.
      * Valid values (see also `$validServices`):
@@ -115,15 +124,18 @@ class Init
     {
         $this->requestPassedAsString = false;
         if (is_string($requestPacket)) {
-            $requestString = $requestPacket;
-            $requestPacket = json_decode($requestString, true);
+            $requestPacket = json_decode($requestPacket, true);
             $this->requestPassedAsString = true;
-        } else {
-            $requestString = $this->generateRequestString($requestPacket);
         }
 
         // First validate the arguments passed
         $this->validate($service, $securityPacket, $secret, $requestPacket, $action);
+
+        if (self::$telemetryEnabled) {
+            $requestPacket = $this->addMeta($requestPacket);
+        }
+
+        $requestString = $this->generateRequestString($requestPacket);
 
         // Set instance variables based off the arguments passed
         $this->service        = $service;
@@ -138,6 +150,47 @@ class Init
 
         // Generate the signature based on the arguments provided
         $this->securityPacket['signature'] = $this->generateSignature();
+    }
+
+    /**
+     * Adds metadata to request packet to enable telemetry and tracking. Request packet will be
+     * extended with following parameters:
+     * {
+     *   "meta": {
+     *     "sdk": {
+     *       "version": "v0.10.0",
+     *       "lang": "php",
+     *       "lang_version": "5.6.36",
+     *       "platform": "Linux",
+     *       "platform_version": "3.10.0-862.6.3.el7.x86_64"
+     *     }
+     *   }
+     * }
+     *
+     * @param array    $requestPacket
+     *
+     * @return array
+     */
+    private function addMeta(array $requestPacket) {
+        $requestPacket['meta'] = [
+            'sdk' => [
+                'version' => $this->getSDKVersion(),
+                'lang' => 'php',
+                'lang_version' => phpversion(),
+                'platform' => php_uname('s'),
+                'platform_version' => php_uname('r')
+            ]
+        ];
+
+        return $requestPacket;
+    }
+
+    private function getSDKVersion() {
+        if (!file_exists(self::VERSION_FILE_PATH)) {
+            return 'unknown';
+        }
+
+        return trim(file_get_contents(self::VERSION_FILE_PATH));
     }
 
     /**
@@ -421,5 +474,27 @@ class Init
     {
         $array = array_keys($array);
         return ($array !== array_keys($array));
+    }
+
+    /**
+     * Disables telemetry.
+     *
+     * We use telemetry to enable better support and feature planning. It is therefore not advised to
+     * disable it, because it will not interfere with any usage.
+     */
+    public static function disableTelemetry()
+    {
+        self::$telemetryEnabled = false;
+    }
+
+    /**
+     * Enables telemetry.
+     *
+     * Telemetry is enabled by default. We use it to enable better support and feature planning.
+     * It is however not advised to disable it, and it will not interfere with any usage.
+     */
+    public static function enableTelemetry()
+    {
+        self::$telemetryEnabled = true;
     }
 }
