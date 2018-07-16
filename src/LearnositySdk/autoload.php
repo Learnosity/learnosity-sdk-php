@@ -11,5 +11,5 @@
 
 $bootstrap = __DIR__ . '/../../bootstrap.php';
 error_log('Warning: using ' . __DIR__ . '/autoload.php is deprecated. ' .
-          "Please used `require_once '" . realpath($bootstrap) . "';` instead.");
+          "Please use `require_once '" . realpath($bootstrap) . "';` instead.");
 require_once $bootstrap;
