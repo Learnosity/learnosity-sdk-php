@@ -17,7 +17,7 @@ devbuild: install-vendor-dev
 prodbuild: dist
 
 release:
-	./release.sh
+	@./release.sh
 
 test: test-unit test-integration-env
 
