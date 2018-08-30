@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 VERSION_FILE=".version"
+CHANGELOG="ChangeLog.md"
 
 check_git_clean () {
 	if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
@@ -68,8 +69,9 @@ get_prev_version () {
 print_release_notes () {
 	# Print release notes
 	echo -e "\\nRelease notes: "
-	release_notes=$(git --no-pager log "${prev_version}"..."${current_hash}" --no-merges --oneline)
-	echo -e "${release_notes}"
+
+	changelog=$(sed -n '/Unreleased/,/^## /{/^##/d;p}' "${CHANGELOG}")
+	echo -e "${changelog}"
 }
 
 confirm_tagging () {
@@ -83,14 +85,18 @@ update_version () {
 	echo -e "\\nWriting version file..."
 	echo "${new_version}" > "${VERSION_FILE}"
 
-	echo -e "\\nCommitting version file..."
-	git add "${VERSION_FILE}"
+	echo -e "Updating ${CHANGELOG}..."
+	sed -i "s/^## \[Unreleased]$/&\n\n## [${new_version}] - $(date +%Y-%m-%d)/" "${CHANGELOG}"
+
+	echo -e "Committing release files..."
+	git add "${VERSION_FILE}" "${CHANGELOG}"
 	git commit --allow-empty -m "[RELEASE] ${new_version}"
 }
 
 create_tag () {
 	echo -e "\\nTagging..."
-	git tag -a "${new_version}" -m "[RELEASE] ${new_version}" -m "${release_notes}"
+	git tag -a "${new_version}" -m "[RELEASE] ${new_version}" \
+		-m "Changes:" -m "${changelog}"
 }
 
 confirm_push () {
@@ -135,5 +141,6 @@ confirm_tagging
 update_version
 create_tag
 test_dist
+confirm_push
 push_tag
 handle_package_manager
