@@ -1,6 +1,10 @@
 # Learnosity SDK - PHP
 
+[![Latest Stable Version](https://poser.pugx.org/learnosity/learnosity-sdk-php/version.svg)](https://packagist.org/packages/learnosity/learnosity-sdk-php)
+[![Latest Unstable Version](https://poser.pugx.org/learnosity/learnosity-sdk-php/v/unstable.svg)](https://packagist.org/packages/learnosity/learnosity-sdk-php)
 [![Build Status](https://travis-ci.org/Learnosity/learnosity-sdk-php.svg?branch=master)](https://travis-ci.org/Learnosity/learnosity-sdk-php)
+[![License](https://poser.pugx.org/learnosity/learnosity-sdk-php/license.svg)](https://packagist.org/packages/learnosity/learnosity-sdk-php)
+[![Downloads](https://poser.pugx.org/learnosity/learnosity-sdk-php/d/total.svg)](https://packagist.org/packages/learnosity/learnosity-sdk-php)
 
 Include this package into your own codebase to ease integration with any of the Learnosity APIs.
 
