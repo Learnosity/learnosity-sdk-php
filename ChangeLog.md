@@ -7,6 +7,8 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v0.10.0] - 2018-09-17
 ### Added
 - Telemetry support
 - This ChangeLog!
