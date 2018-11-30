@@ -17,7 +17,7 @@ This SDK should run on PHP 5.6 and is compatible with PHP 7.
 For early test and proof of concepts, the easiest it to follow our [Quick Start Guide].
 
 You can find the latest version of the SDK as a self-contained ZIP file in the [GitHub Releases].
-The distribution zipfile will contain all the necessary depencies.
+The distribution ZIP file contains all the necessary dependencies.
 
 For more production-ready deployment, you should use `composer`, as described
 next.
