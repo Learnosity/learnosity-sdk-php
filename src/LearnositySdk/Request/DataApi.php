@@ -42,7 +42,7 @@ class DataApi
      * @return Remote                  Instance of the Remote class,
      *                                 the response can be obtained with the getBody() method
      */
-    public function request($endpoint, $securityPacket, $secret, $requestPacket = null, $action = null)
+    public function request($endpoint, $securityPacket, $secret, /* FIXME: array */ $requestPacket = [], $action = null)
     {
         $init = new Init('data', $securityPacket, $secret, $requestPacket, $action);
         $params = $init->generate();
@@ -61,7 +61,7 @@ class DataApi
      * @param  mixed   $callback       Optional callback to execute instead of returning data
      * @return array                   Array of all data requests or [] or using a callback
      */
-    public function requestRecursive($endpoint, $securityPacket, $secret, $requestPacket = null, $action = null, $callback = null)
+    public function requestRecursive($endpoint, $securityPacket, $secret, /* FIXME: array */ $requestPacket = [], $action = null, $callback = null)
     {
         $response = array();
 
