@@ -344,7 +344,31 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $security = static::getSecurity();
         $secret = static::SECRET;
         $request = [
-            'limit' => 50
+            'user_id' => 'demo_student',
+            'rendering_type' => 'assess',
+            'name' => 'Items API demo - assess activity demo',
+            'state' => 'initial',
+            'activity_id' => 'items_assess_demo',
+            'session_id' => 'demo_session_uuid',
+            'type' => 'submit_practice',
+            'config' => [
+                'configuration' => [
+                    'responsive_regions' => true
+                ],
+                'navigation' => [
+                    'scrolling_indicator' => true
+                ],
+                'regions' => 'main',
+                'time' => [
+                    'show_pause' => true,
+                    'max_time' => 300
+                ],
+                'title' => 'ItemsAPI Assess Isolation Demo',
+                'subtitle' => 'Testing Subtitle Text'
+            ],
+            'items' => [
+                'Demo3'
+            ]
         ];
         $action = null;
 
@@ -551,7 +575,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Items */
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
         $itemsApi = [
-            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"d61a62083712f8136e92b40a2c5ea340c77c81a30482da6c19b9c27e72d1f5eb"},"request":{"limit":50}}',
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"demo_student","signature":"6c8fd9e76d43d5596b3216baf432f21cea5af3721dd7bd80dd1ff6426b38e052"},"request":{"user_id":"demo_student","rendering_type":"assess","name":"Items API demo - assess activity demo","state":"initial","activity_id":"items_assess_demo","session_id":"demo_session_uuid","type":"submit_practice","config":{"configuration":{"responsive_regions":true},"navigation":{"scrolling_indicator":true},"regions":"main","time":{"show_pause":true,"max_time":300},"title":"ItemsAPI Assess Isolation Demo","subtitle":"Testing Subtitle Text"},"items":["Demo3"]}}',
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $itemsApi;
@@ -583,7 +607,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Items */
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
         $itemsApiAsString = [
-            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"d61a62083712f8136e92b40a2c5ea340c77c81a30482da6c19b9c27e72d1f5eb"},"request":"{\"limit\":50}"}',
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"demo_student","signature":"6c8fd9e76d43d5596b3216baf432f21cea5af3721dd7bd80dd1ff6426b38e052"},"request":"{\"user_id\":\"demo_student\",\"rendering_type\":\"assess\",\"name\":\"Items API demo - assess activity demo\",\"state\":\"initial\",\"activity_id\":\"items_assess_demo\",\"session_id\":\"demo_session_uuid\",\"type\":\"submit_practice\",\"config\":{\"configuration\":{\"responsive_regions\":true},\"navigation\":{\"scrolling_indicator\":true},\"regions\":\"main\",\"time\":{\"show_pause\":true,\"max_time\":300},\"title\":\"ItemsAPI Assess Isolation Demo\",\"subtitle\":\"Testing Subtitle Text\"},\"items\":[\"Demo3\"]}"}',
             new Init($service, $security, $secret, json_encode($request), $action)
         ];
         $testCases[] = $itemsApiAsString;
@@ -651,7 +675,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Items */
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
         $itemsApi = [
-            'd61a62083712f8136e92b40a2c5ea340c77c81a30482da6c19b9c27e72d1f5eb',
+            '6c8fd9e76d43d5596b3216baf432f21cea5af3721dd7bd80dd1ff6426b38e052',
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $itemsApi;
