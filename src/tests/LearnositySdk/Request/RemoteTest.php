@@ -14,7 +14,7 @@ class RemoteTest extends \PHPUnit_Framework_TestCase
         unset($security['timestamp']);
         $init = new Init($service, $security, $secret, $request, $action);
 
-        $url = $this->buildBaseDataUrl() . '/sessions/responses';
+        $url = $this->buildBaseDataUrl() . '/sessions/statuses';
 
         $remote = new Remote();
         $ret = $remote->post($url, $init->generate());
