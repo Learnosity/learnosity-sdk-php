@@ -44,6 +44,13 @@ class DataApi
      */
     public function request($endpoint, $securityPacket, $secret, /* FIXME: array */ $requestPacket = [], $action = null)
     {
+        if (!is_array($requestPacket)) {
+            Init::warnDeprecated(
+                __CLASS__ . '::' . __FUNCTION__ . ':'
+                . ' $requestPacket should be a PHP array.'
+            );
+        }
+
         $init = new Init('data', $securityPacket, $secret, $requestPacket, $action);
         $params = $init->generate();
         return $this->remote->post($endpoint, $params, $this->remoteOptions);
@@ -64,6 +71,13 @@ class DataApi
     public function requestRecursive($endpoint, $securityPacket, $secret, /* FIXME: array */ $requestPacket = [], $action = null, $callback = null)
     {
         $response = array();
+
+        if (!is_array($requestPacket)) {
+            Init::warnDeprecated(
+                __CLASS__ . '::' . __FUNCTION__ . ':'
+                . ' $requestPacket should be a PHP array.'
+            );
+        }
 
         do {
             $request = $this->request($endpoint, $securityPacket, $secret, $requestPacket, $action);
