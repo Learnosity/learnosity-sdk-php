@@ -507,7 +507,7 @@ class Init
      * Warn of deprecated uses in the PHP error log
      * @param string $message
      */
-    public static function warnDeprecated(string $message)
+    public static function warnDeprecated(/* FIXME: string */ $message)
     {
         error_log('Warning: ' . $message
             . ' This will become an error in the next major version of the Learnosity SDK.');
