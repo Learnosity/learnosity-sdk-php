@@ -7,6 +7,8 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v0.10.1] - 2019-05-06
 ### Fixed
 - `DataApi::request*`: default `$requestPacket` to `[]` rather than `null`,
     which would cause cryptic errors if no packet is specified. Additionally, a
