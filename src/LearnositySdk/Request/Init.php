@@ -173,15 +173,21 @@ class Init
      */
     private function addMeta(array $requestPacket)
     {
-        $requestPacket['meta'] = [
-            'sdk' => [
-                'version' => $this->getSDKVersion(),
-                'lang' => 'php',
-                'lang_version' => phpversion(),
-                'platform' => php_uname('s'),
-                'platform_version' => php_uname('r')
-            ]
+        $sdkMetricsMeta = [
+            'version' => $this->getSDKVersion(),
+            'lang' => 'php',
+            'lang_version' => phpversion(),
+            'platform' => php_uname('s'),
+            'platform_version' => php_uname('r')
         ];
+
+        if (isset($requestPacket['meta'])){
+            $requestPacket['meta']['sdk'] = $sdkMetricsMeta;
+        } else {
+            $requestPacket['meta'] = [
+                'sdk' => $sdkMetricsMeta
+            ];
+        }
 
         return $requestPacket;
     }
