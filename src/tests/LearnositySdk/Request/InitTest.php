@@ -102,6 +102,80 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $generated);
     }
 
+    public function testSdkMetaPresenceWithTelemetry()
+    {
+        list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
+
+        // a) without meta field set
+        $initObject = new Init($service, $security, $secret, json_encode($request), $action);
+        $generatedObject = json_decode($initObject->generate());
+
+        // if telemetry is on but the request has no meta field,
+        // the generated object's meta property should have only one field and that is sdk
+        $this->assertObjectHasAttribute('meta', $generatedObject);
+        $this->assertObjectHasAttribute('sdk', $generatedObject->meta);
+        $this->assertEquals(1, count((array) $generatedObject->meta));
+
+        // b) with meta field
+        // add meta field to the request
+        $request["meta"] = [
+            "test_key_string" => "test-string",
+            "test_key_integer" => 12345,
+            "test_key_boolean" => true
+        ];
+
+        // generate a new $initObject using the updated $request
+        $initObject = new Init($service, $security, $secret, json_encode($request), $action);
+        $generatedObject = json_decode($initObject->generate());
+
+        // if telemetry is on and the request has a meta field, the generated object's meta property should be present
+        $this->assertObjectHasAttribute('meta', $generatedObject);
+
+        // each key of the meta array should be present in the generated object's meta field as a property
+        foreach (array_keys($request['meta']) as $propName) {
+            $this->assertObjectHasAttribute($propName, $generatedObject->meta);
+        }
+
+        // the generated object should have sdk property, too
+        $this->assertObjectHasAttribute('sdk', $generatedObject->meta);
+    }
+
+    public function testSdkMetaPresenceWithoutTelemetry()
+    {
+        Init::disableTelemetry();
+        list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
+
+        // a) without meta field set
+        $initObject = new Init($service, $security, $secret, json_encode($request), $action);
+        $generatedObject = json_decode($initObject->generate());
+
+        // when telemetry is off, meta of the generated object will be empty if the meta field of the $request is empty
+        $this->assertObjectNotHasAttribute('meta', $generatedObject);
+
+        // b) with meta field
+        // add meta field to the request
+        $request["meta"] = [
+            "test_key_string" => "test-string",
+            "test_key_integer" => 12345,
+            "test_key_boolean" => true
+        ];
+
+        // generate a new $initObject using the updated $request
+        $initObject = new Init($service, $security, $secret, json_encode($request), $action);
+        $generatedObject = json_decode($initObject->generate());
+
+        // each key of the meta array should be present in the generated object's meta field as a property
+        foreach (array_keys($request['meta']) as $propName) {
+            $this->assertObjectHasAttribute($propName, $generatedObject->meta);
+        }
+
+        // when telemetry is turned off, the generated object should have a meta field
+        // BUT not the sdk property under it
+        $this->assertObjectHasAttribute('meta', $generatedObject);
+        $this->assertObjectNotHasAttribute('sdk', $generatedObject->meta);
+        Init::enableTelemetry();
+    }
+
     /*
      * Pseudo fixtures for parameters
      */
