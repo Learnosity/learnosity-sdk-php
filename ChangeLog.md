@@ -8,6 +8,10 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [v0.10.2] - 2019-07-24
+### Fixed
+- `All APIs`: prevent `meta` field of the `$requestPacket` from being overwritten when SDK Telemetry is enabled.
+
 ## [v0.10.1] - 2019-05-06
 ### Fixed
 - `DataApi::request*`: default `$requestPacket` to `[]` rather than `null`,

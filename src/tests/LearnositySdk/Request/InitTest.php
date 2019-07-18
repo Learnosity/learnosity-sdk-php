@@ -110,25 +110,22 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $initObject = new Init($service, $security, $secret, json_encode($request), $action);
         $generatedObject = json_decode($initObject->generate());
 
-        // if telemetry is on but the request has no meta field,
-        // the generated object's meta property should have only one field and that is sdk
+        // when telemetry is enabled, if the $request has no meta field,
+        // then the meta of the generated object has the sdk field only
         $this->assertObjectHasAttribute('meta', $generatedObject);
         $this->assertObjectHasAttribute('sdk', $generatedObject->meta);
         $this->assertEquals(1, count((array) $generatedObject->meta));
 
         // b) with meta field
-        // add meta field to the request
-        $request["meta"] = [
-            "test_key_string" => "test-string",
-            "test_key_integer" => 12345,
-            "test_key_boolean" => true
-        ];
+        // add meta field to the $request
+        $request["meta"] = $this->getMetaField();
 
         // generate a new $initObject using the updated $request
         $initObject = new Init($service, $security, $secret, json_encode($request), $action);
         $generatedObject = json_decode($initObject->generate());
 
-        // if telemetry is on and the request has a meta field, the generated object's meta property should be present
+        // when telemetry is enabled, if the request has a meta field,
+        // then the generated object's meta property should be present
         $this->assertObjectHasAttribute('meta', $generatedObject);
 
         // each key of the meta array should be present in the generated object's meta field as a property
@@ -149,30 +146,29 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $initObject = new Init($service, $security, $secret, json_encode($request), $action);
         $generatedObject = json_decode($initObject->generate());
 
-        // when telemetry is off, meta of the generated object will be empty if the meta field of the $request is empty
+        // when telemetry is disabled, if the meta field of the $request is empty,
+        // then the meta of the generated object should also be empty
         $this->assertObjectNotHasAttribute('meta', $generatedObject);
 
         // b) with meta field
-        // add meta field to the request
-        $request["meta"] = [
-            "test_key_string" => "test-string",
-            "test_key_integer" => 12345,
-            "test_key_boolean" => true
-        ];
+        // add meta field to the $request
+        $request["meta"] = $this->getMetaField();
 
         // generate a new $initObject using the updated $request
         $initObject = new Init($service, $security, $secret, json_encode($request), $action);
         $generatedObject = json_decode($initObject->generate());
 
-        // each key of the meta array should be present in the generated object's meta field as a property
+        // when telemetry is disabled, if the meta field of the $request has properties,
+        // then the meta of the generated object will also contain these properties, and nothing else
+        $this->assertObjectHasAttribute('meta', $generatedObject);
+
         foreach (array_keys($request['meta']) as $propName) {
             $this->assertObjectHasAttribute($propName, $generatedObject->meta);
         }
 
-        // when telemetry is turned off, the generated object should have a meta field
-        // BUT not the sdk property under it
-        $this->assertObjectHasAttribute('meta', $generatedObject);
+        $this->assertEquals(count($request['meta']), count((array) $generatedObject->meta));
         $this->assertObjectNotHasAttribute('sdk', $generatedObject->meta);
+
         Init::enableTelemetry();
     }
 
@@ -554,6 +550,19 @@ class InitTest extends \PHPUnit_Framework_TestCase
                 $action
             );
         }
+    }
+
+    /**
+     *
+     * @return array
+     */
+    public function getMetaField()
+    {
+        return [
+            "test_key_string" => "test-string",
+            "test_key_integer" => 12345,
+            "test_key_boolean" => true
+        ];
     }
 
     /*
