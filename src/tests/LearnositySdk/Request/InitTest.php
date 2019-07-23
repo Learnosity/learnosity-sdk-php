@@ -102,6 +102,84 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult, $generated);
     }
 
+    public function testMetaWithTelemetryOnlyAddsSdkProp()
+    {
+        list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
+
+        $initObject = new Init($service, $security, $secret, json_encode($request), $action);
+        $generatedObject = json_decode($initObject->generate());
+
+        // when telemetry is enabled, if the $request has no meta field,
+        // then the meta of the generated object has the sdk field only
+        $this->assertObjectHasAttribute('meta', $generatedObject);
+        $this->assertObjectHasAttribute('sdk', $generatedObject->meta);
+        $this->assertEquals(1, count((array) $generatedObject->meta));
+    }
+
+    public function testRequestWithTelemetryPreservesOtherMetaProps()
+    {
+        list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
+
+        // add meta field to the $request
+        $request['meta'] = $this->getMetaField();
+
+        // generate a new $initObject using the updated $request
+        $initObject = new Init($service, $security, $secret, json_encode($request), $action);
+        $generatedObject = json_decode($initObject->generate());
+
+        // when telemetry is enabled, if the request has a meta field,
+        // then the generated object's meta property should be present
+        $this->assertObjectHasAttribute('meta', $generatedObject);
+
+        // each key of the meta array should be present in the generated object's meta field as a property
+        foreach (array_keys($request['meta']) as $propName) {
+            $this->assertObjectHasAttribute($propName, $generatedObject->meta);
+        }
+
+        // the generated object should have sdk property, too
+        $this->assertEquals(count($request['meta']) + 1, count((array) $generatedObject->meta));
+        $this->assertObjectHasAttribute('sdk', $generatedObject->meta);
+    }
+
+    public function testRequestWithoutTelemetryPreservesEmptyMeta()
+    {
+        Init::disableTelemetry();
+        list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
+
+        $initObject = new Init($service, $security, $secret, json_encode($request), $action);
+        $generatedObject = json_decode($initObject->generate());
+
+        // when telemetry is disabled, if the meta field of the $request is empty,
+        // then the meta of the generated object should also be empty
+        $this->assertObjectNotHasAttribute('meta', $generatedObject);
+        Init::enableTelemetry();
+    }
+
+    public function testRequestWithoutTelemetryPreservesFilledMeta()
+    {
+        Init::disableTelemetry();
+        list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
+
+        // add meta field to the $request
+        $request['meta'] = $this->getMetaField();
+
+        $initObject = new Init($service, $security, $secret, json_encode($request), $action);
+        $generatedObject = json_decode($initObject->generate());
+
+        // when telemetry is disabled, if the meta field of the $request has properties,
+        // then the meta of the generated object will also contain these properties, and nothing else
+        $this->assertObjectHasAttribute('meta', $generatedObject);
+
+        foreach (array_keys($request['meta']) as $propName) {
+            $this->assertObjectHasAttribute($propName, $generatedObject->meta);
+        }
+
+        $this->assertEquals(count($request['meta']), count((array) $generatedObject->meta));
+        $this->assertObjectNotHasAttribute('sdk', $generatedObject->meta);
+
+        Init::enableTelemetry();
+    }
+
     /*
      * Pseudo fixtures for parameters
      */
@@ -480,6 +558,19 @@ class InitTest extends \PHPUnit_Framework_TestCase
                 $action
             );
         }
+    }
+
+    /**
+     *
+     * @return array
+     */
+    public function getMetaField()
+    {
+        return [
+            "test_key_string" => "test-string",
+            "test_key_integer" => 12345,
+            "test_key_boolean" => true
+        ];
     }
 
     /*
