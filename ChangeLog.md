@@ -7,6 +7,8 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v0.10.2] - 2019-07-29
 ### Fixed
 - Prevent `meta` field of `$requestPacket`, which might contain information like user details for the audit trail, from being overwritten when SDK Telemetry is enabled.
 
