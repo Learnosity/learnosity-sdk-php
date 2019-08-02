@@ -193,7 +193,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $service = 'assess';
         $security = static::getSecurity();
         // Needed to initialise Questions API
-        $security['user_id'] = 'demo_student';
+        $security['user_id'] = '$ANONYMIZED_USER_ID';
         $secret = static::SECRET;
         $request = [
             "items" => [
@@ -241,7 +241,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
                 "questionsApiVersion" => "v2"
             ],
             "questionsApiActivity" => [
-                "user_id" => "demo_student",
+                "user_id" => '$ANONYMIZED_USER_ID',
                 "type" => "submit_practice",
                 "state" => "initial",
                 "id" => "assessdemo",
@@ -385,10 +385,10 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $secret = static::SECRET;
         $request = [
             'users' => [
-                'brianmoser' => '',
-                'hankshrader' => '',
-                'jessepinkman' => '',
-                'walterwhite' => ''
+                '$ANONYMIZED_USER_ID_1' => '',
+                '$ANONYMIZED_USER_ID_2' => '',
+                '$ANONYMIZED_USER_ID_3' => '',
+                '$ANONYMIZED_USER_ID_4' => ''
             ]
         ];
         $action = null;
@@ -422,7 +422,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $security = static::getSecurity();
         $secret = static::SECRET;
         $request = [
-            'user_id' => 'demo_student',
+            'user_id' => '$ANONYMIZED_USER_ID',
             'rendering_type' => 'assess',
             'name' => 'Items API demo - assess activity demo',
             'state' => 'initial',
@@ -477,7 +477,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
     {
         $service = 'questions';
         $security = static::getSecurity();
-        $security['user_id'] = 'demo_student';
+        $security['user_id'] = '$ANONYMIZED_USER_ID';
         $secret = static::SECRET;
         $request = [
             'type'      => 'local_practice',
@@ -532,7 +532,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
                [
                    "id" => "report-1",
                    "type" => "sessions-summary",
-                   "user_id" => "brianmoser",
+                   "user_id" => '$ANONYMIZED_USER_ID',
                    "session_ids" => [
                        "AC023456-2C73-44DC-82DA28894FCBC3BF"
                    ]
@@ -617,7 +617,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Assess */
         list($service, $security, $secret, $request, $action) = static::getWorkingAssessApiParams();
         $assessApi = [
-            '{"items":[{"content":"<span class=\"learnosity-response question-demoscience1234\"></span>","response_ids":["demoscience1234"],"workflow":"","reference":"question-demoscience1"},{"content":"<span class=\"learnosity-response question-demoscience5678\"></span>","response_ids":["demoscience5678"],"workflow":"","reference":"question-demoscience2"}],"ui_style":"horizontal","name":"Demo (2 questions)","state":"initial","metadata":[],"navigation":{"show_next":true,"toc":true,"show_submit":true,"show_save":false,"show_prev":true,"show_title":true,"show_intro":true},"time":{"max_time":600,"limit_type":"soft","show_pause":true,"warning_time":60,"show_time":true},"configuration":{"onsubmit_redirect_url":"/assessment/","onsave_redirect_url":"/assessment/","idle_timeout":true,"questionsApiVersion":"v2"},"questionsApiActivity":{"user_id":"demo_student","type":"submit_practice","state":"initial","id":"assessdemo","name":"Assess API - Demo","questions":[{"response_id":"demoscience1234","type":"sortlist","description":"In this question, the student needs to sort the events, chronologically earliest to latest.","list":["Russian Revolution","Discovery of the Americas","Storming of the Bastille","Battle of Plataea","Founding of Rome","First Crusade"],"instant_feedback":true,"feedback_attempts":2,"validation":{"valid_response":[4,3,5,1,2,0],"valid_score":1,"partial_scoring":true,"penalty_score":-1}},{"response_id":"demoscience5678","type":"highlight","description":"The student needs to mark one of the flowers anthers in the image.","img_src":"http://www.learnosity.com/static/img/flower.jpg","line_color":"rgb(255, 20, 0)","line_width":"4"}],"consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","signature":"0969eed4ca4bf483096393d13ee1bae35b993e5204ab0f90cc80eaa055605295"},"type":"activity"}',
+            '{"items":[{"content":"<span class=\"learnosity-response question-demoscience1234\"></span>","response_ids":["demoscience1234"],"workflow":"","reference":"question-demoscience1"},{"content":"<span class=\"learnosity-response question-demoscience5678\"></span>","response_ids":["demoscience5678"],"workflow":"","reference":"question-demoscience2"}],"ui_style":"horizontal","name":"Demo (2 questions)","state":"initial","metadata":[],"navigation":{"show_next":true,"toc":true,"show_submit":true,"show_save":false,"show_prev":true,"show_title":true,"show_intro":true},"time":{"max_time":600,"limit_type":"soft","show_pause":true,"warning_time":60,"show_time":true},"configuration":{"onsubmit_redirect_url":"/assessment/","onsave_redirect_url":"/assessment/","idle_timeout":true,"questionsApiVersion":"v2"},"questionsApiActivity":{"user_id":"$ANONYMIZED_USER_ID","type":"submit_practice","state":"initial","id":"assessdemo","name":"Assess API - Demo","questions":[{"response_id":"demoscience1234","type":"sortlist","description":"In this question, the student needs to sort the events, chronologically earliest to latest.","list":["Russian Revolution","Discovery of the Americas","Storming of the Bastille","Battle of Plataea","Founding of Rome","First Crusade"],"instant_feedback":true,"feedback_attempts":2,"validation":{"valid_response":[4,3,5,1,2,0],"valid_score":1,"partial_scoring":true,"penalty_score":-1}},{"response_id":"demoscience5678","type":"highlight","description":"The student needs to mark one of the flowers anthers in the image.","img_src":"http://www.learnosity.com/static/img/flower.jpg","line_color":"rgb(255, 20, 0)","line_width":"4"}],"consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","signature":"03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90"},"type":"activity"}',
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $assessApi;
@@ -647,7 +647,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
 
         /* Events */
         list($service, $security, $secret, $request, $action) = static::getWorkingEventsApiParams();
-        $eventsApiExpected = '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"20739eed410d54a135e8cb3745628834886ab315bfc01693ce9acc0d14dc98bf"},"config":{"users":{"brianmoser":"7224f1cd26c7eaac4f30c16ccf8e143005734089724affe0dd9cbf008b941e2d","hankshrader":"3f3edf8ad1f7d64186089308c34d0aee9d09324d1006df6dd3ce57ddc42c7f47","jessepinkman":"ca2d79d6e1c6c926f2b49f3d6052c060bed6b45e42786ff6c5293b9f3c723bdf","walterwhite":"fd1888ffc8cf87efb4ab620401130c76fc8dff5ca04f139e23a7437c56f8f310"}}}';
+        $eventsApiExpected = '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"20739eed410d54a135e8cb3745628834886ab315bfc01693ce9acc0d14dc98bf"},"config":{"users":{"$ANONYMIZED_USER_ID_1":"64ccf06154cf4133624372459ebcccb8b2f8bd7458a73df681acef4e742e175c","$ANONYMIZED_USER_ID_2":"7fa4d6ef8926add8b6411123fce916367250a6a99f50ab8ec39c99d768377adb","$ANONYMIZED_USER_ID_3":"3d5b26843da9192319036b67f8c5cc26e1e1763811270ba164665d0027296952","$ANONYMIZED_USER_ID_4":"3b6ac78f60f3e3eb7a85cec8b48bdca0f590f959e0a87a9c4222898678bd50c8"}}}';
 
         $eventsApi = [
             $eventsApiExpected,
@@ -666,7 +666,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Items */
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
         $itemsApi = [
-            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"demo_student","signature":"6c8fd9e76d43d5596b3216baf432f21cea5af3721dd7bd80dd1ff6426b38e052"},"request":{"user_id":"demo_student","rendering_type":"assess","name":"Items API demo - assess activity demo","state":"initial","activity_id":"items_assess_demo","session_id":"demo_session_uuid","type":"submit_practice","config":{"configuration":{"responsive_regions":true},"navigation":{"scrolling_indicator":true},"regions":"main","time":{"show_pause":true,"max_time":300},"title":"ItemsAPI Assess Isolation Demo","subtitle":"Testing Subtitle Text"},"items":["Demo3"]}}',
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"82edaf80c2abb55c7a78d089f5b6f89393e621ef4a85150489ac2cfdd6a32f9a"},"request":{"user_id":"$ANONYMIZED_USER_ID","rendering_type":"assess","name":"Items API demo - assess activity demo","state":"initial","activity_id":"items_assess_demo","session_id":"demo_session_uuid","type":"submit_practice","config":{"configuration":{"responsive_regions":true},"navigation":{"scrolling_indicator":true},"regions":"main","time":{"show_pause":true,"max_time":300},"title":"ItemsAPI Assess Isolation Demo","subtitle":"Testing Subtitle Text"},"items":["Demo3"]}}',
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $itemsApi;
@@ -674,7 +674,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Questions */
         list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
         $questionsApi = [
-            '{"consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","user_id":"demo_student","signature":"0969eed4ca4bf483096393d13ee1bae35b993e5204ab0f90cc80eaa055605295","type":"local_practice","state":"initial","questions":[{"response_id":"60005","type":"association","stimulus":"Match the cities to the parent nation.","stimulus_list":["London","Dublin","Paris","Sydney"],"possible_responses":["Australia","France","Ireland","England"],"validation":{"valid_responses":[["England"],["Ireland"],["France"],["Australia"]]}}]}',
+            '{"consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90","type":"local_practice","state":"initial","questions":[{"response_id":"60005","type":"association","stimulus":"Match the cities to the parent nation.","stimulus_list":["London","Dublin","Paris","Sydney"],"possible_responses":["Australia","France","Ireland","England"],"validation":{"valid_responses":[["England"],["Ireland"],["France"],["Australia"]]}}]}',
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $questionsApi;
@@ -682,7 +682,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Reports */
         list($service, $security, $secret, $request, $action) = static::getWorkingReportsApiParams();
         $reportsApi = [
-            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"217d82b0eb98b53e49f9367bed5a8c29d61e661946341c83cb2fcdbead78a8b2"},"request":{"reports":[{"id":"report-1","type":"sessions-summary","user_id":"brianmoser","session_ids":["AC023456-2C73-44DC-82DA28894FCBC3BF"]}]}}',
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"91085beccf57bf0df77c89df94d1055e631b36bc11941e61460b445b4ed774bc"},"request":{"reports":[{"id":"report-1","type":"sessions-summary","user_id":"$ANONYMIZED_USER_ID","session_ids":["AC023456-2C73-44DC-82DA28894FCBC3BF"]}]}}',
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $reportsApi;
@@ -698,7 +698,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Items */
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
         $itemsApiAsString = [
-            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"demo_student","signature":"6c8fd9e76d43d5596b3216baf432f21cea5af3721dd7bd80dd1ff6426b38e052"},"request":"{\"user_id\":\"demo_student\",\"rendering_type\":\"assess\",\"name\":\"Items API demo - assess activity demo\",\"state\":\"initial\",\"activity_id\":\"items_assess_demo\",\"session_id\":\"demo_session_uuid\",\"type\":\"submit_practice\",\"config\":{\"configuration\":{\"responsive_regions\":true},\"navigation\":{\"scrolling_indicator\":true},\"regions\":\"main\",\"time\":{\"show_pause\":true,\"max_time\":300},\"title\":\"ItemsAPI Assess Isolation Demo\",\"subtitle\":\"Testing Subtitle Text\"},\"items\":[\"Demo3\"]}"}',
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"82edaf80c2abb55c7a78d089f5b6f89393e621ef4a85150489ac2cfdd6a32f9a"},"request":"{\"user_id\":\"$ANONYMIZED_USER_ID\",\"rendering_type\":\"assess\",\"name\":\"Items API demo - assess activity demo\",\"state\":\"initial\",\"activity_id\":\"items_assess_demo\",\"session_id\":\"demo_session_uuid\",\"type\":\"submit_practice\",\"config\":{\"configuration\":{\"responsive_regions\":true},\"navigation\":{\"scrolling_indicator\":true},\"regions\":\"main\",\"time\":{\"show_pause\":true,\"max_time\":300},\"title\":\"ItemsAPI Assess Isolation Demo\",\"subtitle\":\"Testing Subtitle Text\"},\"items\":[\"Demo3\"]}"}',
             new Init($service, $security, $secret, json_encode($request), $action)
         ];
         $testCases[] = $itemsApiAsString;
@@ -727,7 +727,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Assess */
         list($service, $security, $secret, $request, $action) = static::getWorkingAssessApiParams();
         $assessApi = [
-            '0969eed4ca4bf483096393d13ee1bae35b993e5204ab0f90cc80eaa055605295',
+            '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $assessApi;
@@ -766,7 +766,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Items */
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
         $itemsApi = [
-            '6c8fd9e76d43d5596b3216baf432f21cea5af3721dd7bd80dd1ff6426b38e052',
+            '82edaf80c2abb55c7a78d089f5b6f89393e621ef4a85150489ac2cfdd6a32f9a',
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $itemsApi;
@@ -774,7 +774,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Questions */
         list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
         $questionsApi = [
-            '0969eed4ca4bf483096393d13ee1bae35b993e5204ab0f90cc80eaa055605295',
+            '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $questionsApi;
@@ -782,7 +782,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Reports */
         list($service, $security, $secret, $request, $action) = static::getWorkingReportsApiParams();
         $reportsApi = [
-            '217d82b0eb98b53e49f9367bed5a8c29d61e661946341c83cb2fcdbead78a8b2',
+            '91085beccf57bf0df77c89df94d1055e631b36bc11941e61460b445b4ed774bc',
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $reportsApi;
