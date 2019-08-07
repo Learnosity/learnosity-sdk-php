@@ -89,7 +89,7 @@ $Init = new Init(
    [
        'consumer_key' => 'yis0TYCu7U9V4o7M',
        'domain'       => 'localhost',
-       'user_id'      => 'demo_student'
+       'user_id'      => '$ANONYMIZED_USER_ID'
    ],
    'superfragilisticexpialidocious',
    [
