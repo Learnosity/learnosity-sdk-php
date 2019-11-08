@@ -7,8 +7,8 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Updated
-- Update dependencies to use their latest versions
+### Fixed
+- Fixed the version range of the `random_compat` library
 
 ## [v0.10.2] - 2019-07-29
 ### Fixed

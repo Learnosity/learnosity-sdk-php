@@ -2,3 +2,4 @@
 src/tests/junit.xml
 /vendor/
 learnosity_sdk-*
+composer.lock
