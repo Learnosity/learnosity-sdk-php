@@ -7,6 +7,8 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v0.10.3] - 2019-12-19
 ### Fixed
 - Fixed the version range of the `random_compat` library
 - Fixed a bug where `null` or empty string request packets would cause an exception to be thrown when calling the `Init` constructor.
