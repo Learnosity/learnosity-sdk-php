@@ -2,6 +2,7 @@
 
 namespace LearnositySdk\Request;
 
+use LearnositySdk\Exceptions\ValidationException;
 use LearnositySdk\Request\Init;
 
 class InitTest extends \PHPUnit_Framework_TestCase
@@ -40,7 +41,8 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $expectedExceptionMessage = null
     ) {
         if (!empty($expectedException)) {
-            $this->setExpectedException($expectedException, $expectedExceptionMessage);
+            $this->expectException($expectedException);
+            $this->expectExceptionMessage($expectedExceptionMessage);
         }
 
         $init = new Init($service, $securityPacket, $secret, $requestPacket, $action);
@@ -100,6 +102,34 @@ class InitTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals($expectedResult, $generated);
+    }
+
+    public function testNullRequestPacketGeneratesValidInit()
+    {
+        list($service, $security, $secret) = static::getWorkingDataApiParams();
+        $initObject = new Init($service, $security, $secret, null);
+        $this->assertInstanceOf(Init::class, $initObject);
+    }
+
+    public function testEmptyArrayRequestPacketGeneratesValidInit()
+    {
+        list($service, $security, $secret) = static::getWorkingDataApiParams();
+        $initObject = new Init($service, $security, $secret, []);
+        $this->assertInstanceOf(Init::class, $initObject);
+    }
+
+    public function testEmptyStringGeneratesValidInit()
+    {
+        list($service, $security, $secret) = static::getWorkingDataApiParams();
+        $initObject = new Init($service, $security, $secret, "");
+        $this->assertInstanceOf(Init::class, $initObject);
+    }
+
+    public function testNullRequestPacketAndActionGeneratesValidInit()
+    {
+        list($service, $security, $secret) = static::getWorkingDataApiParams();
+        $initObject = new Init($service, $security, $secret, null, null);
+        $this->assertInstanceOf(Init::class, $initObject);
     }
 
     public function testMetaWithTelemetryOnlyAddsSdkProp()
@@ -586,15 +616,15 @@ class InitTest extends \PHPUnit_Framework_TestCase
 
         return [
             [$service, $security, $secret, $request, $action, new Init($service, $security, $secret, $request, $action)],
-            ['', $security, $secret, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The `service` argument wasn\'t found or was empty'],
-            ['wrongService', $security, $secret, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The service provided (wrongService) is not valid'],
-            [$service, '', $secret, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The security packet must be an array'],
-            [$service, $wrongSecurity, $secret, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'Invalid key found in the security packet: wrongParam'],
-            ['questions', $security, $secret, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'Questions API requires a `user_id` in the security packet'],
-            [$service, $security, 25, $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The `secret` argument must be a valid string'],
-            [$service, $security, '', $request, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The `secret` argument must be a valid string'],
-            [$service, $security, $secret, 25, $action, null, '\LearnositySdk\Exceptions\ValidationException', 'The request packet must be an array'],
-            [$service, $security, $secret, $request, 25, null, '\LearnositySdk\Exceptions\ValidationException', 'The `action` argument must be a string']
+            ['', $security, $secret, $request, $action, null, ValidationException::class, 'The `service` argument wasn\'t found or was empty'],
+            ['wrongService', $security, $secret, $request, $action, null, ValidationException::class, 'The service provided (wrongService) is not valid'],
+            [$service, '', $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array'],
+            [$service, $wrongSecurity, $secret, $request, $action, null, ValidationException::class, 'Invalid key found in the security packet: wrongParam'],
+            ['questions', $security, $secret, $request, $action, null, ValidationException::class, 'Questions API requires a `user_id` in the security packet'],
+            [$service, $security, 25, $request, $action, null, ValidationException::class, 'The `secret` argument must be a valid string'],
+            [$service, $security, '', $request, $action, null, ValidationException::class, 'The `secret` argument must be a valid string'],
+            [$service, $security, $secret, 25, $action, null, ValidationException::class, 'The request packet must be an array'],
+            [$service, $security, $secret, $request, 25, null, ValidationException::class, 'The `action` argument must be a string']
         ];
     }
 
