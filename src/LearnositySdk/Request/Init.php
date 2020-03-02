@@ -103,7 +103,7 @@ class Init
      * Service names that are valid for `$service`
      * @var array
      */
-    private $validServices = array('assess', 'author', 'data', 'events', 'items', 'questions', 'reports');
+    private $validServices = array('annotations', 'assess', 'author', 'data', 'events', 'items', 'questions', 'reports');
 
     /**
      * The algorithm used in the hashing function to create the signature
@@ -223,6 +223,7 @@ class Init
         $output = array();
 
         switch ($this->service) {
+            case 'annotations':
             case 'assess':
             case 'author':
             case 'data':

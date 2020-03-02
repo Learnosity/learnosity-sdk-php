@@ -59,7 +59,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
     public function testGenerateWithMeta($pathToMeta, $generated)
     {
         $pathParts = explode('.', $pathToMeta);
-        // in case of Author API, Assess API, Events API, Items API, Questions API and Reports API
+        // in case of Annotations API, Author API, Assess API, Events API, Items API, Questions API and Reports API
         // generated value is a string, and therefore needs to be decoded
         $temp = is_string($generated) ? json_decode($generated, true) : $generated;
 
@@ -302,6 +302,45 @@ class InitTest extends \PHPUnit_Framework_TestCase
                 ]
             ],
             "type" => "activity"
+        ];
+        $action = null;
+
+        if ($assoc) {
+            return array(
+                'service' => $service,
+                'security' => $security,
+                'secret' => $secret,
+                'request' => $request,
+                'action' => $action
+            );
+        } else {
+            return array(
+                $service,
+                $security,
+                $secret,
+                $request,
+                $action
+            );
+        }
+    }
+
+    /**
+     * @param  boolean $assoc If true, associative array will be returned
+     * @return array
+     */
+    public static function getWorkingAnnotationsApiParams($assoc = false)
+    {
+        $service = 'annotations';
+        $security = static::getSecurity();
+        $secret = static::SECRET;
+        $request = [
+            'group_id' => 'demo_session_uuid',
+            'modules' => [
+                'texthighlight' => true,
+                'notepad' => true,
+                'stickynote' => true,
+                'drawing' => true
+            ]
         ];
         $action = null;
 
@@ -635,6 +674,14 @@ class InitTest extends \PHPUnit_Framework_TestCase
         Init::disableTelemetry();
 
         $testCases = [];
+
+        /* Annotations */
+        list($service, $security, $secret, $request, $action) = static::getWorkingAnnotationsApiParams();
+        $annotationsApi = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"f5e8ed1c89b4117ddb8f7c2d63950f8f4d373059b4573944b7cee7fd65aef54f"},"request":{"group_id":"demo_session_uuid","modules":{"texthighlight":true,"notepad":true,"stickynote":true,"drawing":true}}}',
+            new Init($service, $security, $secret, $request, $action)
+        ];
+        $testCases[] = $annotationsApi;
 
         /* Author */
         list($service, $security, $secret, $request, $action) = static::getWorkingAuthorApiParams();
