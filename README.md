@@ -250,7 +250,7 @@ $response = $DataApi->request(
 
 Used to make recursive requests to the Data API, using the *next* token, for as much data is returned based on the request filtering provided.
 
-You can pass a callback as the 5th argument, that will be executed upon completion of every request.
+You can pass a callback as the 6th argument, that will be executed upon completion of every request.
 
 ``` php
 $DataApi = new DataApi();
@@ -265,7 +265,7 @@ $response = $DataApi->requestRecursive(
     [
        'limit' => 20
     ],
-    'get'
+    'get',
     function ($data) {
         $this->processData($data);
     }
