@@ -86,7 +86,7 @@ class DataApi
                 if (!empty($callback) && is_callable($callback)) {
                     call_user_func($callback, $data);
                 } else {
-                    $response = array_merge($response, $data['data']);
+                    $response = array_merge_recursive($response, $data['data']);
                 }
             } else {
                 throw new Exception(Json::encode($data));
