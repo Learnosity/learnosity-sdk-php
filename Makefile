@@ -3,7 +3,7 @@ DIST_PREFIX=learnosity_sdk-
 DIST=$(DIST_PREFIX)$(VERSION)
 
 COMPOSER=composer
-COMPOSER_INSTALL_FLAGS=--no-suggest --no-interaction
+COMPOSER_INSTALL_FLAGS=--no-interaction
 
 PHPUNIT=./vendor/bin/phpunit
 
@@ -49,8 +49,8 @@ dist-zip: clean
 	zip -qr $(DIST).zip $(DIST)
 
 # run tests in the distdir
-dist-test: dist-zip install-vendor-dev
-	$(PHPUNIT) -c $(DIST)/phpunit.xml
+dist-test: dist-zip
+	$(MAKE) -f $(PWD)/$(lastword $(MAKEFILE_LIST)) -C $(DIST) test
 
 ###
 # install vendor rules
