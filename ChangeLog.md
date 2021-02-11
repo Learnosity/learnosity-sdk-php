@@ -9,6 +9,7 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Fixed
 - Fixed the version range of `php` this library requires
+- No longer remove the `security.domain` from signed api-questions requests.
 
 ## [v0.10.3] - 2019-12-19
 ### Fixed
