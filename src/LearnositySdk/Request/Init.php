@@ -190,7 +190,7 @@ class Init
             'platform_version' => php_uname('r')
         ];
 
-        if (isset($requestPacket['meta'])){
+        if (isset($requestPacket['meta'])) {
             $requestPacket['meta']['sdk'] = $sdkMetricsMeta;
         } else {
             $requestPacket['meta'] = [
@@ -258,9 +258,6 @@ class Init
             case 'questions':
                 // Add the security packet (with signature) to the root of output
                 $output = $this->securityPacket;
-
-                // Remove the `domain` key from the security packet
-                unset($output['domain']);
 
                 // Stringify the request packet if necessary
                 if (!empty($this->requestPacket)) {

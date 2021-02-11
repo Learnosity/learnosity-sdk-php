@@ -704,7 +704,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         /* Questions */
         list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
         $questionsApi = [
-            '{"consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90","type":"local_practice","state":"initial","questions":[{"response_id":"60005","type":"association","stimulus":"Match the cities to the parent nation.","stimulus_list":["London","Dublin","Paris","Sydney"],"possible_responses":["Australia","France","Ireland","England"],"validation":{"valid_responses":[["England"],["Ireland"],["France"],["Australia"]]}}]}',
+            '{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90","type":"local_practice","state":"initial","questions":[{"response_id":"60005","type":"association","stimulus":"Match the cities to the parent nation.","stimulus_list":["London","Dublin","Paris","Sydney"],"possible_responses":["Australia","France","Ireland","England"],"validation":{"valid_responses":[["England"],["Ireland"],["France"],["Australia"]]}}]}',
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $questionsApi;
