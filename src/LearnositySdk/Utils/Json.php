@@ -116,7 +116,7 @@ class Json
      * notations. json_encode encodes float values in scientific notation, but we want to make sure
      * they are in float notation
      *
-     * @param $value the $json to be encoded
+     * @param array|float $value the $json to be encoded
      * @return array mapping scientific values to float values
      */
     private static function getHighPrecisionFloatMap($value)

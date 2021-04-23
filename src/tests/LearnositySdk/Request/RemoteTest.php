@@ -2,11 +2,9 @@
 
 namespace LearnositySdk\Request;
 
-use LearnositySdk\Request\Remote;
-use LearnositySdk\Request\Init;
-use LearnositySdk\Request\InitTest;
+use LearnositySdk\AbstractTestCase;
 
-class RemoteTest extends \PHPUnit_Framework_TestCase
+class RemoteTest extends AbstractTestCase
 {
     public function testPost()
     {

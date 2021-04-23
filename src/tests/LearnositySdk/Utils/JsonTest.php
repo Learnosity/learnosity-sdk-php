@@ -2,9 +2,10 @@
 
 namespace tests\LearnositySdk\Utils;
 
+use LearnositySdk\AbstractTestCase;
 use LearnositySdk\Utils\Json;
 
-class JsonTest extends \PHPUnit_Framework_TestCase
+class JsonTest extends AbstractTestCase
 {
     public function testCheckError()
     {

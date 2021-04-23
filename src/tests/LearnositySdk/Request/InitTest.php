@@ -2,10 +2,10 @@
 
 namespace LearnositySdk\Request;
 
+use LearnositySdk\AbstractTestCase;
 use LearnositySdk\Exceptions\ValidationException;
-use LearnositySdk\Request\Init;
 
-class InitTest extends \PHPUnit_Framework_TestCase
+class InitTest extends AbstractTestCase
 {
     const SECRET = '74c5fd430cf1242a527f6223aebd42d30464be22';
 
@@ -415,10 +415,10 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $secret = static::SECRET;
         $request = [
             'users' => [
-                '$ANONYMIZED_USER_ID_1' => '',
-                '$ANONYMIZED_USER_ID_2' => '',
-                '$ANONYMIZED_USER_ID_3' => '',
-                '$ANONYMIZED_USER_ID_4' => ''
+                '$ANONYMIZED_USER_ID_1' => '$ANONYMIZED_USER_ID_1_NAME',
+                '$ANONYMIZED_USER_ID_2' => '$ANONYMIZED_USER_ID_2_NAME',
+                '$ANONYMIZED_USER_ID_3' => '$ANONYMIZED_USER_ID_3_NAME',
+                '$ANONYMIZED_USER_ID_4' => '$ANONYMIZED_USER_ID_4_NAME'
             ]
         ];
         $action = null;
@@ -684,14 +684,6 @@ class InitTest extends \PHPUnit_Framework_TestCase
             new Init($service, $security, $secret, $request, $action)
         ];
         $testCases[] = $eventsApi;
-
-        $request['users'] = array_keys($request['users']);
-        $eventsApiUsersArray = [
-            $eventsApiExpected,
-            new Init($service, $security, $secret, $request, $action)
-        ];
-        // This case will trigger our warning; we can't really test for it, but we check that we are backward-compatible
-        $testCases[] = $eventsApiUsersArray;
 
         /* Items */
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();

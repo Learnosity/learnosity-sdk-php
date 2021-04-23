@@ -2,10 +2,8 @@
 
 namespace LearnositySdk\Request;
 
-use \Exception;
-use \LearnositySdk\Request\Init;
-use \LearnositySdk\Request\Remote;
-use \LearnositySdk\Utils\Json;
+use Exception;
+use LearnositySdk\Utils\Json;
 
 /**
  *--------------------------------------------------------------------------

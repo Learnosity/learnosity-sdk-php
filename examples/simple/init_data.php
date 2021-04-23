@@ -31,8 +31,10 @@ for ($reqno=0; $reqno<5; $reqno++) {
     );
 
     // DataApi::request() returns a Remote object
+    /** @var Remote $res */
     print("<<< [{$res->getStatusCode()}] {$res->getBody()}" . PHP_EOL);
     $response = $res->json();
+
     if (isset($response['meta']['next'])
         && isset($response['meta']['records'])
         && $response['meta']['records'] > 0

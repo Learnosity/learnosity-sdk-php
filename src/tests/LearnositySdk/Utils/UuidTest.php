@@ -2,9 +2,10 @@
 
 namespace tests\LearnositySdk\Utils;
 
+use LearnositySdk\AbstractTestCase;
 use LearnositySdk\Utils\Uuid;
 
-class UuidTest extends \PHPUnit_Framework_TestCase
+class UuidTest extends AbstractTestCase
 {
     public function dataProviderGenerate()
     {

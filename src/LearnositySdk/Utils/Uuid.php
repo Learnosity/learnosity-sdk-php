@@ -2,14 +2,6 @@
 
 namespace LearnositySdk\Utils;
 
-// Find the vendor directory depending on how the code was pulled in
-$vendorDir = __DIR__ . '/../../../../../../vendor';         // Loaded as a vendor
-if (!file_exists($vendorDir)) {
-    $vendorDir = __DIR__ . '/../../../vendor';              // Standalone with its own vendor
-}
-// Load PHP5 polyfill for random_bytes(). See self::uuidv4() declaration for more.
-require_once $vendorDir . '/paragonie/random_compat/lib/random.php';
-
 // Thanks to Andrew Moore http://www.php.net/manual/en/function.uniqid.php#94959
 
 class Uuid
@@ -27,8 +19,6 @@ class Uuid
                 return self::v5($namespace, $name);
                 break;
             case 'uuidv4':
-                return self::uuidv4($namespace, $name);
-                break;
             default:
                 return self::uuidv4();
                 break;

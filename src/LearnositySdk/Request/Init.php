@@ -412,13 +412,8 @@ class Init
                 $users = $this->requestPacket['users'];
                 $hashedUsers = array();
                 if (!$this->isAssocArray($users)) {
-                    /* Backward compatibility: if we get a non-associative array,
-                     * we assume that it's already an array of user IDs */
-                    Init::warnDeprecated(
-                        __CLASS__ . '::' . __FUNCTION__ . ' ("events", ...):'
-                        . ' Passing an array of user IDs is deprecated;'
-                        . ' it should be an associative array with user IDs as keys.'
-                    );
+                    throw new ValidationException('Passing an array of user IDs is deprecated,' .
+                                                ' it should be an associative array with user IDs as keys.');
                 } else {
                     $users = array_keys($users);
                 }

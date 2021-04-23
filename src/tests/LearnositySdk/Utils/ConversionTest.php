@@ -2,9 +2,10 @@
 
 namespace tests\LearnositySdk\Utils;
 
+use LearnositySdk\AbstractTestCase;
 use LearnositySdk\Utils\Conversion;
 
-class ConversionTest extends \PHPUnit_Framework_TestCase
+class ConversionTest extends AbstractTestCase
 {
     public function dataProviderFormatSizeUnits()
     {
