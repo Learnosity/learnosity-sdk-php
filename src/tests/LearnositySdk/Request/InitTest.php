@@ -24,10 +24,6 @@ class InitTest extends AbstractTestCase
      */
 
     /**
-     * @param  array  $params
-     * @param  string $expectedException
-     * @param  string $expectedExceptionMessage
-     *
      * @dataProvider constructorProvider
      */
     public function testConstructor(
@@ -51,12 +47,9 @@ class InitTest extends AbstractTestCase
     }
 
     /**
-     * @param  string $pathToMeta
-     * @param  array  $generated
-     *
      * @dataProvider generateWithMetaProvider
      */
-    public function testGenerateWithMeta($pathToMeta, $generated)
+    public function testGenerateWithMeta(string $pathToMeta, $generated)
     {
         $pathParts = explode('.', $pathToMeta);
         // in case of Author API, Assess API, Events API, Items API, Questions API and Reports API
@@ -73,23 +66,17 @@ class InitTest extends AbstractTestCase
     }
 
     /**
-     * @param  string $expectedResult
-     * @param  Init   $initObject
-     *
      * @dataProvider generateSignatureProvider
      */
-    public function testGenerateSignature($expectedResult, $initObject)
+    public function testGenerateSignature(string $expectedResult, Init $initObject)
     {
         $this->assertEquals($expectedResult, $initObject->generateSignature());
     }
 
     /**
-     * @param  string $expectedResult
-     * @param  Init   $initObject
-     *
      * @dataProvider generateProvider
      */
-    public function testGenerate($expectedResult, $initObject)
+    public function testGenerate($expectedResult, Init $initObject)
     {
         $generated = $initObject->generate();
 
@@ -215,10 +202,10 @@ class InitTest extends AbstractTestCase
      */
 
     /**
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingAssessApiParams($assoc = false)
+    public static function getWorkingAssessApiParams(bool $assoc = false): array
     {
         $service = 'assess';
         $security = static::getSecurity();
@@ -306,29 +293,29 @@ class InitTest extends AbstractTestCase
         $action = null;
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
-            );
+                'action' => $action,
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
-                $action
-            );
+                $action,
+            ];
         }
     }
 
     /**
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingAuthorApiParams($assoc = false)
+    public static function getWorkingAuthorApiParams(bool $assoc = false): array
     {
         $service = 'author';
         $security = static::getSecurity();
@@ -351,31 +338,31 @@ class InitTest extends AbstractTestCase
         $action = null;
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
-            );
+                'action' => $action,
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
-                $action
-            );
+                $action,
+            ];
         }
     }
 
     /**
      * WARNING: RemoteTest is also using this params
      *
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingDataApiParams($assoc = false)
+    public static function getWorkingDataApiParams(bool $assoc = false): array
     {
         $service = 'data';
         $security = static::getSecurity();
@@ -386,29 +373,29 @@ class InitTest extends AbstractTestCase
         $action = 'get';
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
                 'action' => $action
-            );
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
                 $action
-            );
+            ];
         }
     }
 
     /**
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingEventsApiParams($assoc = false)
+    public static function getWorkingEventsApiParams(bool $assoc = false): array
     {
         $service = 'events';
         $security = static::getSecurity();
@@ -424,29 +411,29 @@ class InitTest extends AbstractTestCase
         $action = null;
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
                 'action' => $action
-            );
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
                 $action
-            );
+            ];
         }
     }
 
     /**
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingItemsApiParams($assoc = false)
+    public static function getWorkingItemsApiParams(bool $assoc = false): array
     {
         $service = 'items';
         $security = static::getSecurity();
@@ -481,29 +468,29 @@ class InitTest extends AbstractTestCase
         $action = null;
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
                 'action' => $action
-            );
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
                 $action
-            );
+            ];
         }
     }
 
     /**
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingQuestionsApiParams($assoc = false)
+    public static function getWorkingQuestionsApiParams(bool $assoc = false): array
     {
         $service = 'questions';
         $security = static::getSecurity();
@@ -530,29 +517,29 @@ class InitTest extends AbstractTestCase
         $action = null;
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
                 'action' => $action
-            );
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
                 $action
-            );
+            ];
         }
     }
 
     /**
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingReportsApiParams($assoc = false)
+    public static function getWorkingReportsApiParams(bool $assoc = false): array
     {
         $service = 'reports';
         $security = static::getSecurity();
@@ -572,21 +559,21 @@ class InitTest extends AbstractTestCase
         $action = null;
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
                 'action' => $action
-            );
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
                 $action
-            );
+            ];
         }
     }
 
@@ -594,7 +581,7 @@ class InitTest extends AbstractTestCase
      *
      * @return array
      */
-    public function getMetaField()
+    public function getMetaField(): array
     {
         return [
             "test_key_string" => "test-string",
@@ -607,7 +594,7 @@ class InitTest extends AbstractTestCase
      * Data providers
      */
 
-    public function constructorProvider()
+    public function constructorProvider(): array
     {
         list($service, $security, $secret, $request, $action) = static::getWorkingDataApiParams();
 
@@ -618,17 +605,17 @@ class InitTest extends AbstractTestCase
             [$service, $security, $secret, $request, $action, new Init($service, $security, $secret, $request, $action)],
             ['', $security, $secret, $request, $action, null, ValidationException::class, 'The `service` argument wasn\'t found or was empty'],
             ['wrongService', $security, $secret, $request, $action, null, ValidationException::class, 'The service provided (wrongService) is not valid'],
-            [$service, '', $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array'],
+            [$service, '', $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array or a valid JSON string'],
+            [$service, null, $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array or a valid JSON string'],
+            [$service, '', $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array or a valid JSON string'],
+            [$service, $security, '', $request, $action, null, ValidationException::class, 'The `secret` argument must be a valid string'],
             [$service, $wrongSecurity, $secret, $request, $action, null, ValidationException::class, 'Invalid key found in the security packet: wrongParam'],
             ['questions', $security, $secret, $request, $action, null, ValidationException::class, 'Questions API requires a `user_id` in the security packet'],
-            [$service, $security, 25, $request, $action, null, ValidationException::class, 'The `secret` argument must be a valid string'],
-            [$service, $security, '', $request, $action, null, ValidationException::class, 'The `secret` argument must be a valid string'],
-            [$service, $security, $secret, 25, $action, null, ValidationException::class, 'The request packet must be an array'],
-            [$service, $security, $secret, $request, 25, null, ValidationException::class, 'The `action` argument must be a string']
+            [$service, $security, $secret, 25, $action, null, ValidationException::class, 'The request packet must be an array or a valid JSON string'],
         ];
     }
 
-    public function generateProvider()
+    public function generateProvider(): array
     {
         // We disable telemetry to be able to reliably test signature generation. Added telemetry
         // will differ on each platform tests would be run, and therefore fail.
@@ -730,7 +717,7 @@ class InitTest extends AbstractTestCase
         return $testCases;
     }
 
-    public function generateSignatureProvider()
+    public function generateSignatureProvider(): array
     {
         // We disable telemetry to be able to reliably test signature generation. Added telemetry
         // will differ on each platform tests would be run, and therefore fail.
@@ -814,8 +801,10 @@ class InitTest extends AbstractTestCase
         return $testCases;
     }
 
-    public function generateWithMetaProvider()
+    public function generateWithMetaProvider(): array
     {
+        Init::enableTelemetry();
+
         $testCases = [];
 
         /* Author */
@@ -873,6 +862,8 @@ class InitTest extends AbstractTestCase
             (new Init($service, $security, $secret, $request, $action))->generate()
         ];
         $testCases[] = $reportsApi;
+
+        Init::disableTelemetry();
 
         return $testCases;
     }

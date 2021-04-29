@@ -17,36 +17,42 @@ class RemoteTest extends AbstractTestCase
         $remote = new Remote();
         $ret = $remote->post($url, $init->generate());
 
-        $this->assertInstanceOf('LearnositySdk\Request\Remote', $ret);
+        $this->assertInstanceOf(Remote::class, $ret);
 
-        $body = $remote->getBody();
-        $arr = json_decode($body, true);
+        $this->assertEquals(200, $remote->getStatusCode());
+        $this->assertEquals('application/json; charset=utf-8', $remote->getHeader());
+        $this->assertGreaterThan(0, $remote->getSize(false));
+        $this->assertNotEquals('0 bytes', $remote->getSize());
+
+        $arr = $remote->json();
 
         $this->assertNotEmpty($arr['meta']['status']);
         $this->assertNotEmpty($arr['meta']['timestamp']);
         $this->assertTrue($arr['meta']['status']);
         $this->assertArrayHasKey('records', $arr['meta']);
-        $this->assertEquals($arr['meta']['records'], count($arr['data']));
-
-        return $ret;
+        $this->assertCount($arr['meta']['records'], $arr['data']);
     }
 
     public function testGet()
     {
         $remote = new Remote();
         $ret = $remote->get($this->buildBaseSchemasUrl() . '/questions/templates');
-        $body = $ret->getBody();
-        $arr = json_decode($body, true);
+        $arr = $remote->json();
+
+        $this->assertInstanceOf(Remote::class, $ret);
+
+        $this->assertEquals(200, $remote->getStatusCode());
+        $this->assertEquals('application/json; charset=utf-8', $remote->getHeader());
+        $this->assertGreaterThan(0, $remote->getSize(false));
+        $this->assertNotEquals('0 bytes', $remote->getSize());
 
         $this->assertNotEmpty($arr['meta']['status']);
         $this->assertNotEmpty($arr['meta']['timestamp']);
         $this->assertTrue($arr['meta']['status']);
         $this->assertArrayHasKey('data', $arr);
-
-        return $ret;
     }
 
-    private function buildBaseDataUrl()
+    private function buildBaseDataUrl(): string
     {
         $versionPath = 'v1';
         if (isset($_SERVER['ENV']) && $_SERVER['ENV'] != 'prod') {
@@ -58,12 +64,12 @@ class RemoteTest extends AbstractTestCase
         return 'https://data' . $this->buildBaseDomain() . '/' . $versionPath;
     }
 
-    private function buildBaseSchemasUrl()
+    private function buildBaseSchemasUrl(): string
     {
         return 'https://schemas' . $this->buildBaseDomain() . '/latest';
     }
 
-    private function buildBaseDomain()
+    private function buildBaseDomain(): string
     {
         $envDomain = '';
         $regionDomain = '.learnosity.com';

@@ -13,7 +13,7 @@ class JsonTest extends AbstractTestCase
         $this->assertTrue( is_null($result) || is_string($result) );
     }
 
-    public function dataProviderEncode()
+    public function dataProviderEncode(): array
     {
         return [
             [0.00000012, '0.00000012'],
@@ -50,13 +50,13 @@ class JsonTest extends AbstractTestCase
     /**
      * @dataProvider dataProviderEncode
      */
-    public function testEncode($array, $expectedResult)
+    public function testEncode($val, string $expectedResult)
     {
-        $result = Json::encode($array);
+        $result = Json::encode($val);
         $this->assertEquals($expectedResult, $result);
     }
 
-    public function dataProviderIsJson()
+    public function dataProviderIsJson(): array
     {
         return [
             ['12', true],
@@ -77,7 +77,7 @@ class JsonTest extends AbstractTestCase
     /**
      * @dataProvider dataProviderIsJson
      */
-    public function testIsJson($val, $expectedResult)
+    public function testIsJson(string $val, bool $expectedResult)
     {
         $result = Json::isJson($val);
         $this->assertEquals($expectedResult, $result);
