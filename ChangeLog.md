@@ -7,8 +7,16 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- PHP 7 to PHP 8 are supported.
+- PHPUnit 6 to PHPUnit 9 are supported.
+- Improved unit and integration test coverage.
+
+### Removed
+- PHP 5.6 support, PHP 7.0 is now the minimum supported version.
+
 ### Fixed
-- Fixed the version range of `php` this library requires
+- Fixed a bug with `DataApi::requestRecursive` where it would overwrite output data unintentionally.
 
 ## [v0.10.3] - 2019-12-19
 ### Fixed

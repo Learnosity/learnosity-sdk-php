@@ -26,13 +26,13 @@ next.
 
 Using [Composer] is the recommended way to install the Learnosity SDK for PHP. The easiest way is to run this from your parent project folder:
 
-    composer require "learnosity/learnosity-sdk-php"
+    composer require learnosity/learnosity-sdk-php "^1.0"
 
 You can also specify the requirement manually by adding "learnosity/learnosity-sdk-php" as a dependency in your project's composer.json file.
 
     {
         "require": {
-            "learnosity/learnosity-sdk-php": "0.*"
+            "learnosity/learnosity-sdk-php": "^1.0"
         }
     }
 
