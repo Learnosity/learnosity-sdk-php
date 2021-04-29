@@ -14,26 +14,40 @@ use LearnositySdk\Utils\Conversion;
  *
  */
 
-class Remote
+class Remote implements RemoteInterface
 {
     private $result = null;
+
+    /**
+     * @var array
+     */
+    private $remoteOptions;
+
+    /**
+     * Remote constructor.
+     *
+     * @param array $remoteOptions Optional options to pass to cURL
+     */
+    public function __construct(array $remoteOptions = [])
+    {
+        $this->remoteOptions = $remoteOptions;
+    }
 
     /**
      * Execute a resource request (GET) to an endpoint.
      *
      * @param  string $url      Full URL of where to GET the request
-     * @param  array  $request  Payload of request
-     * @param  bool   $options  Optional Curl options
+     * @param  array  $data     Payload of request
      * @return $this            The instance of this class
      */
-    public function get($url, $data = array(), $options = array())
+    public function get(string $url, array $data = []): RemoteInterface
     {
         $query = http_build_query($data);
         if (!empty($query)) {
             $url = (strpos($url, '?')) ? $url . '&' . $query : $url . '?' . $query;
         }
 
-        $this->request($url, false, $options);
+        $this->request($url, []);
 
         return $this;
     }
@@ -42,13 +56,12 @@ class Remote
      * Execute a resource request (POST) to an endpoint.
      *
      * @param  string $url      Full URL of where to POST the request
-     * @param  array  $request  Payload of request
-     * @param  bool   $options  Optional Curl options
+     * @param  array  $data  Payload of request
      * @return $this            The instance of this class
      */
-    public function post($url, $data = array(), $options = array())
+    public function post(string $url, array $data = array()): RemoteInterface
     {
-        $this->request($url, $data, $options);
+        $this->request($url, $data);
 
         return $this;
     }
@@ -56,11 +69,11 @@ class Remote
     /**
      * Determine whether a header is an 'Expect' header.
      * @param string $header
-     * @return boolean
+     * @return bool
      */
-    private function isExpectHeader($header)
+    private function isExpectHeader(string $header): bool
     {
-        return (strpos(strtolower($header), 'expect:') === 0);
+        return (stripos($header, 'expect:') === 0);
     }
 
     /**
@@ -70,7 +83,7 @@ class Remote
      *
      * @return array
      */
-    private function normalizeRequestHeaders(array $headers)
+    private function normalizeRequestHeaders(array $headers): array
     {
         // Explicitly set an empty Expect header, so that the server will not
         // respond with a "100 Continue" status code for large uploads.
@@ -99,28 +112,27 @@ class Remote
      * payload and cURL options.
      *
      * @param  string $url      Full URL of where to POST the request
-     * @param  array  $request  Payload of request
-     * @param  bool   $options  Optional Curl options
+     * @param  array  $post     Payload of request
      * @return void
      */
-    private function request($url, $post = false, $options = array())
+    public function request(string $url, array $post = [])
     {
-        $defaults = array(
+        $defaults = [
             'connect_timeout'   => 10,
             'timeout'           => 40,
-            'headers'           => array(),
+            'headers'           => [],
             'encoding'          => 'utf-8',
-            'ssl_verify'        => true
-        );
+            'ssl_verify'        => true,
+        ];
 
-        $options = array_merge($defaults, $options);
+        $options = array_merge($defaults, $this->remoteOptions);
 
         // normalize the headers
         $options['headers'] = $this->normalizeRequestHeaders($options['headers']);
 
         $ch = curl_init();
 
-        $params = array(
+        $params = [
             CURLOPT_URL            => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
@@ -129,8 +141,8 @@ class Remote
             CURLOPT_CONNECTTIMEOUT => $options['connect_timeout'],
             CURLOPT_TIMEOUT        => $options['timeout'],
             CURLOPT_MAXREDIRS      => 10,
-            CURLOPT_SSL_VERIFYPEER => $options['ssl_verify']
-        );
+            CURLOPT_SSL_VERIFYPEER => $options['ssl_verify'],
+        ];
 
         if (!empty($options['headers'])) {
             $params[CURLOPT_HTTPHEADER] = $options['headers'];
@@ -161,7 +173,7 @@ class Remote
      * Returns the body of the response payload as returned by the
      * URL endpoint
      *
-     * @return string Typically a JSON object
+     * @return string|bool Typically a JSON object
      */
     public function getBody()
     {
@@ -174,21 +186,21 @@ class Remote
      *
      * @return array
      */
-    public function getError()
+    public function getError(): array
     {
-        return array(
+        return [
             'code'    => $this->result['error_code'],
-            'message' => $this->result['error_message']
-        );
+            'message' => $this->result['error_message'],
+        ];
     }
 
     /**
      * Returns part of the response headers
      *
-     * @param  string $type Which key in the headers packet to return
-     * @return string       Header from the response packet
+     * @param  string      $type Which key in the headers packet to return
+     * @return string|null       Header from the response packet
      */
-    public function getHeader($type = 'content_type')
+    public function getHeader(string $type = 'content_type')
     {
         return (array_key_exists($type, $this->result)) ? $this->result[$type] : null;
     }
@@ -196,14 +208,15 @@ class Remote
     /**
      * Returns the size in bytes of the request body
      *
+     * @param bool $format
      * @return mixed Formatted string or raw float (bytes)
      */
-    public function getSize($format = true)
+    public function getSize(bool $format = true)
     {
         if ($format) {
-            return Conversion::formatSizeUnits($this->result['size_download']);
+            return Conversion::formatSizeUnits((float)$this->result['size_download']);
         }
-        return $this->result['size_download'];
+        return (float)$this->result['size_download'];
     }
 
     /**
@@ -211,9 +224,9 @@ class Remote
      *
      * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
-        return $this->result['http_code'];
+        return (int)$this->result['http_code'];
     }
 
     /**
@@ -221,9 +234,9 @@ class Remote
      *
      * @return float
      */
-    public function getTimeTaken()
+    public function getTimeTaken(): float
     {
-        return $this->result['total_time'];
+        return (float)$this->result['total_time'];
     }
 
     /**
@@ -232,7 +245,7 @@ class Remote
      * @param  boolean $assoc   Whether to return an associative array or object
      * @return mixed            Either a PHP associative array or object
      */
-    public function json($assoc = true)
+    public function json(bool $assoc = true)
     {
         return json_decode($this->getBody(), $assoc);
     }

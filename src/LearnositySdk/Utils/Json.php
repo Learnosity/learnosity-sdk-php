@@ -41,42 +41,32 @@ class Json
      * Encodes a PHP array into a JSON string. Has settings
      * to unescape both slashes and unicode characters.
      *
-     * @param  array  $array Value to convert to JSON
+     * @param  array|null  $array Value to convert to JSON
      *
      * @return string JSON encoded string
      */
-    public static function encode($array, $options = null)
+    public static function encode($array, array $options = [])
     {
-        $result = false;
+        if (is_null($array)) {
+            return null;
+        }
+
         $highPrecisionFloatMap = static::getHighPrecisionFloatMap($array);
 
-        if (version_compare(PHP_VERSION, '5.4', '>=')) {
-            $jsonOptions = JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES;
-            if (!empty($options)) {
-                foreach ($options as $o) {
-                    $jsonOptions += $o;
-                }
+        $jsonOptions = JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES;
+        if (!empty($options)) {
+            foreach ($options as $o) {
+                $jsonOptions += $o;
             }
-            $result = json_encode($array, (int)$jsonOptions);
-        } else {
-            $result = json_encode($array);
-
-            // Unicode fix: http://stackoverflow.com/a/2934602
-            $result = preg_replace_callback(
-                '/\\\\u([0-9a-f]{4})/i',
-                function ($match) {
-                    return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
-                },
-                $result
-            );
-            // Escaped slashes fix
-            $result = str_replace('\/', '/', $result);
         }
+
+        $result = json_encode($array, (int)$jsonOptions);
 
         foreach($highPrecisionFloatMap as $scientificValueString => $floatValueString) {
             // Replace all scientific values by equivalent floatValues
             $result = str_ireplace($scientificValueString, $floatValueString, $result);
         }
+
         return $result;
     }
 
@@ -87,7 +77,7 @@ class Json
      * @param  boolean $assoc  whether to decode to associative array
      * @return mixed           json string, json object, json array or false on failure
      */
-    public static function getFromFile($path, $decode = false, $assoc = true)
+    public static function getFromFile(string $path, bool $decode = false, bool $assoc = true)
     {
         if (is_readable($path)) {
             $json = utf8_encode(file_get_contents($path));
@@ -106,7 +96,7 @@ class Json
      *
      * @return boolean
      */
-    public static function isJson($val)
+    public static function isJson(string $val): bool
     {
         return !is_null(json_decode($val, true));
     }
@@ -119,10 +109,14 @@ class Json
      * @param array|float $value the $json to be encoded
      * @return array mapping scientific values to float values
      */
-    private static function getHighPrecisionFloatMap($value)
+    private static function getHighPrecisionFloatMap($value): array
     {
         if (!is_array($value)) {
-            return static::getFloatMap($value);
+            if (!is_float($value)) {
+                return [];
+            } else {
+                return static::getFloatMap($value);
+            }
         }
 
         $floatMap = [];
@@ -135,15 +129,11 @@ class Json
     /**
      * Helper function to build up the float map
      *
-     * @param $value
+     * @param float $value
      * @return array
      */
-    private static function getFloatMap($value)
+    private static function getFloatMap(float $value): array
     {
-        if (!is_float($value)) {
-            return [];
-        }
-
         $stringValue = json_encode($value);
 
         // If the string value is in scientific notation it should have a negative exponent. Split it there.

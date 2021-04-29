@@ -4,6 +4,7 @@ namespace LearnositySdk\Request;
 
 use Exception;
 use LearnositySdk\Utils\Json;
+use LearnositySdk\Exceptions\ValidationException;
 
 /**
  *--------------------------------------------------------------------------
@@ -17,65 +18,67 @@ use LearnositySdk\Utils\Json;
 
 class DataApi
 {
+    /**
+     * @var RemoteInterface
+     */
     private $remote;
-    private $remoteOptions;
 
     /**
      * @param array $remoteOptions Overrides options array for a cURL request
+     * @param RemoteInterface $remote Overrides default remote class with optional user supplied one
      */
-    public function __construct($remoteOptions = array())
+    public function __construct(array $remoteOptions = [], RemoteInterface $remote = null)
     {
-        $this->remoteOptions = $remoteOptions;
-        $this->remote = new Remote();
+        $this->remote = is_null($remote) ? new Remote($remoteOptions) : $remote;
     }
 
     /**
      * Makes a single request to the data api
      *
-     * @param  string  $endpoint       URL to send the request
-     * @param  array   $securityPacket Security details
-     * @param  string  $secret         Private key
-     * @param  array   $requestPacket  Request packet
-     * @param  string  $action         Action for the request
-     * @return Remote                  Instance of the Remote class,
+     * @param string $endpoint URL to send the request
+     * @param array|string $securityPacket Security details
+     * @param string $secret Private key
+     * @param array $requestPacket Request packet
+     * @param string $action Action for the request
+     * @return RemoteInterface         Instance of the Remote class,
      *                                 the response can be obtained with the getBody() method
+     * @throws ValidationException
      */
-    public function request($endpoint, $securityPacket, $secret, /* FIXME: array */ $requestPacket = [], $action = null)
-    {
-        if (!is_array($requestPacket)) {
-            Init::warnDeprecated(
-                __CLASS__ . '::' . __FUNCTION__ . ':'
-                . ' $requestPacket should be a PHP array.'
-            );
-        }
-
+    public function request(
+        string $endpoint,
+        $securityPacket,
+        string $secret,
+        array $requestPacket = [],
+        $action = null
+    ): RemoteInterface {
         $init = new Init('data', $securityPacket, $secret, $requestPacket, $action);
         $params = $init->generate();
-        return $this->remote->post($endpoint, $params, $this->remoteOptions);
+        return $this->remote->post($endpoint, $params);
     }
 
     /**
      * Makes a recursive request to the data api, dependant on
      * whether 'next' is returned in the meta object
      *
-     * @param  string  $endpoint       URL to send the request
-     * @param  array   $securityPacket Security details
-     * @param  string  $secret         Private key
-     * @param  array   $requestPacket  Request packet
-     * @param  string  $action         Action for the request
-     * @param  mixed   $callback       Optional callback to execute instead of returning data
+     * @param string $endpoint URL to send the request
+     * @param array|string $securityPacket Security details
+     * @param string $secret Private key
+     * @param array $requestPacket Request packet
+     * @param string $action Action for the request
+     * @param mixed $callback Optional callback to execute instead of returning data
      * @return array                   Array of all data requests or [] or using a callback
+     * @throws ValidationException
+     * @throws Exception
      */
-    public function requestRecursive($endpoint, $securityPacket, $secret, /* FIXME: array */ $requestPacket = [], $action = null, $callback = null)
-    {
-        $response = array();
-
-        if (!is_array($requestPacket)) {
-            Init::warnDeprecated(
-                __CLASS__ . '::' . __FUNCTION__ . ':'
-                . ' $requestPacket should be a PHP array.'
-            );
-        }
+    public function requestRecursive(
+        string $endpoint,
+        $securityPacket,
+        string $secret,
+        array $requestPacket = [],
+        string $action = null,
+        callable $callback = null
+    ): array {
+        $response = [];
 
         do {
             $request = $this->request($endpoint, $securityPacket, $secret, $requestPacket, $action);

@@ -6,26 +6,30 @@ namespace LearnositySdk\Utils;
 
 class Uuid
 {
-    public static function generate($type = 'uuidv4', $namespace = null, $name = null)
+    /**
+     * @throws \Exception
+     */
+    public static function generate(string $type = 'uuidv4', string $namespace = null, string $name = null)
     {
         switch ($type) {
             case 'v3':
                 return self::v3($namespace, $name);
-                break;
             case 'v4':
                 return self::v4();
-                break;
             case 'v5':
                 return self::v5($namespace, $name);
-                break;
             case 'uuidv4':
             default:
                 return self::uuidv4();
-                break;
         }
     }
 
-    private static function v3($namespace, $name)
+    /**
+     * @param string $namespace
+     * @param string $name
+     * @return false|string
+     */
+    private static function v3(string $namespace = null, string $name = null)
     {
         if (!self::isValid($namespace)) {
             return false;
@@ -68,7 +72,7 @@ class Uuid
      *
      * @return string
      */
-    private static function v4()
+    private static function v4(): string
     {
         return sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
@@ -109,8 +113,9 @@ class Uuid
      * @ref https://paragonie.com/b/JvICXzh_jhLyt4y3
      *
      * @return string
+     * @throws \Exception
      */
-    private static function uuidv4()
+    private static function uuidv4(): string
     {
         return implode('-', [
             bin2hex(random_bytes(4)),
@@ -121,7 +126,12 @@ class Uuid
         ]);
     }
 
-    private static function v5($namespace, $name)
+    /**
+     * @param string $namespace
+     * @param string $name
+     * @return false|string
+     */
+    private static function v5(string $namespace = null, string $name = null)
     {
         if (!self::isValid($namespace)) {
             return false;
@@ -159,7 +169,11 @@ class Uuid
         );
     }
 
-    public static function isValid($uuid)
+    /**
+     * @param string $uuid
+     * @return bool
+     */
+    public static function isValid(string $uuid): bool
     {
         return preg_match(
             '/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i',
