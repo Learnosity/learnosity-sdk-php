@@ -47,7 +47,7 @@ class Remote implements RemoteInterface
             $url = (strpos($url, '?')) ? $url . '&' . $query : $url . '?' . $query;
         }
 
-        $this->request($url, []);
+        $this->request($url);
 
         return $this;
     }
@@ -59,7 +59,7 @@ class Remote implements RemoteInterface
      * @param  array  $data  Payload of request
      * @return $this            The instance of this class
      */
-    public function post(string $url, array $data = array()): RemoteInterface
+    public function post(string $url, array $data = []): RemoteInterface
     {
         $this->request($url, $data);
 

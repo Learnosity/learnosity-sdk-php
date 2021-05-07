@@ -71,25 +71,6 @@ class Json
     }
 
     /**
-     * Trying to open a file and read json from there
-     * @param  string  $path   path to the resource
-     * @param  boolean $decode whether to decode
-     * @param  boolean $assoc  whether to decode to associative array
-     * @return mixed           json string, json object, json array or false on failure
-     */
-    public static function getFromFile(string $path, bool $decode = false, bool $assoc = true)
-    {
-        if (is_readable($path)) {
-            $json = utf8_encode(file_get_contents($path));
-            if ($decode) {
-                $json = json_decode($json, $assoc);
-            }
-            return $json;
-        }
-        return false;
-    }
-
-    /**
      * Returns whether the string value is valid JSON
      *
      * @param string $val A string value to test

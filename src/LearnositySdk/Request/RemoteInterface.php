@@ -20,7 +20,7 @@ interface RemoteInterface
      * @param  array  $data  Payload of request
      * @return $this            The instance of this class
      */
-    public function post(string $url, array $data = array()): RemoteInterface;
+    public function post(string $url, array $data = []): RemoteInterface;
 
     /**
      * Makes a cURL request to an endpoint with an optional request

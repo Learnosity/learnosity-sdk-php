@@ -7,18 +7,6 @@ use LearnositySdk\Exceptions\ValidationException;
 
 class InitTest extends AbstractTestCase
 {
-    const SECRET = '74c5fd430cf1242a527f6223aebd42d30464be22';
-
-    /** @return array $security */
-    public static function getSecurity()
-    {
-        return [
-        'consumer_key' => 'yis0TYCu7U9V4o7M',
-        'domain'       => 'localhost',
-        'timestamp'    => '20140626-0528',
-        ];
-    }
-
     /*
      * Tests
      */
@@ -211,7 +199,7 @@ class InitTest extends AbstractTestCase
         $security = static::getSecurity();
         // Needed to initialise Questions API
         $security['user_id'] = '$ANONYMIZED_USER_ID';
-        $secret = static::SECRET;
+        $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             "items" => [
                 [
@@ -319,7 +307,7 @@ class InitTest extends AbstractTestCase
     {
         $service = 'author';
         $security = static::getSecurity();
-        $secret = static::SECRET;
+        $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             "mode" => "item_list",
             "config" => [
@@ -366,10 +354,10 @@ class InitTest extends AbstractTestCase
     {
         $service = 'data';
         $security = static::getSecurity();
-        $secret = static::SECRET;
-        $request = array(
-            'limit' => 100
-        );
+        $secret = static::TEST_CONSUMER_SECRET;
+        $request = [
+            'limit' => 100,
+        ];
         $action = 'get';
 
         if ($assoc) {
@@ -378,7 +366,7 @@ class InitTest extends AbstractTestCase
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
+                'action' => $action,
             ];
         } else {
             return [
@@ -386,7 +374,7 @@ class InitTest extends AbstractTestCase
                 $security,
                 $secret,
                 $request,
-                $action
+                $action,
             ];
         }
     }
@@ -399,7 +387,7 @@ class InitTest extends AbstractTestCase
     {
         $service = 'events';
         $security = static::getSecurity();
-        $secret = static::SECRET;
+        $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             'users' => [
                 '$ANONYMIZED_USER_ID_1' => '$ANONYMIZED_USER_ID_1_NAME',
@@ -416,7 +404,7 @@ class InitTest extends AbstractTestCase
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
+                'action' => $action,
             ];
         } else {
             return [
@@ -424,7 +412,7 @@ class InitTest extends AbstractTestCase
                 $security,
                 $secret,
                 $request,
-                $action
+                $action,
             ];
         }
     }
@@ -437,7 +425,7 @@ class InitTest extends AbstractTestCase
     {
         $service = 'items';
         $security = static::getSecurity();
-        $secret = static::SECRET;
+        $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             'user_id' => '$ANONYMIZED_USER_ID',
             'rendering_type' => 'assess',
@@ -473,7 +461,7 @@ class InitTest extends AbstractTestCase
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
+                'action' => $action,
             ];
         } else {
             return [
@@ -481,7 +469,7 @@ class InitTest extends AbstractTestCase
                 $security,
                 $secret,
                 $request,
-                $action
+                $action,
             ];
         }
     }
@@ -495,7 +483,7 @@ class InitTest extends AbstractTestCase
         $service = 'questions';
         $security = static::getSecurity();
         $security['user_id'] = '$ANONYMIZED_USER_ID';
-        $secret = static::SECRET;
+        $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             'type'      => 'local_practice',
             'state'     => 'initial',
@@ -522,7 +510,7 @@ class InitTest extends AbstractTestCase
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
+                'action' => $action,
             ];
         } else {
             return [
@@ -530,7 +518,7 @@ class InitTest extends AbstractTestCase
                 $security,
                 $secret,
                 $request,
-                $action
+                $action,
             ];
         }
     }
@@ -543,7 +531,7 @@ class InitTest extends AbstractTestCase
     {
         $service = 'reports';
         $security = static::getSecurity();
-        $secret = static::SECRET;
+        $secret = static::TEST_CONSUMER_SECRET;
         $request = [
            "reports" => [
                [
@@ -564,7 +552,7 @@ class InitTest extends AbstractTestCase
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
+                'action' => $action,
             ];
         } else {
             return [
@@ -572,7 +560,7 @@ class InitTest extends AbstractTestCase
                 $security,
                 $secret,
                 $request,
-                $action
+                $action,
             ];
         }
     }
@@ -586,7 +574,7 @@ class InitTest extends AbstractTestCase
         return [
             "test_key_string" => "test-string",
             "test_key_integer" => 12345,
-            "test_key_boolean" => true
+            "test_key_boolean" => true,
         ];
     }
 

@@ -16,6 +16,7 @@ class JsonTest extends AbstractTestCase
     public function dataProviderEncode(): array
     {
         return [
+            [null, null],
             [0.00000012, '0.00000012'],
             [
                 [
@@ -50,9 +51,28 @@ class JsonTest extends AbstractTestCase
     /**
      * @dataProvider dataProviderEncode
      */
-    public function testEncode($val, string $expectedResult)
+    public function testEncode($val, $expectedResult)
     {
         $result = Json::encode($val);
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public function testEncodeWithPrettyPrint()
+    {
+        $val = [
+            'test' => 'hello-world',
+        ];
+
+        $expectedResult =
+<<<JSON
+{
+    "test": "hello-world"
+}
+JSON;
+
+        $result = Json::encode($val, [
+            JSON_PRETTY_PRINT,
+        ]);
         $this->assertEquals($expectedResult, $result);
     }
 

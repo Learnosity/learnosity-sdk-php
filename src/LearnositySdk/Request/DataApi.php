@@ -25,7 +25,7 @@ class DataApi
 
     /**
      * @param array $remoteOptions Overrides options array for a cURL request
-     * @param RemoteInterface $remote Overrides default remote class with optional user supplied one
+     * @param RemoteInterface|null $remote Overrides default remote class with optional user supplied one
      */
     public function __construct(array $remoteOptions = [], RemoteInterface $remote = null)
     {
@@ -39,7 +39,7 @@ class DataApi
      * @param array|string $securityPacket Security details
      * @param string $secret Private key
      * @param array $requestPacket Request packet
-     * @param string $action Action for the request
+     * @param string|null $action Action for the request
      * @return RemoteInterface         Instance of the Remote class,
      *                                 the response can be obtained with the getBody() method
      * @throws ValidationException
@@ -49,7 +49,7 @@ class DataApi
         $securityPacket,
         string $secret,
         array $requestPacket = [],
-        $action = null
+        string $action = null
     ): RemoteInterface {
         $init = new Init('data', $securityPacket, $secret, $requestPacket, $action);
         $params = $init->generate();
@@ -64,8 +64,9 @@ class DataApi
      * @param array|string $securityPacket Security details
      * @param string $secret Private key
      * @param array $requestPacket Request packet
-     * @param string $action Action for the request
-     * @param mixed $callback Optional callback to execute instead of returning data
+     * @param string|null $action Action for the request
+     * @param callable|null $callback Optional callback to execute instead of returning data
+     * @param int|null $limit Optional limit on the number of times the request should recur
      * @return array                   Array of all data requests or [] or using a callback
      * @throws ValidationException
      * @throws Exception
@@ -76,9 +77,12 @@ class DataApi
         string $secret,
         array $requestPacket = [],
         string $action = null,
-        callable $callback = null
+        callable $callback = null,
+        int $limit = null
     ): array {
         $response = [];
+
+        $requests = 0;
 
         do {
             $request = $this->request($endpoint, $securityPacket, $secret, $requestPacket, $action);
@@ -87,7 +91,7 @@ class DataApi
                 if (!empty($callback) && is_callable($callback)) {
                     call_user_func($callback, $data);
                 } else {
-                    $response = array_merge($response, $data['data']);
+                    $response = array_merge_recursive($response, $data['data']);
                 }
             } else {
                 throw new Exception(Json::encode($data));
@@ -96,6 +100,12 @@ class DataApi
                 $requestPacket['next'] = $data['meta']['next'];
             } else {
                 unset($requestPacket['next']);
+            }
+
+            $requests++;
+
+            if (!is_null($limit) && $requests == $limit) {
+                break;
             }
         } while (array_key_exists('next', $requestPacket));
 

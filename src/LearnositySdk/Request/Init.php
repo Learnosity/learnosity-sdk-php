@@ -100,13 +100,13 @@ class Init
      * the correct order for signature generation.
      * @var array
      */
-    private $validSecurityKeys = array('consumer_key', 'domain', 'timestamp', 'expires', 'user_id');
+    private $validSecurityKeys = ['consumer_key', 'domain', 'timestamp', 'expires', 'user_id'];
 
     /**
      * Service names that are valid for `$service`
      * @var array
      */
-    private $validServices = array('assess', 'author', 'data', 'events', 'items', 'questions', 'reports');
+    private $validServices = ['assess', 'author', 'data', 'events', 'items', 'questions', 'reports'];
 
     /**
      * Instantiate this class with all security and request data. It
