@@ -11,10 +11,11 @@ $security_packet = [
     'timestamp'     => '20170727-2107',
 ];
 
-# XXX: The consumer secret should be in a properly secured credential store, and *NEVER* checked in in revision control
+// XXX: The consumer secret should be in a properly secured credential store, and *NEVER* checked in in revision control
 $consumer_secret = '74c5fd430cf1242a527f6223aebd42d30464be22';
+
 $items_request = json_decode(
-    ' {
+    '{
         "mode": "item_list",
         "config": {
             "item_list": {
@@ -39,4 +40,4 @@ $init = new Init(
     $items_request
 );
 
-print($init->generate());
+var_dump($init->generate());
