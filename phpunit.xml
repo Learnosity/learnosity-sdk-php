@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-    backupGlobals="false"
-    backupStaticAttributes="false"
-    bootstrap="bootstrap.php"
-    colors="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    processIsolation="false"
-    stopOnFailure="false"
+        backupGlobals="false"
+        backupStaticAttributes="false"
+        bootstrap="bootstrap.php"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        processIsolation="false"
+        stopOnFailure="false"
 >
-    <php>
-        <ini name="intl.default_locale" value="en" />
-        <ini name="intl.error_level" value="0" />
-        <ini name="memory_limit" value="-1" />
-    </php>
-    <logging>
-        <log type="coverage-html" target="./src/tests/coverage" lowUpperBound="35" highLowerBound="70" />
-        <log type="coverage-clover" target="./src/tests/coverage.xml" />
-        <log type="junit" target="./src/tests/junit.xml" />
-    </logging>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">./src/LearnositySdk/</directory>
-        </whitelist>
-    </filter>
-    <testsuites>
-        <testsuite name="unit">
-            <directory>./src/tests</directory>
-            <exclude>./src/tests/LearnositySdk/Request/RemoteTest.php</exclude>
-        </testsuite>
-        <testsuite name="integration">
-            <file>./src/tests/LearnositySdk/Request/RemoteTest.php</file>
-        </testsuite>
-    </testsuites>
+  <php>
+    <ini name="intl.default_locale" value="en" />
+    <ini name="intl.error_level" value="0" />
+    <ini name="memory_limit" value="-1" />
+  </php>
+  <logging>
+    <log type="coverage-html" target="./src/tests/coverage" lowUpperBound="35" highLowerBound="70" />
+    <log type="coverage-clover" target="./src/tests/coverage.xml" />
+    <log type="junit" target="./src/tests/junit.xml" />
+  </logging>
+  <filter>
+    <whitelist>
+      <directory suffix=".php">./src/LearnositySdk/</directory>
+    </whitelist>
+  </filter>
+  <testsuites>
+    <testsuite name="unit">
+      <directory>./src/tests</directory>
+      <exclude>./src/tests/LearnositySdk/Request/RemoteTest.php</exclude>
+      <exclude>./src/tests/LearnositySdk/Request/DataApiTest.php</exclude>
+    </testsuite>
+    <testsuite name="integration">
+      <file>./src/tests/LearnositySdk/Request/RemoteTest.php</file>
+      <file>./src/tests/LearnositySdk/Request/DataApiTest.php</file>
+    </testsuite>
+  </testsuites>
 </phpunit>

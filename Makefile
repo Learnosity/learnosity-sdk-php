@@ -19,7 +19,8 @@ prodbuild: dist
 release:
 	@./release.sh
 
-test: test-unit test-integration-env
+test: install-vendor-dev
+	$(PHPUNIT)
 
 test-unit: install-vendor-dev
 	$(PHPUNIT) --testsuite unit
