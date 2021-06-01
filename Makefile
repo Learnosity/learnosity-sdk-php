@@ -44,9 +44,10 @@ dist: dist-zip dist-test
 # We want to clean first before copying into the .distdir so that we have a clean copy
 dist-zip: clean
 	mkdir -p .$(DIST) # use a hidden directory so that it doesn't get copied into itself
-	cp -R * .$(DIST)
+	cp -R * .version .$(DIST)
 	mv .$(DIST) $(DIST)
 	$(MAKE) -C $(DIST) install-vendor # install the composer vendor inside the dist dir
+	rm $(DIST)/release.sh
 	rm $(DIST)/Makefile # this step needs to be the last step before zipping
 	zip -qr $(DIST).zip $(DIST)
 
