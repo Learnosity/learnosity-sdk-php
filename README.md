@@ -303,6 +303,13 @@ require_once __DIR__ . '/PATH/TO/learnosity_sdk/bootstrap.php';
 [GitHub Releases]: https://github.com/Learnosity/learnosity-sdk-php/releases
 [Composer]: https://getcomposer.org/
 
+## Creating a new release
+
+Run `make release`.
+
+This requires GNU-flavoured UNIX tools (particularly `gsed`). If those are not the default on your system, you'll need to install them, e.g. for OS X,
+
+    brew install gsed coreutils
 
 ## Tracking
 In version v0.10.0 we introduced code to track the following information by adding it to the request being signed:
