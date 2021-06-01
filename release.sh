@@ -91,7 +91,8 @@ update_version () {
 
 	echo -e "Committing release files..."
 	git add "${VERSION_FILE}" "${CHANGELOG}"
-	git commit --allow-empty -m "[RELEASE] ${new_version}"
+	git commit --allow-empty -m "[RELEASE] ${new_version}" \
+		-m "Changes:" -m "${changelog}"
 }
 
 create_tag () {
@@ -128,7 +129,11 @@ revert_tag() {
 
 handle_package_manager () {
 	# script or instructions to push to package manager
-	echo -e "\\nYou should now publish this version to the appropriate package manager"
+	release_title="[RELEASE] ${new_version}"	# XXX: this should be urlencoded
+	release_body="${changelog}"			# XXX: ditto
+
+	echo -e "\\nYou should now create the release on GitHub at https://github.com/Learnosity/learnosity-sdk-php/releases/new?tag=${new_version}&title=${release_title}&body=${release_body}"
+	echo -e "\\nOnce done, you should also attach the built distribution archive, learnosity_sdk-$(echo ${new_version} | sed s/^v//).zip to the release."
 }
 
 check_git_clean
