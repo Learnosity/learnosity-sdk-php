@@ -7,6 +7,8 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v1.0.0] - 2021-06-01
 ### Added
 - PHP 7 to PHP 8 are supported.
 - PHPUnit 6 to PHPUnit 9 are supported.
