@@ -73,8 +73,8 @@ print_release_notes () {
   # Print release notes
   echo -e "\\nRelease notes: "
 
-  changelog=$($(SED) -n '/Unreleased/,/^## /{/^## /d;p}' "${CHANGELOG}")
-  echo -e "${changelog}"
+  changelog_contents=$(${SED} -n '/Unreleased/,/^## /{/^## /d;p}' "${CHANGELOG}")
+  echo -e "${changelog_contents}"
 }
 
 confirm_tagging () {
@@ -89,7 +89,7 @@ update_version () {
   echo "${new_version}" > "${VERSION_FILE}"
 
   echo -e "Updating ${CHANGELOG}..."
-  $(SED) -i "s/^## \[Unreleased]$/&\n\n## [${new_version}] - $(date +%Y-%m-%d)/" "${CHANGELOG}"
+  ${SED} -i "s/^## \[Unreleased]$/&\n\n## [${new_version}] - $(date +%Y-%m-%d)/" "${CHANGELOG}"
 
   echo -e "Committing release files..."
   git add "${VERSION_FILE}" "${CHANGELOG}"
@@ -99,7 +99,7 @@ update_version () {
 create_tag () {
   echo -e "\\nTagging..."
   git tag -a "${new_version}" -m "[RELEASE] ${new_version}" \
-    -m "Changes:" -m "${changelog}"
+    -m "Changes:" -m "${changelog_contents}"
 }
 
 confirm_push () {
