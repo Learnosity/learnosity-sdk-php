@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+SED=$(which gsed || which sed)
+
 VERSION_FILE=".version"
 CHANGELOG="ChangeLog.md"
 
@@ -71,7 +73,7 @@ print_release_notes () {
 	# Print release notes
 	echo -e "\\nRelease notes: "
 
-	changelog=$(sed -n '/Unreleased/,/^## /{/^## /d;p}' "${CHANGELOG}")
+	changelog=$($(SED) -n '/Unreleased/,/^## /{/^## /d;p}' "${CHANGELOG}")
 	echo -e "${changelog}"
 }
 
@@ -87,7 +89,7 @@ update_version () {
 	echo "${new_version}" > "${VERSION_FILE}"
 
 	echo -e "Updating ${CHANGELOG}..."
-	sed -i "s/^## \[Unreleased]$/&\n\n## [${new_version}] - $(date +%Y-%m-%d)/" "${CHANGELOG}"
+	$(SED) -i "s/^## \[Unreleased]$/&\n\n## [${new_version}] - $(date +%Y-%m-%d)/" "${CHANGELOG}"
 
 	echo -e "Committing release files..."
 	git add "${VERSION_FILE}" "${CHANGELOG}"
