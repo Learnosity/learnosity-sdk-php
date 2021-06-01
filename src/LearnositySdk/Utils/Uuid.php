@@ -2,40 +2,34 @@
 
 namespace LearnositySdk\Utils;
 
-// Find the vendor directory depending on how the code was pulled in
-$vendorDir = __DIR__ . '/../../../../../../vendor';         // Loaded as a vendor
-if (!file_exists($vendorDir)) {
-    $vendorDir = __DIR__ . '/../../../vendor';              // Standalone with its own vendor
-}
-// Load PHP5 polyfill for random_bytes(). See self::uuidv4() declaration for more.
-require_once $vendorDir . '/paragonie/random_compat/lib/random.php';
-
 // Thanks to Andrew Moore http://www.php.net/manual/en/function.uniqid.php#94959
 
 class Uuid
 {
-    public static function generate($type = 'uuidv4', $namespace = null, $name = null)
+    /**
+     * @throws \Exception
+     */
+    public static function generate(string $type = 'uuidv4', string $namespace = null, string $name = null)
     {
         switch ($type) {
             case 'v3':
                 return self::v3($namespace, $name);
-                break;
             case 'v4':
                 return self::v4();
-                break;
             case 'v5':
                 return self::v5($namespace, $name);
-                break;
             case 'uuidv4':
-                return self::uuidv4($namespace, $name);
-                break;
             default:
                 return self::uuidv4();
-                break;
         }
     }
 
-    private static function v3($namespace, $name)
+    /**
+     * @param string $namespace
+     * @param string $name
+     * @return false|string
+     */
+    private static function v3(string $namespace = null, string $name = null)
     {
         if (!self::isValid($namespace)) {
             return false;
@@ -78,7 +72,7 @@ class Uuid
      *
      * @return string
      */
-    private static function v4()
+    private static function v4(): string
     {
         return sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
@@ -119,8 +113,9 @@ class Uuid
      * @ref https://paragonie.com/b/JvICXzh_jhLyt4y3
      *
      * @return string
+     * @throws \Exception
      */
-    private static function uuidv4()
+    private static function uuidv4(): string
     {
         return implode('-', [
             bin2hex(random_bytes(4)),
@@ -131,7 +126,12 @@ class Uuid
         ]);
     }
 
-    private static function v5($namespace, $name)
+    /**
+     * @param string $namespace
+     * @param string $name
+     * @return false|string
+     */
+    private static function v5(string $namespace = null, string $name = null)
     {
         if (!self::isValid($namespace)) {
             return false;
@@ -169,7 +169,11 @@ class Uuid
         );
     }
 
-    public static function isValid($uuid)
+    /**
+     * @param string $uuid
+     * @return bool
+     */
+    public static function isValid(string $uuid): bool
     {
         return preg_match(
             '/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i',

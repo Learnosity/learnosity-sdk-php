@@ -19,7 +19,8 @@ prodbuild: dist
 release:
 	@./release.sh
 
-test: test-unit test-integration-env
+test: install-vendor-dev
+	$(PHPUNIT)
 
 test-unit: install-vendor-dev
 	$(PHPUNIT) --testsuite unit
@@ -71,7 +72,11 @@ clean-dist:
 	rm -rf $(DIST_PREFIX)*/
 
 clean-test:
-	rm -f src/tests/junit.xml
+	test ! -f src/tests/junit.xml || rm -f src/tests/junit.xml
+	test ! -f src/tests/coverage.xml || rm -f src/tests/coverage.xml
+	test ! -d src/tests/coverage || rm -rf src/tests/coverage
+	test ! -f .phpunit.result.cache || rm -f .phpunit.result.cache
 
 clean-vendor:
 	test ! -d vendor || rm -r vendor
+	test ! -f composer.lock || rm -f composer.lock

@@ -1,5 +1,8 @@
 .DS_Store
 src/tests/junit.xml
+src/tests/coverage
+src/tests/coverage.xml
 /vendor/
 learnosity_sdk-*
 composer.lock
+.phpunit.result.cache

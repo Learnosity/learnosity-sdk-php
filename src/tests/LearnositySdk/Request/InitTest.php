@@ -2,32 +2,16 @@
 
 namespace LearnositySdk\Request;
 
+use LearnositySdk\AbstractTestCase;
 use LearnositySdk\Exceptions\ValidationException;
-use LearnositySdk\Request\Init;
 
-class InitTest extends \PHPUnit_Framework_TestCase
+class InitTest extends AbstractTestCase
 {
-    const SECRET = '74c5fd430cf1242a527f6223aebd42d30464be22';
-
-    /** @return array $security */
-    public static function getSecurity()
-    {
-        return [
-        'consumer_key' => 'yis0TYCu7U9V4o7M',
-        'domain'       => 'localhost',
-        'timestamp'    => '20140626-0528',
-        ];
-    }
-
     /*
      * Tests
      */
 
     /**
-     * @param  array  $params
-     * @param  string $expectedException
-     * @param  string $expectedExceptionMessage
-     *
      * @dataProvider constructorProvider
      */
     public function testConstructor(
@@ -51,12 +35,9 @@ class InitTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param  string $pathToMeta
-     * @param  array  $generated
-     *
      * @dataProvider generateWithMetaProvider
      */
-    public function testGenerateWithMeta($pathToMeta, $generated)
+    public function testGenerateWithMeta(string $pathToMeta, $generated)
     {
         $pathParts = explode('.', $pathToMeta);
         // in case of Author API, Assess API, Events API, Items API, Questions API and Reports API
@@ -73,23 +54,17 @@ class InitTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param  string $expectedResult
-     * @param  Init   $initObject
-     *
      * @dataProvider generateSignatureProvider
      */
-    public function testGenerateSignature($expectedResult, $initObject)
+    public function testGenerateSignature(string $expectedResult, Init $initObject)
     {
         $this->assertEquals($expectedResult, $initObject->generateSignature());
     }
 
     /**
-     * @param  string $expectedResult
-     * @param  Init   $initObject
-     *
      * @dataProvider generateProvider
      */
-    public function testGenerate($expectedResult, $initObject)
+    public function testGenerate($expectedResult, Init $initObject)
     {
         $generated = $initObject->generate();
 
@@ -215,16 +190,16 @@ class InitTest extends \PHPUnit_Framework_TestCase
      */
 
     /**
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingAssessApiParams($assoc = false)
+    public static function getWorkingAssessApiParams(bool $assoc = false): array
     {
         $service = 'assess';
         $security = static::getSecurity();
         // Needed to initialise Questions API
         $security['user_id'] = '$ANONYMIZED_USER_ID';
-        $secret = static::SECRET;
+        $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             "items" => [
                 [
@@ -306,33 +281,33 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $action = null;
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
-            );
+                'action' => $action,
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
-                $action
-            );
+                $action,
+            ];
         }
     }
 
     /**
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingAuthorApiParams($assoc = false)
+    public static function getWorkingAuthorApiParams(bool $assoc = false): array
     {
         $service = 'author';
         $security = static::getSecurity();
-        $secret = static::SECRET;
+        $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             "mode" => "item_list",
             "config" => [
@@ -351,106 +326,106 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $action = null;
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
-            );
+                'action' => $action,
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
-                $action
-            );
+                $action,
+            ];
         }
     }
 
     /**
      * WARNING: RemoteTest is also using this params
      *
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingDataApiParams($assoc = false)
+    public static function getWorkingDataApiParams(bool $assoc = false): array
     {
         $service = 'data';
         $security = static::getSecurity();
-        $secret = static::SECRET;
-        $request = array(
-            'limit' => 100
-        );
+        $secret = static::TEST_CONSUMER_SECRET;
+        $request = [
+            'limit' => 100,
+        ];
         $action = 'get';
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
-            );
+                'action' => $action,
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
-                $action
-            );
+                $action,
+            ];
         }
     }
 
     /**
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingEventsApiParams($assoc = false)
+    public static function getWorkingEventsApiParams(bool $assoc = false): array
     {
         $service = 'events';
         $security = static::getSecurity();
-        $secret = static::SECRET;
+        $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             'users' => [
-                '$ANONYMIZED_USER_ID_1' => '',
-                '$ANONYMIZED_USER_ID_2' => '',
-                '$ANONYMIZED_USER_ID_3' => '',
-                '$ANONYMIZED_USER_ID_4' => ''
+                '$ANONYMIZED_USER_ID_1' => '$ANONYMIZED_USER_ID_1_NAME',
+                '$ANONYMIZED_USER_ID_2' => '$ANONYMIZED_USER_ID_2_NAME',
+                '$ANONYMIZED_USER_ID_3' => '$ANONYMIZED_USER_ID_3_NAME',
+                '$ANONYMIZED_USER_ID_4' => '$ANONYMIZED_USER_ID_4_NAME'
             ]
         ];
         $action = null;
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
-            );
+                'action' => $action,
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
-                $action
-            );
+                $action,
+            ];
         }
     }
 
     /**
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingItemsApiParams($assoc = false)
+    public static function getWorkingItemsApiParams(bool $assoc = false): array
     {
         $service = 'items';
         $security = static::getSecurity();
-        $secret = static::SECRET;
+        $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             'user_id' => '$ANONYMIZED_USER_ID',
             'rendering_type' => 'assess',
@@ -481,34 +456,34 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $action = null;
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
-            );
+                'action' => $action,
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
-                $action
-            );
+                $action,
+            ];
         }
     }
 
     /**
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingQuestionsApiParams($assoc = false)
+    public static function getWorkingQuestionsApiParams(bool $assoc = false): array
     {
         $service = 'questions';
         $security = static::getSecurity();
         $security['user_id'] = '$ANONYMIZED_USER_ID';
-        $secret = static::SECRET;
+        $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             'type'      => 'local_practice',
             'state'     => 'initial',
@@ -530,33 +505,33 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $action = null;
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
-            );
+                'action' => $action,
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
-                $action
-            );
+                $action,
+            ];
         }
     }
 
     /**
-     * @param  boolean $assoc If true, associative array will be returned
+     * @param  bool $assoc If true, associative array will be returned
      * @return array
      */
-    public static function getWorkingReportsApiParams($assoc = false)
+    public static function getWorkingReportsApiParams(bool $assoc = false): array
     {
         $service = 'reports';
         $security = static::getSecurity();
-        $secret = static::SECRET;
+        $secret = static::TEST_CONSUMER_SECRET;
         $request = [
            "reports" => [
                [
@@ -572,21 +547,21 @@ class InitTest extends \PHPUnit_Framework_TestCase
         $action = null;
 
         if ($assoc) {
-            return array(
+            return [
                 'service' => $service,
                 'security' => $security,
                 'secret' => $secret,
                 'request' => $request,
-                'action' => $action
-            );
+                'action' => $action,
+            ];
         } else {
-            return array(
+            return [
                 $service,
                 $security,
                 $secret,
                 $request,
-                $action
-            );
+                $action,
+            ];
         }
     }
 
@@ -594,12 +569,12 @@ class InitTest extends \PHPUnit_Framework_TestCase
      *
      * @return array
      */
-    public function getMetaField()
+    public function getMetaField(): array
     {
         return [
             "test_key_string" => "test-string",
             "test_key_integer" => 12345,
-            "test_key_boolean" => true
+            "test_key_boolean" => true,
         ];
     }
 
@@ -607,7 +582,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
      * Data providers
      */
 
-    public function constructorProvider()
+    public function constructorProvider(): array
     {
         list($service, $security, $secret, $request, $action) = static::getWorkingDataApiParams();
 
@@ -618,17 +593,17 @@ class InitTest extends \PHPUnit_Framework_TestCase
             [$service, $security, $secret, $request, $action, new Init($service, $security, $secret, $request, $action)],
             ['', $security, $secret, $request, $action, null, ValidationException::class, 'The `service` argument wasn\'t found or was empty'],
             ['wrongService', $security, $secret, $request, $action, null, ValidationException::class, 'The service provided (wrongService) is not valid'],
-            [$service, '', $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array'],
+            [$service, '', $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array or a valid JSON string'],
+            [$service, null, $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array or a valid JSON string'],
+            [$service, '', $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array or a valid JSON string'],
+            [$service, $security, '', $request, $action, null, ValidationException::class, 'The `secret` argument must be a valid string'],
             [$service, $wrongSecurity, $secret, $request, $action, null, ValidationException::class, 'Invalid key found in the security packet: wrongParam'],
             ['questions', $security, $secret, $request, $action, null, ValidationException::class, 'Questions API requires a `user_id` in the security packet'],
-            [$service, $security, 25, $request, $action, null, ValidationException::class, 'The `secret` argument must be a valid string'],
-            [$service, $security, '', $request, $action, null, ValidationException::class, 'The `secret` argument must be a valid string'],
-            [$service, $security, $secret, 25, $action, null, ValidationException::class, 'The request packet must be an array'],
-            [$service, $security, $secret, $request, 25, null, ValidationException::class, 'The `action` argument must be a string']
+            [$service, $security, $secret, 25, $action, null, ValidationException::class, 'The request packet must be an array or a valid JSON string'],
         ];
     }
 
-    public function generateProvider()
+    public function generateProvider(): array
     {
         // We disable telemetry to be able to reliably test signature generation. Added telemetry
         // will differ on each platform tests would be run, and therefore fail.
@@ -685,14 +660,6 @@ class InitTest extends \PHPUnit_Framework_TestCase
         ];
         $testCases[] = $eventsApi;
 
-        $request['users'] = array_keys($request['users']);
-        $eventsApiUsersArray = [
-            $eventsApiExpected,
-            new Init($service, $security, $secret, $request, $action)
-        ];
-        // This case will trigger our warning; we can't really test for it, but we check that we are backward-compatible
-        $testCases[] = $eventsApiUsersArray;
-
         /* Items */
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
         $itemsApi = [
@@ -738,7 +705,7 @@ class InitTest extends \PHPUnit_Framework_TestCase
         return $testCases;
     }
 
-    public function generateSignatureProvider()
+    public function generateSignatureProvider(): array
     {
         // We disable telemetry to be able to reliably test signature generation. Added telemetry
         // will differ on each platform tests would be run, and therefore fail.
@@ -822,8 +789,10 @@ class InitTest extends \PHPUnit_Framework_TestCase
         return $testCases;
     }
 
-    public function generateWithMetaProvider()
+    public function generateWithMetaProvider(): array
     {
+        Init::enableTelemetry();
+
         $testCases = [];
 
         /* Author */
@@ -881,6 +850,8 @@ class InitTest extends \PHPUnit_Framework_TestCase
             (new Init($service, $security, $secret, $request, $action))->generate()
         ];
         $testCases[] = $reportsApi;
+
+        Init::disableTelemetry();
 
         return $testCases;
     }

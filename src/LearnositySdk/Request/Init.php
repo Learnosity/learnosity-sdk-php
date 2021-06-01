@@ -20,6 +20,11 @@ class Init
     const VERSION_FILE_PATH = __DIR__ . '/../../../.version';
 
     /**
+     * The algorithm used in the hashing function to create the signature
+     */
+    const ALGORITHM = 'sha256';
+
+    /**
      * We use telemetry to enable better support and feature planning. It is however not advised to
      * disable it, and it will not interfere with any usage.
      * @var boolean
@@ -69,12 +74,10 @@ class Init
     private $requestPacket;
 
     /**
-     * If `requestPacket` is used, `requestString` will be the string
-     * (JSON) representation of that. It's used to create the signature
-     * and returned as part of the service initialisation data.
-     * @var string
+     * Tracking if the request was passed as a string
+     * @var bool
      */
-    private $requestString;
+    private $requestPassedAsString = false;
 
     /**
      * An optional value used to define what type of request is being
@@ -97,61 +100,39 @@ class Init
      * the correct order for signature generation.
      * @var array
      */
-    private $validSecurityKeys = array('consumer_key', 'domain', 'timestamp', 'expires', 'user_id');
+    private $validSecurityKeys = ['consumer_key', 'domain', 'timestamp', 'expires', 'user_id'];
 
     /**
      * Service names that are valid for `$service`
      * @var array
      */
-    private $validServices = array('assess', 'author', 'data', 'events', 'items', 'questions', 'reports');
-
-    /**
-     * The algorithm used in the hashing function to create the signature
-     */
-    private $algorithm = 'sha256';
-
-    /**
-     * Tracking if the request was passed as a string
-     * @var bool
-     */
-    private $requestPassedAsString = false;
+    private $validServices = ['assess', 'author', 'data', 'events', 'items', 'questions', 'reports'];
 
     /**
      * Instantiate this class with all security and request data. It
      * will be used to create a signature.
      *
-     * @param string   $service
-     * @param mixed    $securityPacket
-     * @param string   $secret
-     * @param mixed    $requestPacket
-     * @param string   $action
+     * @param string $service
+     * @param string|array $securityPacket
+     * @param string $secret
+     * @param string|array $requestPacket
+     * @param string $action
+     * @throws ValidationException
      */
-    public function __construct($service, $securityPacket, $secret, $requestPacket = null, $action = null)
+    public function __construct(string $service, $securityPacket, string $secret, $requestPacket = null, string $action = null)
     {
-        if (is_string($requestPacket)) {
-            $requestPacket = json_decode($requestPacket, true);
-            $this->requestPassedAsString = true;
-        }
-
-        if (is_null($requestPacket)) {
-            $requestPacket = [];
-        }
-
         // First validate the arguments passed
-        $this->validate($service, $securityPacket, $secret, $requestPacket, $action);
+        list ($requestPacket, $securityPacket) = $this->validate($service, $secret, $securityPacket, $requestPacket);
 
         if (self::$telemetryEnabled) {
             $requestPacket = $this->addMeta($requestPacket);
         }
-
-        $requestString = $this->generateRequestString($requestPacket);
 
         // Set instance variables based off the arguments passed
         $this->service        = $service;
         $this->securityPacket = $securityPacket;
         $this->secret         = $secret;
         $this->requestPacket  = $requestPacket;
-        $this->requestString  = $requestString;
         $this->action         = $action;
 
         // Set any service specific options
@@ -180,7 +161,7 @@ class Init
      *
      * @return array
      */
-    private function addMeta(array $requestPacket)
+    private function addMeta(array $requestPacket): array
     {
         $sdkMetricsMeta = [
             'version' => $this->getSDKVersion(),
@@ -201,7 +182,10 @@ class Init
         return $requestPacket;
     }
 
-    private function getSDKVersion()
+    /**
+     * @return string
+     */
+    private function getSDKVersion(): string
     {
         if (!file_exists(self::VERSION_FILE_PATH)) {
             return 'unknown';
@@ -214,46 +198,42 @@ class Init
      * Generate the data necessary to make a request to one of the
      * Learnosity products/services.
      *
-     * @param boolean $encode Encode the result as a JSON string
-     *
-     * @return mixed The data to pass to a Learnosity API
+     * @param bool $encode Encode the result as a JSON string
+     * @return string|array The data to pass to a Learnosity API
      */
-    public function generate($encode = true)
+    public function generate(bool $encode = true)
     {
-        $output = array();
+        $output = [];
 
         switch ($this->service) {
-            case 'assess':
-            case 'author':
             case 'data':
+                // Add the security packet (with signature) to the output
+                $output['security'] = Json::encode($this->securityPacket);
+
+                $output['request'] = Json::encode($this->requestPacket);
+
+                if (!empty($this->action)) {
+                    $output['action'] = $this->action;
+                }
+
+                $encode = false;
+                break;
+            case 'assess':
+                // Stringify the request packet if necessary
+                $output = $this->requestPassedAsString ?
+                    Json::encode($this->requestPacket) :
+                    $this->requestPacket;
+                break;
+            case 'author':
             case 'items':
             case 'reports':
                 // Add the security packet (with signature) to the output
                 $output['security'] = $this->securityPacket;
 
                 // Stringify the request packet if necessary
-                if ($this->requestPassedAsString) {
-                    $output['request'] = $this->requestString;
-                } else {
-                    $output['request'] = $this->requestPacket;
-                }
-
-                if ($this->service === 'data') {
-                    $r['security'] = Json::encode($output['security']);
-                    if (array_key_exists('request', $output)) {
-                        if ($this->requestPassedAsString) {
-                            $r['request'] = $output['request'];
-                        } else {
-                            $r['request'] = Json::encode($output['request']);
-                        }
-                    }
-                    if (!empty($this->action)) {
-                        $r['action'] = $this->action;
-                    }
-                    return $r;
-                } elseif ($this->service === 'assess') {
-                    $output = $output['request'];
-                }
+                $output['request'] = $this->requestPassedAsString ?
+                    Json::encode($this->requestPacket) :
+                    $this->requestPacket;
                 break;
             case 'questions':
                 // Add the security packet (with signature) to the root of output
@@ -262,7 +242,6 @@ class Init
                 // Remove the `domain` key from the security packet
                 unset($output['domain']);
 
-                // Stringify the request packet if necessary
                 if (!empty($this->requestPacket)) {
                     $output = array_merge($output, $this->requestPacket);
                 }
@@ -281,25 +260,6 @@ class Init
     }
 
     /**
-     * Generate a JSON string from the requestPacket (array) or null
-     * if no requestPacket is required for this request
-     *
-     * @param mixed    $requestPacket
-     *
-     * @return mixed
-     */
-    private function generateRequestString($requestPacket)
-    {
-        $requestString = Json::encode($requestPacket);
-
-        if (false === $requestString) {
-            throw new ValidationException('Invalid data, please check your request packet - ' . Json::checkError());
-        }
-
-        return $requestString;
-    }
-
-    /**
      * Generate a signature hash for the request, this includes:
      *  - the security credentials
      *  - the `request` packet (a JSON string) if passed
@@ -307,29 +267,29 @@ class Init
      *
      * @return string A signature hash for the request authentication
      */
-    public function generateSignature()
+    public function generateSignature(): string
     {
-        $signatureArray = array();
+        $signatureArray = [];
 
         // Create a pre-hash string based on the security credentials
         // The order is important
         foreach ($this->validSecurityKeys as $key) {
             if (array_key_exists($key, $this->securityPacket)) {
-                array_push($signatureArray, $this->securityPacket[$key]);
+                $signatureArray[] = $this->securityPacket[$key];
             }
         }
 
         // Add the secret
-        array_push($signatureArray, $this->secret);
+        $signatureArray[] = $this->secret;
 
         // Add the requestPacket if necessary
-        if ($this->signRequestData && !empty($this->requestString)) {
-            array_push($signatureArray, $this->requestString);
+        if ($this->signRequestData && !empty($this->requestPacket)) {
+            $signatureArray[] = Json::encode($this->requestPacket);
         }
 
         // Add the action if necessary
         if (!empty($this->action)) {
-            array_push($signatureArray, $this->action);
+            $signatureArray[] = $this->action;
         }
 
         return $this->hashValue($signatureArray);
@@ -342,29 +302,27 @@ class Init
      *
      * @return string        The hashed string
      */
-    private function hashValue($value)
+    private function hashValue(array $value): string
     {
-        return hash($this->algorithm, implode('_', $value));
+        return hash(self::ALGORITHM, implode('_', $value));
     }
 
     /**
      * Set any options for services that aren't generic
+     * @throws ValidationException
      */
     private function setServiceOptions()
     {
         switch ($this->service) {
             case 'assess':
-            case 'questions':
                 $this->signRequestData = false;
                 // The Assess API holds data for the Questions API that includes
                 // security information and a signature. Retrieve the security
                 // information from $this and generate a signature for the
                 // Questions API
-                if ($this->service === 'assess' &&
-                    array_key_exists('questionsApiActivity', $this->requestPacket)
-                ) {
+                if (array_key_exists('questionsApiActivity', $this->requestPacket)) {
                     // prepare signature parts
-                    $signatureParts = array();
+                    $signatureParts = [];
                     $signatureParts['consumer_key'] = $this->securityPacket['consumer_key'];
                     if (isset($this->securityPacket['domain'])) {
                         $signatureParts['domain'] = $this->securityPacket['domain'];
@@ -397,6 +355,9 @@ class Init
                     $this->requestPacket['questionsApiActivity'] = $questionsApi;
                 }
                 break;
+            case 'questions':
+                $this->signRequestData = false;
+                break;
             case 'items':
             case 'reports':
                 // The Events API requires a user_id, so we make sure it's a part
@@ -410,21 +371,16 @@ class Init
             case 'events':
                 $this->signRequestData = false;
                 $users = $this->requestPacket['users'];
-                $hashedUsers = array();
+                $hashedUsers = [];
                 if (!$this->isAssocArray($users)) {
-                    /* Backward compatibility: if we get a non-associative array,
-                     * we assume that it's already an array of user IDs */
-                    Init::warnDeprecated(
-                        __CLASS__ . '::' . __FUNCTION__ . ' ("events", ...):'
-                        . ' Passing an array of user IDs is deprecated;'
-                        . ' it should be an associative array with user IDs as keys.'
-                    );
+                    throw new ValidationException('Passing an array of user IDs is deprecated,' .
+                                                ' it should be an associative array with user IDs as keys.');
                 } else {
                     $users = array_keys($users);
                 }
                 foreach ($users as $user) {
                     $hashedUsers[$user] = hash(
-                        $this->algorithm,
+                        self::ALGORITHM,
                         $user . $this->secret
                     );
                 }
@@ -441,18 +397,22 @@ class Init
     /**
      * Validate the arguments passed to the constructor
      *
-     * @param  string   $service
-     * @param  array    $securityPacket
-     * @param  string   $secret
-     * @param  array    $requestPacket
-     * @param  string   $action
+     * @param string $service
+     * @param string $secret
+     * @param array|string $securityPacket
+     * @param array|string $requestPacket
+     * @return array
+     * @throws ValidationException
      */
-    public function validate($service, &$securityPacket, $secret, $requestPacket, $action)
+    public function validate(string $service, string $secret, $securityPacket, $requestPacket): array
     {
-        if (empty($service)) {
-            throw new ValidationException('The `service` argument wasn\'t found or was empty');
-        } elseif (!in_array(strtolower($service), $this->validServices)) {
-            throw new ValidationException("The service provided ($service) is not valid");
+        if (is_string($requestPacket)) {
+            $requestPacket = json_decode($requestPacket, true);
+            $this->requestPassedAsString = true;
+        }
+
+        if (is_null($requestPacket)) {
+            $requestPacket = [];
         }
 
         // In case the user gave us a JSON securityPacket, convert to an array
@@ -460,24 +420,29 @@ class Init
             $securityPacket = json_decode($securityPacket, true);
         }
 
-        if (empty($securityPacket) || !is_array($securityPacket)) {
-            throw new ValidationException('The security packet must be an array');
-        } else {
-            foreach (array_keys($securityPacket) as $key) {
-                if (!in_array($key, $this->validSecurityKeys)) {
-                    throw new ValidationException('Invalid key found in the security packet: ' . $key);
-                }
-            }
-            if ($service === "questions" && !array_key_exists('user_id', $securityPacket)) {
-                throw new ValidationException('Questions API requires a `user_id` in the security packet');
-            }
-
-            if (!array_key_exists('timestamp', $securityPacket)) {
-                $securityPacket['timestamp'] = gmdate('Ymd-Hi');
-            }
+        if (empty($service)) {
+            throw new ValidationException('The `service` argument wasn\'t found or was empty');
+        } elseif (!in_array(strtolower($service), $this->validServices)) {
+            throw new ValidationException("The service provided ($service) is not valid");
         }
 
-        if (empty($secret) || !is_string($secret)) {
+        if (empty($securityPacket) || !is_array($securityPacket)) {
+            throw new ValidationException('The security packet must be an array or a valid JSON string');
+        }
+
+        foreach (array_keys($securityPacket) as $key) {
+            if (!in_array($key, $this->validSecurityKeys)) {
+                throw new ValidationException('Invalid key found in the security packet: ' . $key);
+            }
+        }
+        if ($service === "questions" && !array_key_exists('user_id', $securityPacket)) {
+            throw new ValidationException('Questions API requires a `user_id` in the security packet');
+        }
+        if (!array_key_exists('timestamp', $securityPacket)) {
+            $securityPacket['timestamp'] = gmdate('Ymd-Hi');
+        }
+
+        if (empty($secret)) {
             throw new ValidationException('The `secret` argument must be a valid string');
         }
 
@@ -485,12 +450,14 @@ class Init
             throw new ValidationException('The request packet must be an array or a valid JSON string');
         }
 
-        if (!empty($action) && !is_string($action)) {
-            throw new ValidationException('The `action` argument must be a string');
-        }
+        return [$requestPacket, $securityPacket];
     }
 
-    private static function isAssocArray(array $array)
+    /**
+     * @param array $array
+     * @return bool
+     */
+    private static function isAssocArray(array $array): bool
     {
         $array = array_keys($array);
         return ($array !== array_keys($array));
@@ -516,15 +483,5 @@ class Init
     public static function enableTelemetry()
     {
         self::$telemetryEnabled = true;
-    }
-
-    /**
-     * Warn of deprecated uses in the PHP error log
-     * @param string $message
-     */
-    public static function warnDeprecated(/* FIXME: string */ $message)
-    {
-        error_log('Warning: ' . $message
-            . ' This will become an error in the next major version of the Learnosity SDK.');
     }
 }

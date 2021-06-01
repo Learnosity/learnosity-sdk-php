@@ -2,9 +2,10 @@
 
 namespace tests\LearnositySdk\Utils;
 
+use LearnositySdk\AbstractTestCase;
 use LearnositySdk\Utils\Json;
 
-class JsonTest extends \PHPUnit_Framework_TestCase
+class JsonTest extends AbstractTestCase
 {
     public function testCheckError()
     {
@@ -12,9 +13,10 @@ class JsonTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue( is_null($result) || is_string($result) );
     }
 
-    public function dataProviderEncode()
+    public function dataProviderEncode(): array
     {
         return [
+            [null, null],
             [0.00000012, '0.00000012'],
             [
                 [
@@ -49,13 +51,32 @@ class JsonTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider dataProviderEncode
      */
-    public function testEncode($array, $expectedResult)
+    public function testEncode($val, $expectedResult)
     {
-        $result = Json::encode($array);
+        $result = Json::encode($val);
         $this->assertEquals($expectedResult, $result);
     }
 
-    public function dataProviderIsJson()
+    public function testEncodeWithPrettyPrint()
+    {
+        $val = [
+            'test' => 'hello-world',
+        ];
+
+        $expectedResult =
+<<<JSON
+{
+    "test": "hello-world"
+}
+JSON;
+
+        $result = Json::encode($val, [
+            JSON_PRETTY_PRINT,
+        ]);
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public function dataProviderIsJson(): array
     {
         return [
             ['12', true],
@@ -76,7 +97,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider dataProviderIsJson
      */
-    public function testIsJson($val, $expectedResult)
+    public function testIsJson(string $val, bool $expectedResult)
     {
         $result = Json::isJson($val);
         $this->assertEquals($expectedResult, $result);

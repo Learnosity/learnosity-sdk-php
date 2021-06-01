@@ -8,10 +8,10 @@ class Conversion
      * Converts a raw value in bytes to a friendly format.
      * Either Bytes, KB, MB or GB
      *
-     * @param  int $bytes   Raw value to convert
+     * @param  float $bytes   Raw value to convert
      * @return string
      */
-    public static function formatSizeUnits($bytes)
+    public static function formatSizeUnits(float $bytes): string
     {
         if ($bytes >= 1073741824) {
             $bytes = number_format($bytes / 1073741824, 2) . ' GB';
@@ -21,7 +21,7 @@ class Conversion
             $bytes = number_format($bytes / 1024, 2) . ' KB';
         } elseif ($bytes > 1) {
             $bytes = $bytes . ' bytes';
-        } elseif ($bytes === 1) {
+        } elseif ($bytes == 1) {
             $bytes = $bytes . ' byte';
         } else {
             $bytes = '0 bytes';

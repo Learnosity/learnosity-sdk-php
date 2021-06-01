@@ -2,11 +2,12 @@
 
 namespace tests\LearnositySdk\Utils;
 
+use LearnositySdk\AbstractTestCase;
 use LearnositySdk\Utils\Uuid;
 
-class UuidTest extends \PHPUnit_Framework_TestCase
+class UuidTest extends AbstractTestCase
 {
-    public function dataProviderGenerate()
+    public function dataProviderGenerate(): array
     {
         return [
             ['/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i'],
@@ -36,7 +37,7 @@ class UuidTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function dataProviderIsValid()
+    public function dataProviderIsValid(): array
     {
         return [
             ['random string', false],
@@ -54,7 +55,7 @@ class UuidTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider dataProviderIsValid
      */
-    public function testIsValid($uuid, $expectedResult)
+    public function testIsValid(string $uuid, bool $expectedResult)
     {
         $result = Uuid::isValid($uuid);
         $this->assertEquals($expectedResult, $result);
