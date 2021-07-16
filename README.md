@@ -14,7 +14,7 @@ This SDK should run on PHP 7 and 8.
 
 ### Quick Start
 
-For early test and proof of concepts, the easiest it to follow our [Quick Start Guide].
+For early test and proof of concepts, the easiest thing is to follow our [Quick Start Guide].
 
 You can find the latest version of the SDK as a self-contained ZIP file in the [GitHub Releases].
 The distribution ZIP file contains all the necessary dependencies.
@@ -299,7 +299,7 @@ If you're not using Composer and/or you don't have your own autoloader, you can 
 require_once __DIR__ . '/PATH/TO/learnosity_sdk/bootstrap.php';
 ```
 
-[Quick Start Guide]: https://docs.learnosity.com/assessment/items/quickstart
+[Quick Start Guide]: https://help.learnosity.com/hc/en-us/articles/360000755498-Getting-Started-with-the-Items-API
 [GitHub Releases]: https://github.com/Learnosity/learnosity-sdk-php/releases
 [Composer]: https://getcomposer.org/
 
