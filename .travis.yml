@@ -11,6 +11,10 @@ env:
   - COMPOSER_COMMAND=install
   - COMPOSER_COMMAND=update
 
+before_install:
+  # Login to docker hub
+  - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+
 install:
   - composer ${COMPOSER_COMMAND}
 
