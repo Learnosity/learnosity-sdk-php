@@ -138,7 +138,7 @@ The first section of code is PHP and is executed server-side. It constructs a se
 [(Back to top)](#table-of-contents)
 
 ### **Server-side code**
-We start by including some LearnositySDK helpers - they'll make it easy to generate and sign the config options, and unique user ID.
+We start by including some LearnositySDK helpers - they'll make it easy to generate and sign the config options, and unique user and session IDs.
 
 ``` php
 <?php
@@ -146,6 +146,7 @@ We start by including some LearnositySDK helpers - they'll make it easy to gener
     use LearnositySdk\Request\Init;
     use LearnositySdk\Utils\Uuid;
     $user_id = Uuid::generate();
+    $session_id = Uuid::generate();
 ```
 
 Now we'll declare the configuration options for Items API. These specify which assessment content should be rendered, how it should be displayed, which user is taking this assessment and how their responses should be stored. 
@@ -154,7 +155,7 @@ Now we'll declare the configuration options for Items API. These specify which a
     $request = [
         'user_id'        => $user_id,
         'activity_template_id' => 'quickstart_examples_activity_template_001',
-        'session_id'     => LearnosityUuid::generate(),
+        'session_id'     => $session_id,
         'activity_id'    => 'quickstart_examples_activity_001'
         'rendering_type' => 'assess',
         'type'           => 'submit_practice',
