@@ -1,30 +1,63 @@
-# Learnosity SDK - PHP
+<p align="center"><img width="50%" height="50%" src="docs/images/image-logo-graphic.png"></p>
+<h1 align="center">Learnosity SDK - PHP</h1>
+<p align="center">Everything you need to start building your app in Learnosity, with the PHP programming language.<br> 
+(Prefer another language? <a href="https://help.learnosity.com/hc/en-us/sections/360000194318-Server-side-development-SDKs">Click here</a>)<br>
+An official Learnosity open-source project.</p>
 
 [![Latest Stable Version](https://poser.pugx.org/learnosity/learnosity-sdk-php/version.svg)](https://packagist.org/packages/learnosity/learnosity-sdk-php)
-[![Latest Unstable Version](https://poser.pugx.org/learnosity/learnosity-sdk-php/v/unstable.svg)](https://packagist.org/packages/learnosity/learnosity-sdk-php)
 [![Build Status](https://travis-ci.org/Learnosity/learnosity-sdk-php.svg?branch=master)](https://travis-ci.org/Learnosity/learnosity-sdk-php)
 [![License](https://poser.pugx.org/learnosity/learnosity-sdk-php/license.svg)](https://packagist.org/packages/learnosity/learnosity-sdk-php)
-[![Downloads](https://poser.pugx.org/learnosity/learnosity-sdk-php/d/total.svg)](https://packagist.org/packages/learnosity/learnosity-sdk-php)
+[![Downloads](https://poser.pugx.org/learnosity/learnosity-sdk-php/d/total.svg)](https://packagist.org/packages/learnosity/learnosity-sdk-php) 
+[![Latest Unstable Version](https://poser.pugx.org/learnosity/learnosity-sdk-php/v/unstable.svg)](https://packagist.org/packages/learnosity/learnosity-sdk-php)
+---
 
-Include this package into your own codebase to ease integration with any of the Learnosity APIs.
+## Table of Contents
 
-This SDK should run on PHP 7 and 8.
+* [Overview: what does it do?](#overview-what-does-it-do)
+* [Requirements](#requirements)
+* [Installation](#installation)
+* [Quick start guide](#quick-start-guide)
+* [Next steps: additional documentation](#next-steps-additional-documentation)
+* [Contributing to this project](#contributing-to-this-project)
+* [License](#license)
+* [Usage tracking](#usage-tracking)
+* [Further reading](#further-reading)
+
+## Overview: what does it do?
+The Learnosity PHP SDK makes it simple to interact with Learnosity APIs.
+
+![image-concept-overview.png](docs/images/image-concept-overview.png)
+
+It provides a number of convenience features for developers, that make it simple to do the following essential tasks:
+* Creating signed security requests for API initialization, and
+* Interacting with the Data API.
+
+For example, the SDK helps with creating a signed request for Learnosity:
+
+![image-signed-request-creation.png](docs/images/image-signed-request-creation.png)
+
+Once the SDK has created the signed request for you, your app sends that on to an API in the Learnosity cloud, which then retrieves the assessment you are asking for, as seen in the diagram below:
+
+![image-assessment-retrieval.png](docs/images/image-assessment-retrieval.png)
+
+This scenario is what you can see running in the Quick start guide example ([see below](#quick-start-guide)).
+
+There's more features, besides. See the detailed list of SDK features on the [reference page](REFERENCE.md).
+
+[(Back to top)](#table-of-contents)
+
+## Requirements
+1. Runtime libraries for PHP 7 or 8 installed. ([instructions](https://help.learnosity.com/hc/en-us/articles/360000757757-Environment-Setup-Guide))
+
+2. The [Composer](https://getcomposer.org/) package manager installed. 
+
+Not using PHP? See the [SDKs for other languages](https://help.learnosity.com/hc/en-us/sections/360000194318-Server-side-development-SDKs).
+
+[(Back to top)](#table-of-contents)
 
 ## Installation
-
-### Quick Start
-
-For early test and proof of concepts, the easiest thing is to follow our [Quick Start Guide].
-
-You can find the latest version of the SDK as a self-contained ZIP file in the [GitHub Releases].
-The distribution ZIP file contains all the necessary dependencies.
-
-For more production-ready deployment, you should use `composer`, as described
-next.
-
-### Composer
-
-Using [Composer] is the recommended way to install the Learnosity SDK for PHP. The easiest way is to run this from your parent project folder:
+###  **Installation via Composer**
+Using Composer is the recommended way to install the Learnosity SDK for PHP in production. The easiest way is to run this from your parent project folder:
 
     composer require learnosity/learnosity-sdk-php "^1.0"
 
@@ -40,283 +73,233 @@ Then, install the new dependency with
 
     composer update learnosity/learnosity-sdk-php
 
+### **Alternative method 1: download the zip file**
+Download the latest version of the SDK as a self-contained ZIP file from the [GitHub Releases](https://github.com/Learnosity/learnosity-sdk-php/releases) page. The distribution ZIP file contains all the necessary dependencies. 
 
-## Usage
+Note: after installation, run this command in the 'learnosity-sdk-php' folder:
 
-There are three main classes:
+    composer install
 
- * Init, which creates the signed security packets to initialise the Javascript APIs;
- * Remote, which encapsulate remote calls to the APIs and their responses;
- * DataAPI, which allows to interact with the Data API from PHP code.
+### **Alternative 2: development install from a git clone**
+To install from the terminal, run this command:
 
-### Examples
+    git clone git@github.com:Learnosity/learnosity-sdk-php.git
 
-A couple of basic examples are included in the `examples/` directory. You can run them with, e.g.,
+Note: after installation, run this command in the 'learnosity-sdk-php' folder:
 
-    php examples/simple/init_items.php
+    composer install
 
-or
+Note that these manual installation methods are for development and testing only.
+For production use, you should install the SDK using the Composer package manager for PHP, as described above.
 
-    php examples/simple/init_data.php
+[(Back to top)](#table-of-contents)
 
-You can find a complete PHP site with examples of Learnosity APIs integration in our [demos site](https://demos.learnosity.com/).
+## Quick start guide
+Let's take a look at a simple example of the SDK in action. In this example, we'll load an assessment into the browser.
 
-You can download the entire site or browse the code directly on [github](https://github.com/Learnosity/learnosity-demos/).
+### **Start up your web server**
+Start up your PHP web server using the following folder location under the SDK as the document root. First, change directory ('cd') to this location on the command line.
 
-### Init
+If installed under Composer, navigate to this location:
 
-The Init class is used to create the necessary *security* and *request* details used to integrate with a Learnosity API. Most often this will be a JavaScript object.
+    vendor/learnosity/learnosity-sdk-php/docs/quickstart
 
-``` php
-//Include the Init classes.
-use LearnositySdk\Request\Init;
-```
+If downloaded via another method, navigate to this location:
 
-The Init constructor takes up to 5 arguments:
+    .../learnosity-sdk-php/docs/quickstart
 
- * [string]  service type
- * [array]   security details (**no secret**)
- * [string]  secret
- * [request] request details *(optional)*
- * [string]  action *(optional)*
+To start, run this command from that folder:
+
+    php -S localhost:8000
+
+If your PHP server is up, we'll assume that your web server is available at this local address: 
+
+http://localhost:8000
+
+(For more information about the web server configuration, [click here](https://help.learnosity.com/hc/en-us/articles/360000757757-Environment-Setup-Guide))
+
+### **View the standalone assessment example**
+Now view the standalone assessment example by visiting this address in your browser: http://localhost:8000/assessment/standalone-assessment.php <br>
+(or select the "Standalone assessment" example from the [index.html](http://localhost:8000/index.html) page).
+
+This is a basic example of an assessment loaded into a web page with Learnosity's assessment player. You can interact with this demo assessment to try out the various Question types.
+
+<img width="50%" height="50%" src="docs/images/image-quickstart-examples-assessment.png">
+
+[(Back to top)](#table-of-contents)
+
+### **How it works**
+Let's walk through the code for this standalone assessment example. The source file is included under the quickstart folder, in this location:
+
+    .../learnosity-sdk-php/docs/quickstart/assessment/standalone-assessment.php
+
+The first section of code is PHP and is executed server-side. It constructs a set of configuration options for Items API, and securely signs them using the consumer key. The second section is HTML and JavaScript and is executed client-side, once the page is loaded in the browser. It renders and runs the assessment functionality.
+
+[(Back to top)](#table-of-contents)
+
+### **Server-side code**
+We start by including some LearnositySDK helpers - they'll make it easy to generate and sign the config options, and unique user ID.
 
 ``` php
 <?php
+    require_once __DIR__ . '/../../../../bootstrap.php';
+    use LearnositySdk\Request\Init;
+    use LearnositySdk\Utils\Uuid;
+    $user_id = Uuid::generate();
+```
 
-// Instantiate the SDK Init class with your security and request data:
-$Init = new Init(
-   'questions',
-   [
-       'consumer_key' => 'yis0TYCu7U9V4o7M',
-       'domain'       => 'localhost',
-       'user_id'      => '$ANONYMIZED_USER_ID'
-   ],
-   'superfragilisticexpialidocious',
-   [
-       'type'      => 'local_practice',
-       'state'     => 'initial',
-       'questions' => [
-           [
-               'response_id'        => '60005',
-               'type'               => 'association',
-               'stimulus'           => 'Match the cities to the parent nation.',
-               'stimulus_list'      => ['London', 'Dublin', 'Paris', 'Sydney'],
-               'possible_responses' => ['Australia', 'France', 'Ireland', 'England'],
-               'validation' => [
-                   'valid_responses' => [
-                       ['England'], ['Ireland'], ['France'], ['Australia']
-                   ]
-               ]
-           ]
-       ]
-   ]
-);
+Now we'll declare the configuration options for Items API. These specify which assessment content should be rendered, how it should be displayed, which user is taking this assessment and how their responses should be stored. 
 
-// Call the generate() method to retrieve a JavaScript object
-$request = $Init->generate();
+``` php
+    $request = [
+        'user_id'        => $user_id,
+        'activity_template_id' => 'quickstart_examples_activity_template_001',
+        'session_id'     => LearnosityUuid::generate(),
+        'activity_id'    => 'quickstart_examples_activity_001'
+        'rendering_type' => 'assess',
+        'type'           => 'submit_practice',
+        'name'           => 'Items API Quickstart',
+    ];
+```
+
+* `user_id`: unique student identifier. Note: we never send or save student's names or other personally identifiable information in these requests. The unique identifier should be used to look up the entry in a database of students accessible within your system only. [Learn more](https://help.learnosity.com/hc/en-us/articles/360002309578-Student-Privacy-and-Personally-Identifiable-Information-PII-).
+* `activity_template_id`: reference of the Activity to retrieve from the Item bank. The Activity defines which Items will be served in this assessment.
+* `session_id`: uniquely identifies this specific assessment attempt for save/resume, data retrieval and reporting purposes. Here, we're using the `Uuid` helper to auto-generate a unique session id.
+* `activity_id`: a string you define, used solely for analytics to allow you run reporting and compare results of users submitting the same assessment.
+* `rendering_type`: selects a rendering mode, `assess` mode is a "standalone" mode (loading a complete assessment player for navigation, as opposed to `inline` for embedding without).
+* `type`: selects the context for the student response storage. `submit_practice` mode means the student responses will be stored in the Learnosity cloud, allowing for grading and review.
+* `name`: human-friendly display name to be shown in reporting, via Reports API and Data API.
+
+**Note**: you can submit the configuration options either as a PHP array as shown above, or a JSON string.
+
+Next, we declare the Learnosity consumer credentials we'll use to authorize this request. The consumer key and consumer secret in this example are for Learnosity's public "demos" account. Once Learnosity provides your own consumer credentials, your Item bank and assessment data will be tied to your own consumer key and secret. 
+
+``` php
+    $consumerKey = 'yis0TYCu7U9V4o7M';
+    $consumerSecret = '74c5fd430cf1242a527f6223aebd42d30464be22';
+```
+
+<i>(of course, you should never normally check passwords into version control)</i>
+
+Here, we construct security settings that ensure the report is initialized on the intended domain. The value provided to the domain property must match the domain from which the file is actually served.
+
+``` php
+    $security = [
+        'domain'       => $_SERVER['SERVER_NAME'],
+        'consumer_key' => $consumerKey
+    ];
+```
+
+Now we call LearnositySDK's `Init()` helper to construct our Items API configuration parameters, and sign them securely with the `$security` and `$consumerSecret` parameters. `$init->generate()` returns us a JSON blob of signed configuration parameters.
+
+``` php
+    $init = new Init(
+        'items',
+        $security,
+        $consumerSecret,
+        $request);
+    $initOptions = $init->generate();
 ?>
-
-// Pass the object to the initialisation of any Learnosity API, in this example the Questions API
-<script src="//questions.learnosity.com"></script>
-<script>
-    var questionsApp = LearnosityApp.init(<?php echo $request; ?>);
-</script>
 ```
 
-#### Init() Arguments
-**service**<br>
-A string representing the Learnosity service (API) you want to integrate with. Valid options are:
+[(Back to top)](#table-of-contents)
 
-* assess
-* author
-* data
-* events
-* items
-* questions
-* reports
+### **Web page content**
+We've got our set of signed configuration parameters, so now we can set up our page content for output. The page can be as simple or as complex as needed, using your own HTML, JavaScript and your frameworks of choice to render the desired product experience.
 
-**security**<br>
-An array^ that includes your *consumer_key* but does not include your *secret*. The SDK sets defaults for you, but valid options are:
+This example uses plain HTML in a PHP page for simplicity. The following example HTML can be found at the bottom of the `standalone-assessment.php` file.
 
-* consumer_key
-* domain (optional - defaults to *localhost*)
-* timestamp (optional - the SDK will generate this for you)
-* user_id (optional - not necessary for all APIs)
-
-^Note – the SDK accepts a JSON string and native PHP arrays.
-
-**secret**<br>
-Your private key, as provided by Learnosity.
-
-**request**<br>
-An optional associative array^ of data relevant to the API being used. This will be any data minus the security details that you would normally use to initialise an API.
-
-^Note – the SDK accepts a JSON string and native PHP arrays.
-
-**action**<br>
-An optional string used only if integrating with the Data API. Valid options are:
-
-* get
-* set
-* update
-* delete
-
-<hr>
-
-### Remote
-
-The Remote class is used to make server side, cross domain requests. Think of it as a cURL wrapper.
-
-You'll call either `get()` or `post()` (mimicking the HTTP request type you want to make) with the following arguments:
-
-* [string] URL
-* [array]  Data payload
-* [array]  Options
-
-
-``` php
-//Include the Remote classes.
-use LearnositySdk\Request\Remote;
+``` html
+<!DOCTYPE html>
+<html>
+    <head><link rel="stylesheet" type="text/css" href="../css/style.css"></head>
+    <body>
+        <h1>Standalone Assessment Example</h1>
+        <div id="learnosity_assess"></div>
+        <script src="https://items.learnosity.com/?v2021.2.LTS"></script>
+        <script>
+            var itemsApp = LearnosityItems.init(
+                <?php echo $initOptions; ?>
+            );
+        </script>
+    </body>
+</html>
 ```
 
-``` php
-// Instantiate the SDK Remote class:
-$Remote = new Remote();
-// Call get() or post() with a URL:
-$response = $Remote->get('http://schemas.learnosity.com/latest/questions/templates');
+The important parts to be aware of in this HTML are:
 
-// getBody() gives you to body of the request
-$requestPacket = $response->getBody();
-```
+* A div with `id="learnosity_assess"`. This is where the Learnosity assessment player will be rendered to deliver the assessment.
+* The `<script src="https://items.learnosity.com/?v2021.2.LTS"></script>` tag, which includes Learnosity's Items API on the page and makes the global `LearnosityItems` object available. The version specified as `v2021.2.LTS` will retrieve that specific [Long Term Support (LTS) version](https://help.learnosity.com/hc/en-us/articles/360001268538-Release-Cadence-and-Version-Lifecycle). In production, you should always pin to a specific LTS version to ensure version compatibility.
+* The call to `LearnosityItems.init()`, which initiates Items API to inject the assessment player into the page.
+* `PHP echo` dynamically sends the contents of our signed JSON blob of $initOptions to JavaScript, so it can be passed to `init()`.
 
-#### Remote() arguments
+The call to `init()` returns an instance of the ItemsApp, which we can use to programmatically drive the assessment using its methods.
 
-**URL**<br>
-A string URL, including schema and path. Eg:
+This marks the end of the quick start guide. From here, try modifying the example files yourself, you are welcome to use this code as a basis for your own projects.
 
-    https://schemas.learnosity.com/latest/questions/templates
+Take a look at some more in-depth options and tutorials on using Learnosity assessment functionality below.
 
-**Data**<br>
-An optional array of data to be sent as a payload. For GET it will be a URL encoded query string.
+[(Back to top)](#table-of-contents)
 
-**Options**<br>
-An optional array of [cURL parameters](http://www.php.net/manual/en/curl.constants.php).
+## Next steps: additional documentation
 
-#### Remote methods
-The following methods are available after making a `get()` or `post()`.
+### **SDK reference**
+See a more detailed breakdown of all the SDK features, and examples of how to use more advanced or specialised features on the [SDK reference page](REFERENCE.md).
 
-**getBody()**<br>
-Returns the body of the response payload.
+### **Additional quick start guides**
+There are more quick start guides, going beyond the initial quick start topic of loading an assessment, these further tutorials show how to set up authoring and analytics:
+* [Authoring Items quick start guide](https://help.learnosity.com/hc/en-us/articles/360000754958-Getting-Started-With-the-Author-API) (Author API) - create and edit new Questions and Items for your Item bank, then group your assessment Items into Activities, and
+* [Analytics / student reporting quick start guide](https://help.learnosity.com/hc/en-us/articles/360000755838-Getting-Started-With-the-Reports-API) (Reports API) - view the results and scores from an assessment Activity. 
 
-**getError()**<br>
-Returns an array that includes the error code and message (if an error was thrown)
+### **Learnosity demos repository**
+On our [demo site](https://demos.learnosity.com/), browse through many examples of Learnosity API integration. You can also download the entire demo site source code, the code for any single demo, or browse the codebase directly on GitHub.
 
-**getHeader()**<br>
-Currently only returns the *content_type* header of the response.
+### **Learnosity reference documentation**
+See full documentation for Learnosity API init options, methods and events in the [Learnosity reference site](https://reference.learnosity.com/).
 
-**getSize()**<br>
-Returns the size of the response payload in bytes.
+### **Technical use-cases documentation**
+Find guidance on how to select a development pattern and arrange the architecture of your application with Learnosity, in the [Technical Use-Cases Overview](https://help.learnosity.com/hc/en-us/articles/360000757777-Technical-Use-Cases-Overview).
 
-**getStatusCode()**<br>
-Returns the HTTP status code of the response.
+### **Deciding what to build or integrate**
+Get help deciding what application functionality to build yourself, or integrate off-the-shelf with the [Learnosity "Golden Path" documentation](https://help.learnosity.com/hc/en-us/articles/360000754578-Recommended-Deployment-Patterns-Golden-Path-).
 
-<hr>
+### **Key Learnosity concepts**
+Want more general information about how apps on Learnosity actually work? Take a look at our [Key Learnosity Concepts page](https://help.learnosity.com/hc/en-us/articles/360000754638-Key-Learnosity-Concepts).
 
-### DataApi
+### **Glossary**
+Need an explanation for the unique Learnosity meanings for Item, Activity and Item bank? See our [Glossary of Learnosity-specific terms](https://help.learnosity.com/hc/en-us/articles/360000754838-Glossary-of-Learnosity-and-Industry-Terms).
 
-This is a helper class for use with the Data API. It creates the initialisation packet and sends a request to the Data API, returning an instance of Remote. You can then interact as you would with Remote, e.g., `getBody()`
+[(Back to top)](#table-of-contents)
 
-#### request()
+## Contributing to this project
 
-Used for a single request to the Data API. You can call as many times as necessary. It will return a `Remote` object, on which `getBody()` needs to be called to get the contents of the response.
+### Adding new features or fixing bugs
+Contributions are welcome. See the [contributing instructions](CONTRIBUTING.md) page for more information. You can also get in touch via our support team.
 
-``` php
-$DataApi = new DataApi();
-$response = $DataApi->request(
-    'https://data.learnosity.com/v1/itembank/items',
-    [
-       'consumer_key' => 'yis0TYCu7U9V4o7M',
-       'domain'       => 'localhost'
-    ],
-    'superfragilisticexpialidocious',
-    [
-       'limit' => 20
-    ],
-    'get' // optional, will default to 'get' in the backend if unspecified
-);
-```
+[(Back to top)](#table-of-contents)
 
-#### requestRecursive()
+## License
+The Learnosity PHP SDK is licensed under an Apache 2.0 license. [Read more](LICENSE.md).
 
-Used to make recursive requests to the Data API, using the *next* token, for as much data is returned based on the request filtering provided.
+[(Back to top)](#table-of-contents)
 
-You can pass a callback as the 6th argument, that will be executed upon completion of every request.
-
-``` php
-$DataApi = new DataApi();
-
-$response = $DataApi->requestRecursive(
-    'https://data.learnosity.com/v1/itembank/items',
-    [
-       'consumer_key' => 'yis0TYCu7U9V4o7M',
-       'domain'       => 'localhost'
-    ],
-    'superfragilisticexpialidocious',
-    [
-       'limit' => 20
-    ],
-    'get',
-    function ($data) {
-        $this->processData($data);
-    }
-);
-
-function processData($data)
-{
-    // Do something with $data
-}
-```
-
-#### Overriding the remote options
-
-You can send an array to the DataAPI constructor to override any remote (cURL) options, e.g.:
-
-``` php
-$options = array(
-    'connect_timeout' => 20
-    'timeout' => 60
-);
-
-$dataapi = new DataApi($options);
-```
-
-
-## Autoload
-
-If you're not using Composer and/or you don't have your own autoloader, you can use the bootstrap provided by this package. It follows the PSR code convention which includes namespaces and import statements.
-
-``` php
-require_once __DIR__ . '/PATH/TO/learnosity_sdk/bootstrap.php';
-```
-
-[Quick Start Guide]: https://help.learnosity.com/hc/en-us/articles/360000755498-Getting-Started-with-the-Items-API
-[GitHub Releases]: https://github.com/Learnosity/learnosity-sdk-php/releases
-[Composer]: https://getcomposer.org/
-
-## Creating a new release
-
-Run `make release`.
-
-This requires GNU-flavoured UNIX tools (particularly `gsed`). If those are not the default on your system, you'll need to install them, e.g. for OS X,
-
-    brew install gsed coreutils
-
-## Tracking
-In version v0.10.0 we introduced code to track the following information by adding it to the request being signed:
+## Usage tracking
+Our SDKs include code to track the following information by adding it to the request being signed:
 - SDK version
 - SDK language
 - SDK language version
 - Host platform (OS)
 - Platform version
 
-We use this data to enable better support and feature planning. All subsequent versions of the SDK shall include this usage tracking.
+We use this data to enable better support and feature planning.
+
+[(Back to top)](#table-of-contents)
+
+## Further reading
+Thanks for reading to the end! Find more information about developing an app with Learnosity on our documentation sites: 
+
+* [help.learnosity.com](http://help.learnosity.com/hc/en-us) -- general help portal and tutorials,
+* [reference.learnosity.com](http://reference.learnosity.com) -- developer reference site, and
+* [authorguide.learnosity.com](http://authorguide.learnosity.com) -- authoring documentation for content creators.
+
+[(Back to top)](#table-of-contents)

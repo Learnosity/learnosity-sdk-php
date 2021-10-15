@@ -1,20 +1,29 @@
 <?php
+/**
+     * Copyright (c) 2021 Learnosity, MIT License
+     *
+     * Basic example of pulling information from the Learnosity cloud using Data API.
+     */
 
-// Setup to load the necessary classes from the example directory
-require_once(__DIR__ . '/../../bootstrap.php');
-
+// Setup to load the necessary classes from the example directory, 
+// and set up variables related to user access.
+require_once __DIR__ . '/../../../bootstrap.php';
+$config = require_once __DIR__ . '/../config.php'; // Load security keys from config.php.
 use LearnositySdk\Request\DataApi;
 use LearnositySdk\Request\Remote;
 
 $itembank_uri = 'https://data.learnosity.com/v1/itembank/items';
 
+// Public & private security keys required to access Learnosity APIs and
+// data. These keys grant access to Learnosity's public demos account, 
+// loaded from a configuration file on line 11.
+// Learnosity will provide keys for your own private account.
+$consumerKey = $config['consumerKey'];
 $security_packet = [
-    'consumer_key'   => 'yis0TYCu7U9V4o7M',
+    'consumer_key'   => $consumerKey,
     'domain'         => 'localhost',
 ];
-
-// XXX: The consumer secret should be in a properly secured credential store, and *NEVER* checked in in revision control
-$consumer_secret = '74c5fd430cf1242a527f6223aebd42d30464be22';
+$consumer_secret = $config['consumerSecret'];
 
 $data_api = new DataApi();
 
@@ -67,7 +76,7 @@ $data_api->requestRecursive(
     $data_request,
     'get',
     $callback,
-    5           // just do 5 iterations of 1 record
+    5           // Just do 5 iterations of 1 record
 );
 
 echo "Do request using requestRecursive and return value..." . PHP_EOL;
@@ -84,7 +93,7 @@ $result = $data_api->requestRecursive(
     $data_request,
     'get',
     null,
-    5           // just do 5 iterations of 1 record
+    5           // Just do 5 iterations of 1 record
 );
 
 echo "Result of recursive request:" . PHP_EOL;
