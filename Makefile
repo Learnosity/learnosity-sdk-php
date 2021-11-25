@@ -4,7 +4,7 @@ DEBIAN_VERSION = bookworm
 IMAGE = php-cli-composer:$(PHP_VERSION)
 
 TARGETS = all build devbuild prodbuild \
-	quickstart install-vendor \
+	quickstart check-quickstart install-vendor \
 	dist dist-test dist-zip release \
 	test test-coverage test-integration-env test-unit \
 	clean clean-dist clean-test clean-vendor
@@ -46,6 +46,8 @@ quickstart: VENDOR_FLAGS = --no-dev
 quickstart: install-vendor
 	cd docs/quickstart && php -S $(LOCALHOST):8000
 
+check-quickstart: vendor/autoload.php
+	$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS) --no-dev;
 ###
 # internal tooling rules
 ####
