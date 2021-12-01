@@ -39,3 +39,10 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 ### Added
 - Telemetry support
 - This ChangeLog!
+
+[Unreleased]: https://github.com/Learnosity/learnosity-sdk-php/compare/v1.0.0...HEAD
+[v1.0.0]: https://github.com/Learnosity/learnosity-sdk-php/compare/v0.10.3...v1.0.0
+[v0.10.3]: https://github.com/Learnosity/learnosity-sdk-php/compare/v0.10.2...v0.10.3
+[v0.10.2]: https://github.com/Learnosity/learnosity-sdk-php/compare/v0.10.1...v0.10.2
+[v0.10.1]: https://github.com/Learnosity/learnosity-sdk-php/compare/v0.10.0...v0.10.1
+[v0.10.0]: https://github.com/Learnosity/learnosity-sdk-php/compare/v0.9.2...v0.10.0
