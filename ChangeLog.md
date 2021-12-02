@@ -7,6 +7,8 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- PSR-4 compliance
 
 ## [v1.0.0] - 2021-06-01
 ### Added

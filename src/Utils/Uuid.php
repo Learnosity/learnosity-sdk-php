@@ -4,10 +4,16 @@ namespace LearnositySdk\Utils;
 
 // Thanks to Andrew Moore http://www.php.net/manual/en/function.uniqid.php#94959
 
+use Exception;
+
 class Uuid
 {
     /**
-     * @throws \Exception
+     * @param string $type
+     * @param string|null $namespace
+     * @param string|null $name
+     * @return null|string
+     * @throws Exception
      */
     public static function generate(string $type = 'uuidv4', string $namespace = null, string $name = null)
     {
@@ -27,12 +33,12 @@ class Uuid
     /**
      * @param string $namespace
      * @param string $name
-     * @return false|string
+     * @return null|string
      */
     private static function v3(string $namespace = null, string $name = null)
     {
         if (!self::isValid($namespace)) {
-            return false;
+            return null;
         }
 
         // Get hexadecimal components of namespace
@@ -113,7 +119,7 @@ class Uuid
      * @ref https://paragonie.com/b/JvICXzh_jhLyt4y3
      *
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     private static function uuidv4(): string
     {
@@ -129,12 +135,12 @@ class Uuid
     /**
      * @param string $namespace
      * @param string $name
-     * @return false|string
+     * @return null|string
      */
     private static function v5(string $namespace = null, string $name = null)
     {
         if (!self::isValid($namespace)) {
-            return false;
+            return null;
         }
 
         // Get hexadecimal components of namespace

@@ -4,15 +4,26 @@ DIST_PREFIX=learnosity_sdk-
 DIST=$(DIST_PREFIX)$(VERSION)
 
 COMPOSER=composer
-COMPOSER_INSTALL_FLAGS=--no-suggest --no-interaction
+COMPOSER_INSTALL_FLAGS=--no-interaction --optimize-autoloader --classmap-authoritative
 
 PHPUNIT=./vendor/bin/phpunit
 
 all: test dist
 
 ###
+# quickstart rules
+###
+quickstart: check-quickstart
+	cd docs/quickstart && php -S localhost:8000
+
+check-quickstart:
+	if [[ ! -f vendor/autoload.php && ! -f ../../../vendor/autoload.php ]]; then \
+		$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS) --no-dev; \
+	fi
+
+###
 # internal tooling rules
-####
+###
 devbuild: install-vendor-dev
 
 prodbuild: dist
@@ -22,6 +33,9 @@ release:
 
 test: install-vendor-dev
 	$(PHPUNIT)
+
+test-coverage: install-vendor-dev
+	XDEBUG_MODE=coverage $(PHPUNIT)
 
 test-unit: install-vendor-dev
 	$(PHPUNIT) --testsuite unit
@@ -62,7 +76,9 @@ install-vendor:
 	$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS) --no-dev
 
 install-vendor-dev:
-	$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS)
+	if [[ ! -f vendor/autoload.php && ! -f ../../../vendor/autoload.php ]]; then \
+		$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS); \
+	fi
 
 ###
 # cleaning rules
@@ -74,11 +90,18 @@ clean-dist:
 	rm -rf $(DIST_PREFIX)*/
 
 clean-test:
-	test ! -f src/tests/junit.xml || rm -f src/tests/junit.xml
-	test ! -f src/tests/coverage.xml || rm -f src/tests/coverage.xml
-	test ! -d src/tests/coverage || rm -rf src/tests/coverage
+	test ! -f tests/junit.xml || rm -f tests/junit.xml
+	test ! -f tests/coverage.xml || rm -f tests/coverage.xml
+	test ! -d tests/coverage || rm -rf tests/coverage
 	test ! -f .phpunit.result.cache || rm -f .phpunit.result.cache
 
 clean-vendor:
 	test ! -d vendor || rm -r vendor
 	test ! -f composer.lock || rm -f composer.lock
+
+###
+
+.PHONY: quickstart check-quickstart devbuild prodbuild release test \
+	test-coverage test-unit test-integration-env test-dist build-clean \
+	dist dist-zip dist-test install-vendor install-vendor-dev \
+	clean clean-test clean-dev clean-vendor
