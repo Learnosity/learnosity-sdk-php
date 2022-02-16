@@ -1,7 +1,7 @@
 .DS_Store
-src/tests/junit.xml
-src/tests/coverage
-src/tests/coverage.xml
+tests/junit.xml
+tests/coverage/
+tests/coverage.xml
 /vendor/
 learnosity_sdk-*
 composer.lock

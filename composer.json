@@ -6,13 +6,13 @@
     "homepage": "https://github.com/Learnosity/learnosity-sdk-php",
     "license": "Apache-2.0",
     "autoload": {
-        "psr-0": {
-            "LearnositySdk\\": [ "src/" ]
+        "psr-4": {
+            "LearnositySdk\\": "src/"
         }
     },
     "autoload-dev": {
-        "psr-0": {
-            "LearnositySdk\\": [ "src/tests/" ]
+        "psr-4": {
+            "LearnositySdk\\": "tests/"
         }
     },
     "require": {

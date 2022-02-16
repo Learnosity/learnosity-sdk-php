@@ -17,7 +17,7 @@ use LearnositySdk\Exceptions\ValidationException;
 
 class Init
 {
-    const VERSION_FILE_PATH = __DIR__ . '/../../../.version';
+    const VERSION_FILE_PATH = __DIR__ . '/../../.version';
 
     /**
      * The algorithm used in the hashing function to create the signature

@@ -49,7 +49,7 @@ There's more features, besides. See the detailed list of SDK features on the [re
 ## Requirements
 1. Runtime libraries for PHP 7 or 8 installed. ([instructions](https://help.learnosity.com/hc/en-us/articles/360000757757-Environment-Setup-Guide))
 
-2. The [Composer](https://getcomposer.org/) package manager installed. 
+2. The [Composer](https://getcomposer.org/) package manager installed OR the self-contained ZIP from [GitHub Releases](https://github.com/Learnosity/learnosity-sdk-php/releases/)
 
 Not using PHP? See the [SDKs for other languages](https://help.learnosity.com/hc/en-us/sections/360000194318-Server-side-development-SDKs).
 
@@ -76,16 +76,19 @@ Then, install the new dependency with
 ### **Alternative method 1: download the zip file**
 Download the latest version of the SDK as a self-contained ZIP file from the [GitHub Releases](https://github.com/Learnosity/learnosity-sdk-php/releases) page. The distribution ZIP file contains all the necessary dependencies. 
 
-Note: after installation, run this command in the 'learnosity-sdk-php' folder:
+You may then include the SDK bootstrap file in your project, for example if the SDK is unzipped to `/srv/learnosity-sdk-php` then you could specify the following in your project to include the SDK:
 
-    composer install
+``` php
+<?php
+    require_once "/srv/learnosity-sdk-php/bootstrap.php"
+```
 
 ### **Alternative 2: development install from a git clone**
 To install from the terminal, run this command:
 
     git clone git@github.com:Learnosity/learnosity-sdk-php.git
 
-Note: after installation, run this command in the 'learnosity-sdk-php' folder:
+Note: after installation, run this command in the `learnosity-sdk-php` folder:
 
     composer install
 
@@ -98,23 +101,13 @@ For production use, you should install the SDK using the Composer package manage
 Let's take a look at a simple example of the SDK in action. In this example, we'll load an assessment into the browser.
 
 ### **Start up your web server**
-Start up your PHP web server using the following folder location under the SDK as the document root. First, change directory ('cd') to this location on the command line.
+You can start the demo by running the following command in the SDK directory:
 
-If installed under Composer, navigate to this location:
-
-    vendor/learnosity/learnosity-sdk-php/docs/quickstart
-
-If downloaded via another method, navigate to this location:
-
-    .../learnosity-sdk-php/docs/quickstart
-
-To start, run this command from that folder:
-
-    php -S localhost:8000
+    make quickstart
 
 If your PHP server is up, we'll assume that your web server is available at this local address: 
 
-http://localhost:8000
+    http://localhost:8000
 
 (For more information about the web server configuration, [click here](https://help.learnosity.com/hc/en-us/articles/360000757757-Environment-Setup-Guide))
 
