@@ -78,10 +78,6 @@ matrix:
       env:
         - COMPOSER_COMMAND=update
 
-arch:
-  - amd64
-  - arm64
-
 before_install:
   # Login to docker hub
   - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
