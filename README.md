@@ -111,7 +111,12 @@ If your PHP server is up, we'll assume that your web server is available at this
 
 (For more information about the web server configuration, [click here](https://help.learnosity.com/hc/en-us/articles/360000757757-Environment-Setup-Guide))
 
+You can now access the APIs using the following URL [click here](http://localhost:8000).
+
+<img width="50%" height="50%" src="docs/images/image-quickstart-index.png">
+
 ### **View the standalone assessment example**
+
 Now view the standalone assessment example by visiting this address in your browser: http://localhost:8000/assessment/standalone-assessment.php <br>
 (or select the "Standalone assessment" example from the [index.html](http://localhost:8000/index.html) page).
 
@@ -210,7 +215,7 @@ This example uses plain HTML in a PHP page for simplicity. The following example
     <body>
         <h1>Standalone Assessment Example</h1>
         <div id="learnosity_assess"></div>
-        <script src="https://items.learnosity.com/?v2023.2.LTS"></script>
+        <script src="https://items.learnosity.com/?latest-lts"></script>
         <script>
             var itemsApp = LearnosityItems.init(
                 <?php echo $initOptions; ?>
@@ -223,7 +228,7 @@ This example uses plain HTML in a PHP page for simplicity. The following example
 The important parts to be aware of in this HTML are:
 
 * A div with `id="learnosity_assess"`. This is where the Learnosity assessment player will be rendered to deliver the assessment.
-* The `<script src="https://items.learnosity.com/?v2023.2.LTS"></script>` tag, which includes Learnosity's Items API on the page and makes the global `LearnosityItems` object available. The version specified as `v2023.2.LTS` will retrieve that specific [Long Term Support (LTS) version](https://help.learnosity.com/hc/en-us/articles/360001268538-Release-Cadence-and-Version-Lifecycle). In production, you should always pin to a specific LTS version to ensure version compatibility.
+* The `<script src="https://items.learnosity.com/?latest-lts"></script>` tag, which includes Learnosity's Items API on the page and makes the global `LearnosityItems` object available.  The version specified as `latest-lts` will retrieve the latest version supported. To know more about switching to specific LTS version visit [Long Term Support (LTS) version](https://help.learnosity.com/hc/en-us/articles/360001268538-Release-Cadence-and-Version-Lifecycle). In production, you should always pin to a specific LTS version to ensure version compatibility.
 * The call to `LearnosityItems.init()`, which initiates Items API to inject the assessment player into the page.
 * `PHP echo` dynamically sends the contents of our signed JSON blob of $initOptions to JavaScript, so it can be passed to `init()`.
 
