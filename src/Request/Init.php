@@ -2,8 +2,11 @@
 
 namespace LearnositySdk\Request;
 
+use LearnositySdk\Services\Signatures\HashSignature;
+use LearnositySdk\Services\Signatures\HmacSignature;
 use LearnositySdk\Utils\Json;
 use LearnositySdk\Exceptions\ValidationException;
+use LearnositySdk\Services\SignatureFactory;
 
 /**
  *--------------------------------------------------------------------------
@@ -109,6 +112,16 @@ class Init
     private $validServices = ['assess', 'author', 'data', 'events', 'items', 'questions', 'reports'];
 
     /**
+     * @var SignatureFactory
+     */
+
+    private $signatureFactory;
+    /**
+     * @var string
+     */
+    private $signatureVersion;
+
+    /**
      * Instantiate this class with all security and request data. It
      * will be used to create a signature.
      *
@@ -117,10 +130,19 @@ class Init
      * @param string $secret
      * @param string|array $requestPacket
      * @param string $action
+     * @param SignatureFactory|null $signatureFactory
+     * @param string|null $signatureVersion
      * @throws ValidationException
      */
-    public function __construct(string $service, $securityPacket, string $secret, $requestPacket = null, string $action = null)
-    {
+    public function __construct(
+        string $service,
+        $securityPacket,
+        string $secret,
+        $requestPacket = null,
+        string $action = null,
+        SignatureFactory $signatureFactory = null,
+        string $signatureVersion = null
+    ) {
         // First validate the arguments passed
         list ($requestPacket, $securityPacket) = $this->validate($service, $secret, $securityPacket, $requestPacket);
 
@@ -129,11 +151,18 @@ class Init
         }
 
         // Set instance variables based off the arguments passed
-        $this->service        = $service;
-        $this->securityPacket = $securityPacket;
-        $this->secret         = $secret;
-        $this->requestPacket  = $requestPacket;
-        $this->action         = $action;
+        $this->service            = $service;
+        $this->securityPacket     = $securityPacket;
+        $this->secret             = $secret;
+        $this->requestPacket      = $requestPacket;
+        $this->action             = $action;
+        $this->signatureVersion   = $signatureVersion ?? HashSignature::SIGNATURE_VERSION;
+
+        if (!isset($signatureFactory)) {
+            $this->signatureFactory = new SignatureFactory();
+        } else {
+            $this->signatureFactory = $signatureFactory;
+        }
 
         // Set any service specific options
         $this->setServiceOptions();
@@ -279,8 +308,10 @@ class Init
             }
         }
 
-        // Add the secret
-        $signatureArray[] = $this->secret;
+        // Add the secret if we are using a v1 signature.
+        if ($this->signatureVersion === HashSignature::SIGNATURE_VERSION) {
+            $signatureArray[] = $this->secret;
+        }
 
         // Add the requestPacket if necessary
         if ($this->signRequestData && !empty($this->requestPacket)) {
@@ -292,19 +323,16 @@ class Init
             $signatureArray[] = $this->action;
         }
 
-        return $this->hashValue($signatureArray);
-    }
+        $preHashString = implode('_', $signatureArray);
 
-    /**
-     * Hash an array value
-     *
-     * @param  array  $value An array to hash
-     *
-     * @return string        The hashed string
-     */
-    private function hashValue(array $value): string
-    {
-        return hash(self::ALGORITHM, implode('_', $value));
+        // As we only support v2 from this point onwards
+        // we do not need to check the version at this point,
+        // Instead we can pass HmacSignatures version
+        $signatureGenerator = $this->signatureFactory->getSignatureGenerator(
+            $this->signatureVersion
+        );
+
+        return $signatureGenerator->sign($preHashString, $this->secret);
     }
 
     /**
@@ -374,7 +402,7 @@ class Init
                 $hashedUsers = [];
                 if (!$this->isAssocArray($users)) {
                     throw new ValidationException('Passing an array of user IDs is deprecated,' .
-                                                ' it should be an associative array with user IDs as keys.');
+                        ' it should be an associative array with user IDs as keys.');
                 } else {
                     $users = array_keys($users);
                 }
