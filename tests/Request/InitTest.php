@@ -4,9 +4,21 @@ namespace LearnositySdk\Request;
 
 use LearnositySdk\AbstractTestCase;
 use LearnositySdk\Exceptions\ValidationException;
+use LearnositySdk\Services\SignatureFactory;
 
 class InitTest extends AbstractTestCase
 {
+
+    /**
+     * @var \LearnositySdk\Services\SignatureFactory
+     */
+    private $signatureFactory;
+
+    public function setUp(): void
+    {
+        $this->signatureFactory = new SignatureFactory();
+    }
+
     /*
      * Tests
      */
@@ -29,7 +41,7 @@ class InitTest extends AbstractTestCase
             $this->expectExceptionMessage($expectedExceptionMessage);
         }
 
-        $init = new Init($service, $securityPacket, $secret, $requestPacket, $action);
+        $init = new Init($service, $securityPacket, $secret, $requestPacket, $action, $this->signatureFactory);
 
         $this->assertEquals($expectedResult, $init);
     }
@@ -82,28 +94,28 @@ class InitTest extends AbstractTestCase
     public function testNullRequestPacketGeneratesValidInit()
     {
         list($service, $security, $secret) = static::getWorkingDataApiParams();
-        $initObject = new Init($service, $security, $secret, null);
+        $initObject = new Init($service, $security, $secret, null, null, $this->signatureFactory);
         $this->assertInstanceOf(Init::class, $initObject);
     }
 
     public function testEmptyArrayRequestPacketGeneratesValidInit()
     {
         list($service, $security, $secret) = static::getWorkingDataApiParams();
-        $initObject = new Init($service, $security, $secret, []);
+        $initObject = new Init($service, $security, $secret, [], null, $this->signatureFactory);
         $this->assertInstanceOf(Init::class, $initObject);
     }
 
     public function testEmptyStringGeneratesValidInit()
     {
         list($service, $security, $secret) = static::getWorkingDataApiParams();
-        $initObject = new Init($service, $security, $secret, "");
+        $initObject = new Init($service, $security, $secret, "", null, $this->signatureFactory);
         $this->assertInstanceOf(Init::class, $initObject);
     }
 
     public function testNullRequestPacketAndActionGeneratesValidInit()
     {
         list($service, $security, $secret) = static::getWorkingDataApiParams();
-        $initObject = new Init($service, $security, $secret, null, null);
+        $initObject = new Init($service, $security, $secret, null, null, $this->signatureFactory);
         $this->assertInstanceOf(Init::class, $initObject);
     }
 
@@ -111,7 +123,7 @@ class InitTest extends AbstractTestCase
     {
         list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
 
-        $initObject = new Init($service, $security, $secret, json_encode($request), $action);
+        $initObject = new Init($service, $security, $secret, json_encode($request), $action, $this->signatureFactory);
         $generatedObject = json_decode($initObject->generate());
 
         // when telemetry is enabled, if the $request has no meta field,
@@ -129,7 +141,7 @@ class InitTest extends AbstractTestCase
         $request['meta'] = $this->getMetaField();
 
         // generate a new $initObject using the updated $request
-        $initObject = new Init($service, $security, $secret, json_encode($request), $action);
+        $initObject = new Init($service, $security, $secret, json_encode($request), $action, $this->signatureFactory);
         $generatedObject = json_decode($initObject->generate());
 
         // when telemetry is enabled, if the request has a meta field,
@@ -151,7 +163,7 @@ class InitTest extends AbstractTestCase
         Init::disableTelemetry();
         list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
 
-        $initObject = new Init($service, $security, $secret, json_encode($request), $action);
+        $initObject = new Init($service, $security, $secret, json_encode($request), $action, $this->signatureFactory);
         $generatedObject = json_decode($initObject->generate());
 
         // when telemetry is disabled, if the meta field of the $request is empty,
@@ -168,7 +180,7 @@ class InitTest extends AbstractTestCase
         // add meta field to the $request
         $request['meta'] = $this->getMetaField();
 
-        $initObject = new Init($service, $security, $secret, json_encode($request), $action);
+        $initObject = new Init($service, $security, $secret, json_encode($request), $action, $this->signatureFactory);
         $generatedObject = json_decode($initObject->generate());
 
         // when telemetry is disabled, if the meta field of the $request has properties,
@@ -374,7 +386,7 @@ class InitTest extends AbstractTestCase
                 $security,
                 $secret,
                 $request,
-                $action,
+                $action
             ];
         }
     }
@@ -590,7 +602,7 @@ class InitTest extends AbstractTestCase
         $wrongSecurity['wrongParam'] = '';
 
         return [
-            [$service, $security, $secret, $request, $action, new Init($service, $security, $secret, $request, $action)],
+            [$service, $security, $secret, $request, $action, new Init($service, $security, $secret, $request, $action, $this->signatureFactory)],
             ['', $security, $secret, $request, $action, null, ValidationException::class, 'The `service` argument wasn\'t found or was empty'],
             ['wrongService', $security, $secret, $request, $action, null, ValidationException::class, 'The service provided (wrongService) is not valid'],
             [$service, '', $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array or a valid JSON string'],
@@ -613,92 +625,161 @@ class InitTest extends AbstractTestCase
 
         /* Author */
         list($service, $security, $secret, $request, $action) = static::getWorkingAuthorApiParams();
-        $authorApi = [
-            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"108b985a4db36ef03905572943a514fc02ed7cc6b700926183df7babc2cd1c96"},"request":{"mode":"item_list","config":{"item_list":{"item":{"status":true}}},"user":{"id":"walterwhite","firstname":"walter","lastname":"white"}}}',
-            new Init($service, $security, $secret, $request, $action)
+        $authorApiV1 = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$ca2769c4be77037cf22e0f7a2291fe48c470ac6db2f45520a259907370eff861"},"request":{"mode":"item_list","config":{"item_list":{"item":{"status":true}}},"user":{"id":"walterwhite","firstname":"walter","lastname":"white"}}}',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $authorApi;
+        $testCases[] = $authorApiV1;
+
+        $authorApiV2 = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$ca2769c4be77037cf22e0f7a2291fe48c470ac6db2f45520a259907370eff861"},"request":{"mode":"item_list","config":{"item_list":{"item":{"status":true}}},"user":{"id":"walterwhite","firstname":"walter","lastname":"white"}}}',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $authorApiV2;
 
         /* Assess */
         list($service, $security, $secret, $request, $action) = static::getWorkingAssessApiParams();
-        $assessApi = [
-            '{"items":[{"content":"<span class=\"learnosity-response question-demoscience1234\"></span>","response_ids":["demoscience1234"],"workflow":"","reference":"question-demoscience1"},{"content":"<span class=\"learnosity-response question-demoscience5678\"></span>","response_ids":["demoscience5678"],"workflow":"","reference":"question-demoscience2"}],"ui_style":"horizontal","name":"Demo (2 questions)","state":"initial","metadata":[],"navigation":{"show_next":true,"toc":true,"show_submit":true,"show_save":false,"show_prev":true,"show_title":true,"show_intro":true},"time":{"max_time":600,"limit_type":"soft","show_pause":true,"warning_time":60,"show_time":true},"configuration":{"onsubmit_redirect_url":"/assessment/","onsave_redirect_url":"/assessment/","idle_timeout":true,"questionsApiVersion":"v2"},"questionsApiActivity":{"user_id":"$ANONYMIZED_USER_ID","type":"submit_practice","state":"initial","id":"assessdemo","name":"Assess API - Demo","questions":[{"response_id":"demoscience1234","type":"sortlist","description":"In this question, the student needs to sort the events, chronologically earliest to latest.","list":["Russian Revolution","Discovery of the Americas","Storming of the Bastille","Battle of Plataea","Founding of Rome","First Crusade"],"instant_feedback":true,"feedback_attempts":2,"validation":{"valid_response":[4,3,5,1,2,0],"valid_score":1,"partial_scoring":true,"penalty_score":-1}},{"response_id":"demoscience5678","type":"highlight","description":"The student needs to mark one of the flowers anthers in the image.","img_src":"http://www.learnosity.com/static/img/flower.jpg","line_color":"rgb(255, 20, 0)","line_width":"4"}],"consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","signature":"03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90"},"type":"activity"}',
-            new Init($service, $security, $secret, $request, $action)
+        $assessApiV1 = [
+            '{"items":[{"content":"<span class=\"learnosity-response question-demoscience1234\"></span>","response_ids":["demoscience1234"],"workflow":"","reference":"question-demoscience1"},{"content":"<span class=\"learnosity-response question-demoscience5678\"></span>","response_ids":["demoscience5678"],"workflow":"","reference":"question-demoscience2"}],"ui_style":"horizontal","name":"Demo (2 questions)","state":"initial","metadata":[],"navigation":{"show_next":true,"toc":true,"show_submit":true,"show_save":false,"show_prev":true,"show_title":true,"show_intro":true},"time":{"max_time":600,"limit_type":"soft","show_pause":true,"warning_time":60,"show_time":true},"configuration":{"onsubmit_redirect_url":"/assessment/","onsave_redirect_url":"/assessment/","idle_timeout":true,"questionsApiVersion":"v2"},"questionsApiActivity":{"user_id":"$ANONYMIZED_USER_ID","type":"submit_practice","state":"initial","id":"assessdemo","name":"Assess API - Demo","questions":[{"response_id":"demoscience1234","type":"sortlist","description":"In this question, the student needs to sort the events, chronologically earliest to latest.","list":["Russian Revolution","Discovery of the Americas","Storming of the Bastille","Battle of Plataea","Founding of Rome","First Crusade"],"instant_feedback":true,"feedback_attempts":2,"validation":{"valid_response":[4,3,5,1,2,0],"valid_score":1,"partial_scoring":true,"penalty_score":-1}},{"response_id":"demoscience5678","type":"highlight","description":"The student needs to mark one of the flowers anthers in the image.","img_src":"http://www.learnosity.com/static/img/flower.jpg","line_color":"rgb(255, 20, 0)","line_width":"4"}],"consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","signature":"$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8"},"type":"activity"}',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $assessApi;
+        $testCases[] = $assessApiV1;
+
+        $assessApiV2 = [
+            '{"items":[{"content":"<span class=\"learnosity-response question-demoscience1234\"></span>","response_ids":["demoscience1234"],"workflow":"","reference":"question-demoscience1"},{"content":"<span class=\"learnosity-response question-demoscience5678\"></span>","response_ids":["demoscience5678"],"workflow":"","reference":"question-demoscience2"}],"ui_style":"horizontal","name":"Demo (2 questions)","state":"initial","metadata":[],"navigation":{"show_next":true,"toc":true,"show_submit":true,"show_save":false,"show_prev":true,"show_title":true,"show_intro":true},"time":{"max_time":600,"limit_type":"soft","show_pause":true,"warning_time":60,"show_time":true},"configuration":{"onsubmit_redirect_url":"/assessment/","onsave_redirect_url":"/assessment/","idle_timeout":true,"questionsApiVersion":"v2"},"questionsApiActivity":{"user_id":"$ANONYMIZED_USER_ID","type":"submit_practice","state":"initial","id":"assessdemo","name":"Assess API - Demo","questions":[{"response_id":"demoscience1234","type":"sortlist","description":"In this question, the student needs to sort the events, chronologically earliest to latest.","list":["Russian Revolution","Discovery of the Americas","Storming of the Bastille","Battle of Plataea","Founding of Rome","First Crusade"],"instant_feedback":true,"feedback_attempts":2,"validation":{"valid_response":[4,3,5,1,2,0],"valid_score":1,"partial_scoring":true,"penalty_score":-1}},{"response_id":"demoscience5678","type":"highlight","description":"The student needs to mark one of the flowers anthers in the image.","img_src":"http://www.learnosity.com/static/img/flower.jpg","line_color":"rgb(255, 20, 0)","line_width":"4"}],"consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","signature":"$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8"},"type":"activity"}',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $assessApiV2;
 
         /* Data */
         list($service, $security, $secret, $request, $action) = static::getWorkingDataApiParams();
         $security['timestamp'] = '20140626-0528';
-        $dataApiGet = [
+        $dataApiGetV1 = [
             [
-                'security' => '{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"e1eae0b86148df69173cb3b824275ea73c9c93967f7d17d6957fcdd299c8a4fe"}',
+                'security' => '{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$e19c8a62fba81ef6baf2731e2ab0512feaf573ca5ca5929c2ee9a77303d2e197"}',
                 'request'  => '{"limit":100}',
                 'action'   => 'get'
             ],
-            new Init($service, $security, $secret, $request, $action)
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $dataApiGet;
+        $testCases[] = $dataApiGetV1;
 
-        $dataApiPost = [
+        $dataApiGetV2 = [
             [
-                'security' => '{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"18e5416041a13f95681f747222ca7bdaaebde057f4f222083881cd0ad6282c38"}',
+                'security' => '{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$e19c8a62fba81ef6baf2731e2ab0512feaf573ca5ca5929c2ee9a77303d2e197"}',
+                'request'  => '{"limit":100}',
+                'action'   => 'get'
+            ],
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $dataApiGetV2;
+
+        $dataApiPostV1 = [
+            [
+                'security' => '{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$9d1971fb9ac51482f7e73dcf87fc029d4a3dfffa05314f71af9d89fb3c2bcf16"}',
                 'request'  => '{"limit":100}',
                 'action'   => 'post'
             ],
-            new Init($service, $security, $secret, $request, 'post')
+            new Init($service, $security, $secret, $request, 'post', $this->signatureFactory)
         ];
-        $testCases[] = $dataApiPost;
+        $testCases[] = $dataApiPostV1;
+
+        $dataApiPostV2 = [
+            [
+                'security' => '{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$9d1971fb9ac51482f7e73dcf87fc029d4a3dfffa05314f71af9d89fb3c2bcf16"}',
+                'request'  => '{"limit":100}',
+                'action'   => 'post'
+            ],
+            new Init($service, $security, $secret, $request, 'post', $this->signatureFactory, '02')
+        ];
+        $testCases[] = $dataApiPostV2;
 
         /* Events */
         list($service, $security, $secret, $request, $action) = static::getWorkingEventsApiParams();
-        $eventsApiExpected = '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"20739eed410d54a135e8cb3745628834886ab315bfc01693ce9acc0d14dc98bf"},"config":{"users":{"$ANONYMIZED_USER_ID_1":"64ccf06154cf4133624372459ebcccb8b2f8bd7458a73df681acef4e742e175c","$ANONYMIZED_USER_ID_2":"7fa4d6ef8926add8b6411123fce916367250a6a99f50ab8ec39c99d768377adb","$ANONYMIZED_USER_ID_3":"3d5b26843da9192319036b67f8c5cc26e1e1763811270ba164665d0027296952","$ANONYMIZED_USER_ID_4":"3b6ac78f60f3e3eb7a85cec8b48bdca0f590f959e0a87a9c4222898678bd50c8"}}}';
+        $eventsApiExpectedV1 = '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$5c3160dbb9ab4d01774b5c2fc3b01a35ce4f9709c84571c27dfe333d1ca9d349"},"config":{"users":{"$ANONYMIZED_USER_ID_1":"64ccf06154cf4133624372459ebcccb8b2f8bd7458a73df681acef4e742e175c","$ANONYMIZED_USER_ID_2":"7fa4d6ef8926add8b6411123fce916367250a6a99f50ab8ec39c99d768377adb","$ANONYMIZED_USER_ID_3":"3d5b26843da9192319036b67f8c5cc26e1e1763811270ba164665d0027296952","$ANONYMIZED_USER_ID_4":"3b6ac78f60f3e3eb7a85cec8b48bdca0f590f959e0a87a9c4222898678bd50c8"}}}';
 
-        $eventsApi = [
-            $eventsApiExpected,
-            new Init($service, $security, $secret, $request, $action)
+        $eventsApiV1 = [
+            $eventsApiExpectedV1,
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $eventsApi;
+        $testCases[] = $eventsApiV1;
+
+        $eventsApiExpectedV2 = '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$5c3160dbb9ab4d01774b5c2fc3b01a35ce4f9709c84571c27dfe333d1ca9d349"},"config":{"users":{"$ANONYMIZED_USER_ID_1":"64ccf06154cf4133624372459ebcccb8b2f8bd7458a73df681acef4e742e175c","$ANONYMIZED_USER_ID_2":"7fa4d6ef8926add8b6411123fce916367250a6a99f50ab8ec39c99d768377adb","$ANONYMIZED_USER_ID_3":"3d5b26843da9192319036b67f8c5cc26e1e1763811270ba164665d0027296952","$ANONYMIZED_USER_ID_4":"3b6ac78f60f3e3eb7a85cec8b48bdca0f590f959e0a87a9c4222898678bd50c8"}}}';
+        $eventsApiV2 = [
+            $eventsApiExpectedV2,
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $eventsApiV2;
 
         /* Items */
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
-        $itemsApi = [
-            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"82edaf80c2abb55c7a78d089f5b6f89393e621ef4a85150489ac2cfdd6a32f9a"},"request":{"user_id":"$ANONYMIZED_USER_ID","rendering_type":"assess","name":"Items API demo - assess activity demo","state":"initial","activity_id":"items_assess_demo","session_id":"demo_session_uuid","type":"submit_practice","config":{"configuration":{"responsive_regions":true},"navigation":{"scrolling_indicator":true},"regions":"main","time":{"show_pause":true,"max_time":300},"title":"ItemsAPI Assess Isolation Demo","subtitle":"Testing Subtitle Text"},"items":["Demo3"]}}',
-            new Init($service, $security, $secret, $request, $action)
+        $itemsApiV1 = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"$02$36c439e7d18f2347ce08ca4b8d4803a22325d54352650b19b6f4aaa521b613d9"},"request":{"user_id":"$ANONYMIZED_USER_ID","rendering_type":"assess","name":"Items API demo - assess activity demo","state":"initial","activity_id":"items_assess_demo","session_id":"demo_session_uuid","type":"submit_practice","config":{"configuration":{"responsive_regions":true},"navigation":{"scrolling_indicator":true},"regions":"main","time":{"show_pause":true,"max_time":300},"title":"ItemsAPI Assess Isolation Demo","subtitle":"Testing Subtitle Text"},"items":["Demo3"]}}',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $itemsApi;
+        $testCases[] = $itemsApiV1;
+
+        $itemsApiV2 = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"$02$36c439e7d18f2347ce08ca4b8d4803a22325d54352650b19b6f4aaa521b613d9"},"request":{"user_id":"$ANONYMIZED_USER_ID","rendering_type":"assess","name":"Items API demo - assess activity demo","state":"initial","activity_id":"items_assess_demo","session_id":"demo_session_uuid","type":"submit_practice","config":{"configuration":{"responsive_regions":true},"navigation":{"scrolling_indicator":true},"regions":"main","time":{"show_pause":true,"max_time":300},"title":"ItemsAPI Assess Isolation Demo","subtitle":"Testing Subtitle Text"},"items":["Demo3"]}}',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $itemsApiV2;
 
         /* Questions */
         list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
-        $questionsApi = [
-            '{"consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90","type":"local_practice","state":"initial","questions":[{"response_id":"60005","type":"association","stimulus":"Match the cities to the parent nation.","stimulus_list":["London","Dublin","Paris","Sydney"],"possible_responses":["Australia","France","Ireland","England"],"validation":{"valid_responses":[["England"],["Ireland"],["France"],["Australia"]]}}]}',
-            new Init($service, $security, $secret, $request, $action)
+        $questionsApiV1 = [
+            '{"consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8","type":"local_practice","state":"initial","questions":[{"response_id":"60005","type":"association","stimulus":"Match the cities to the parent nation.","stimulus_list":["London","Dublin","Paris","Sydney"],"possible_responses":["Australia","France","Ireland","England"],"validation":{"valid_responses":[["England"],["Ireland"],["France"],["Australia"]]}}]}',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $questionsApi;
+        $testCases[] = $questionsApiV1;
+
+        $questionsApiV2 = [
+            '{"consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8","type":"local_practice","state":"initial","questions":[{"response_id":"60005","type":"association","stimulus":"Match the cities to the parent nation.","stimulus_list":["London","Dublin","Paris","Sydney"],"possible_responses":["Australia","France","Ireland","England"],"validation":{"valid_responses":[["England"],["Ireland"],["France"],["Australia"]]}}]}',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $questionsApiV2;
 
         /* Reports */
         list($service, $security, $secret, $request, $action) = static::getWorkingReportsApiParams();
-        $reportsApi = [
-            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"91085beccf57bf0df77c89df94d1055e631b36bc11941e61460b445b4ed774bc"},"request":{"reports":[{"id":"report-1","type":"sessions-summary","user_id":"$ANONYMIZED_USER_ID","session_ids":["AC023456-2C73-44DC-82DA28894FCBC3BF"]}]}}',
-            new Init($service, $security, $secret, $request, $action)
+        $reportsApiV1 = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$8e0069e7aa8058b47509f35be236c53fa1a878c64b12589fd42f48b568f6ac84"},"request":{"reports":[{"id":"report-1","type":"sessions-summary","user_id":"$ANONYMIZED_USER_ID","session_ids":["AC023456-2C73-44DC-82DA28894FCBC3BF"]}]}}',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $reportsApi;
+        $testCases[] = $reportsApiV1;
+
+        $reportsApiV2 = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$8e0069e7aa8058b47509f35be236c53fa1a878c64b12589fd42f48b568f6ac84"},"request":{"reports":[{"id":"report-1","type":"sessions-summary","user_id":"$ANONYMIZED_USER_ID","session_ids":["AC023456-2C73-44DC-82DA28894FCBC3BF"]}]}}',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $reportsApiV2;
 
         /* Passing request as string */
         list($service, $security, $secret, $request, $action) = static::getWorkingAuthorApiParams();
-        $authorApiAsString = [
-            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"108b985a4db36ef03905572943a514fc02ed7cc6b700926183df7babc2cd1c96"},"request":"{\"mode\":\"item_list\",\"config\":{\"item_list\":{\"item\":{\"status\":true}}},\"user\":{\"id\":\"walterwhite\",\"firstname\":\"walter\",\"lastname\":\"white\"}}"}',
-            new Init($service, $security, $secret, json_encode($request), $action)
+        $authorApiAsStringV1 = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$ca2769c4be77037cf22e0f7a2291fe48c470ac6db2f45520a259907370eff861"},"request":"{\"mode\":\"item_list\",\"config\":{\"item_list\":{\"item\":{\"status\":true}}},\"user\":{\"id\":\"walterwhite\",\"firstname\":\"walter\",\"lastname\":\"white\"}}"}',
+            new Init($service, $security, $secret, json_encode($request), $action, $this->signatureFactory)
         ];
-        $testCases[] = $authorApiAsString;
+        $testCases[] = $authorApiAsStringV1;
+
+        $authorApiAsStringV2 = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$ca2769c4be77037cf22e0f7a2291fe48c470ac6db2f45520a259907370eff861"},"request":"{\"mode\":\"item_list\",\"config\":{\"item_list\":{\"item\":{\"status\":true}}},\"user\":{\"id\":\"walterwhite\",\"firstname\":\"walter\",\"lastname\":\"white\"}}"}',
+            new Init($service, $security, $secret, json_encode($request), $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $authorApiAsStringV2;
 
         /* Items */
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
-        $itemsApiAsString = [
-            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"82edaf80c2abb55c7a78d089f5b6f89393e621ef4a85150489ac2cfdd6a32f9a"},"request":"{\"user_id\":\"$ANONYMIZED_USER_ID\",\"rendering_type\":\"assess\",\"name\":\"Items API demo - assess activity demo\",\"state\":\"initial\",\"activity_id\":\"items_assess_demo\",\"session_id\":\"demo_session_uuid\",\"type\":\"submit_practice\",\"config\":{\"configuration\":{\"responsive_regions\":true},\"navigation\":{\"scrolling_indicator\":true},\"regions\":\"main\",\"time\":{\"show_pause\":true,\"max_time\":300},\"title\":\"ItemsAPI Assess Isolation Demo\",\"subtitle\":\"Testing Subtitle Text\"},\"items\":[\"Demo3\"]}"}',
-            new Init($service, $security, $secret, json_encode($request), $action)
+        $itemsApiAsStringV1 = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"$02$36c439e7d18f2347ce08ca4b8d4803a22325d54352650b19b6f4aaa521b613d9"},"request":"{\"user_id\":\"$ANONYMIZED_USER_ID\",\"rendering_type\":\"assess\",\"name\":\"Items API demo - assess activity demo\",\"state\":\"initial\",\"activity_id\":\"items_assess_demo\",\"session_id\":\"demo_session_uuid\",\"type\":\"submit_practice\",\"config\":{\"configuration\":{\"responsive_regions\":true},\"navigation\":{\"scrolling_indicator\":true},\"regions\":\"main\",\"time\":{\"show_pause\":true,\"max_time\":300},\"title\":\"ItemsAPI Assess Isolation Demo\",\"subtitle\":\"Testing Subtitle Text\"},\"items\":[\"Demo3\"]}"}',
+            new Init($service, $security, $secret, json_encode($request), $action, $this->signatureFactory)
         ];
-        $testCases[] = $itemsApiAsString;
+        $testCases[] = $itemsApiAsStringV1;
+
+        $itemsApiAsStringV2 = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"$ANONYMIZED_USER_ID","signature":"$02$36c439e7d18f2347ce08ca4b8d4803a22325d54352650b19b6f4aaa521b613d9"},"request":"{\"user_id\":\"$ANONYMIZED_USER_ID\",\"rendering_type\":\"assess\",\"name\":\"Items API demo - assess activity demo\",\"state\":\"initial\",\"activity_id\":\"items_assess_demo\",\"session_id\":\"demo_session_uuid\",\"type\":\"submit_practice\",\"config\":{\"configuration\":{\"responsive_regions\":true},\"navigation\":{\"scrolling_indicator\":true},\"regions\":\"main\",\"time\":{\"show_pause\":true,\"max_time\":300},\"title\":\"ItemsAPI Assess Isolation Demo\",\"subtitle\":\"Testing Subtitle Text\"},\"items\":[\"Demo3\"]}"}',
+            new Init($service, $security, $secret, json_encode($request), $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $itemsApiAsStringV2;
 
         Init::enableTelemetry();
 
@@ -715,74 +796,127 @@ class InitTest extends AbstractTestCase
 
         /* Author */
         list($service, $security, $secret, $request, $action) = static::getWorkingAuthorApiParams();
-        $authorApi = [
-            '108b985a4db36ef03905572943a514fc02ed7cc6b700926183df7babc2cd1c96',
-            new Init($service, $security, $secret, $request, $action)
+        $authorApiV1 = [
+            '$02$ca2769c4be77037cf22e0f7a2291fe48c470ac6db2f45520a259907370eff861',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $authorApi;
+        $testCases[] = $authorApiV1;
+
+        $authorApiV2 = [
+            '$02$ca2769c4be77037cf22e0f7a2291fe48c470ac6db2f45520a259907370eff861',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $authorApiV2;
 
         /* Assess */
         list($service, $security, $secret, $request, $action) = static::getWorkingAssessApiParams();
-        $assessApi = [
-            '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
-            new Init($service, $security, $secret, $request, $action)
+        $assessApiV1 = [
+            '$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $assessApi;
+        $testCases[] = $assessApiV1;
+
+        $assessApiV2 = [
+            '$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $assessApiV2;
 
         /* Data */
         list($service, $security, $secret, $request, $action) = static::getWorkingDataApiParams();
         $securityExpires = $security;
         $securityExpires['expires'] = '20160621-1716';
 
-        $dataApi = [
-            'e1eae0b86148df69173cb3b824275ea73c9c93967f7d17d6957fcdd299c8a4fe',
-            new Init($service, $security, $secret, $request, $action)
+        $dataApiV1 = [
+            '$02$e19c8a62fba81ef6baf2731e2ab0512feaf573ca5ca5929c2ee9a77303d2e197',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $dataApi;
+        $testCases[] = $dataApiV1;
 
-        $dataApiPost = [
-            '18e5416041a13f95681f747222ca7bdaaebde057f4f222083881cd0ad6282c38',
-            new Init($service, $security, $secret, $request, 'post')
+        $dataApiV2 = [
+            '$02$e19c8a62fba81ef6baf2731e2ab0512feaf573ca5ca5929c2ee9a77303d2e197',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
         ];
-        $testCases[] = $dataApiPost;
+        $testCases[] = $dataApiV2;
 
-        $dataApiExpire= [
-            '5d962d5fea8e5413bddc0f304650c4b58ed4419015e47934452127dc2120fd8a',
-            new Init($service, $securityExpires, $secret, $request, $action)
+        $dataApiPostV1 = [
+            '$02$9d1971fb9ac51482f7e73dcf87fc029d4a3dfffa05314f71af9d89fb3c2bcf16',
+            new Init($service, $security, $secret, $request, 'post', $this->signatureFactory)
         ];
-        $testCases[] = $dataApiExpire;
+        $testCases[] = $dataApiPostV1;
+
+        $dataApiPostV2 = [
+            '$02$9d1971fb9ac51482f7e73dcf87fc029d4a3dfffa05314f71af9d89fb3c2bcf16',
+            new Init($service, $security, $secret, $request, 'post', $this->signatureFactory, '02')
+        ];
+        $testCases[] = $dataApiPostV2;
+
+        $dataApiExpireV1 = [
+            '$02$579bbf967c9fa886865fc85313bf0f70bdf3636a78732439ea19d6c2b908f49c',
+            new Init($service, $securityExpires, $secret, $request, $action, $this->signatureFactory)
+        ];
+        $testCases[] = $dataApiExpireV1;
+        $dataApiExpireV2 = [
+            '$02$579bbf967c9fa886865fc85313bf0f70bdf3636a78732439ea19d6c2b908f49c',
+            new Init($service, $securityExpires, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $dataApiExpireV2;
 
         /* Events */
         list($service, $security, $secret, $request, $action) = static::getWorkingEventsApiParams();
-        $eventsApi = [
-            '20739eed410d54a135e8cb3745628834886ab315bfc01693ce9acc0d14dc98bf',
-            new Init($service, $security, $secret, $request, $action)
+        $eventsApiV1 = [
+            '$02$5c3160dbb9ab4d01774b5c2fc3b01a35ce4f9709c84571c27dfe333d1ca9d349',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $eventsApi;
+        $testCases[] = $eventsApiV1;
+
+        $eventsApiV2 = [
+            '$02$5c3160dbb9ab4d01774b5c2fc3b01a35ce4f9709c84571c27dfe333d1ca9d349',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $eventsApiV2;
 
         /* Items */
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
-        $itemsApi = [
-            '82edaf80c2abb55c7a78d089f5b6f89393e621ef4a85150489ac2cfdd6a32f9a',
-            new Init($service, $security, $secret, $request, $action)
+        $itemsApiV1 = [
+            '$02$36c439e7d18f2347ce08ca4b8d4803a22325d54352650b19b6f4aaa521b613d9',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $itemsApi;
+        $testCases[] = $itemsApiV1;
+
+        $itemsApiV2 = [
+            '$02$36c439e7d18f2347ce08ca4b8d4803a22325d54352650b19b6f4aaa521b613d9',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $itemsApiV2;
 
         /* Questions */
         list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
-        $questionsApi = [
-            '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90',
-            new Init($service, $security, $secret, $request, $action)
+        $questionsApiV1 = [
+            '$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $questionsApi;
+        $testCases[] = $questionsApiV1;
+
+        $questionsApiV2 = [
+            '$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $questionsApiV2;
 
         /* Reports */
         list($service, $security, $secret, $request, $action) = static::getWorkingReportsApiParams();
-        $reportsApi = [
-            '91085beccf57bf0df77c89df94d1055e631b36bc11941e61460b445b4ed774bc',
-            new Init($service, $security, $secret, $request, $action)
+        $reportsApiV1 = [
+            '$02$8e0069e7aa8058b47509f35be236c53fa1a878c64b12589fd42f48b568f6ac84',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
         ];
-        $testCases[] = $reportsApi;
+        $testCases[] = $reportsApiV1;
+
+        $reportsApiV2 = [
+            '$02$8e0069e7aa8058b47509f35be236c53fa1a878c64b12589fd42f48b568f6ac84',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
+        ];
+        $testCases[] = $reportsApiV2;
 
         Init::enableTelemetry();
 
@@ -799,7 +933,7 @@ class InitTest extends AbstractTestCase
         list($service, $security, $secret, $request, $action) = static::getWorkingAuthorApiParams();
         $authorApi = [
             'request.meta',
-            (new Init($service, $security, $secret, $request, $action))->generate()
+            (new Init($service, $security, $secret, $request, $action, $this->signatureFactory))->generate()
         ];
         $testCases[] = $authorApi;
 
@@ -807,7 +941,7 @@ class InitTest extends AbstractTestCase
         list($service, $security, $secret, $request, $action) = static::getWorkingAssessApiParams();
         $assessApi = [
             'meta',
-            (new Init($service, $security, $secret, $request, $action))->generate()
+            (new Init($service, $security, $secret, $request, $action, $this->signatureFactory))->generate()
         ];
         $testCases[] = $assessApi;
 
@@ -815,7 +949,7 @@ class InitTest extends AbstractTestCase
         list($service, $security, $secret, $request, $action) = static::getWorkingDataApiParams();
         $dataApi = [
             'request.meta',
-            (new Init($service, $security, $secret, $request, $action))->generate()
+            (new Init($service, $security, $secret, $request, $action, $this->signatureFactory))->generate()
         ];
         $testCases[] = $dataApi;
 
@@ -823,7 +957,7 @@ class InitTest extends AbstractTestCase
         list($service, $security, $secret, $request, $action) = static::getWorkingEventsApiParams();
         $eventsApi = [
             'config.meta',
-            (new Init($service, $security, $secret, $request, $action))->generate()
+            (new Init($service, $security, $secret, $request, $action, $this->signatureFactory))->generate()
         ];
         $testCases[] = $eventsApi;
 
@@ -831,7 +965,7 @@ class InitTest extends AbstractTestCase
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
         $itemsApi = [
             'request.meta',
-            (new Init($service, $security, $secret, $request, $action))->generate()
+            (new Init($service, $security, $secret, $request, $action, $this->signatureFactory))->generate()
         ];
         $testCases[] = $itemsApi;
 
@@ -839,7 +973,7 @@ class InitTest extends AbstractTestCase
         list($service, $security, $secret, $request, $action) = static::getWorkingQuestionsApiParams();
         $questionsApi = [
             'meta',
-            (new Init($service, $security, $secret, $request, $action))->generate()
+            (new Init($service, $security, $secret, $request, $action, $this->signatureFactory))->generate()
         ];
         $testCases[] = $questionsApi;
 
@@ -847,7 +981,7 @@ class InitTest extends AbstractTestCase
         list($service, $security, $secret, $request, $action) = static::getWorkingReportsApiParams();
         $reportsApi = [
             'request.meta',
-            (new Init($service, $security, $secret, $request, $action))->generate()
+            (new Init($service, $security, $secret, $request, $action, $this->signatureFactory))->generate()
         ];
         $testCases[] = $reportsApi;
 
