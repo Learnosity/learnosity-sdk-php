@@ -12,7 +12,7 @@ $config = require_once __DIR__ . '/../config.php'; // Load security keys from co
 use LearnositySdk\Request\DataApi;
 use LearnositySdk\Request\Remote;
 
-$itembank_uri = 'https://data.learnosity.com/v1/itembank/items';
+$itembank_uri = 'https://data.learnosity.com/v2023.1.lts/itembank/items';
 
 // Public & private security keys required to access Learnosity APIs and
 // data. These keys grant access to Learnosity's public demos account, 
