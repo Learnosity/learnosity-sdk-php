@@ -47,7 +47,7 @@ There's more features, besides. See the detailed list of SDK features on the [re
 [(Back to top)](#table-of-contents)
 
 ## Requirements
-1. Runtime libraries for PHP 7 or 8 installed. ([instructions](https://help.learnosity.com/hc/en-us/articles/360000757757-Environment-Setup-Guide))
+1. Runtime libraries for PHP 8 installed. ([instructions](https://help.learnosity.com/hc/en-us/articles/360000757757-Environment-Setup-Guide))
 
 2. The [Composer](https://getcomposer.org/) package manager installed OR the self-contained ZIP from [GitHub Releases](https://github.com/Learnosity/learnosity-sdk-php/releases/)
 
