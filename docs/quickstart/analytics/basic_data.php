@@ -6,7 +6,7 @@
 require_once __DIR__ . '/../../../bootstrap.php'; 
 $config = require_once __DIR__ . '/../config.php'; // Load security keys from config.php, for Learnosity's public demos account.
 use LearnositySdk\Request\DataApi; // Load core Data API library.
-$itembank_uri = 'https://data.learnosity.com/v1/sessions/responses'; // Choosing the Data API endpoint for sessions/responses.
+$itembank_uri = 'https://data.learnosity.com/v2023.1.LTS/sessions/responses'; // Choosing the Data API endpoint for sessions/responses.
 
 // Learnosity will provide keys for your own private account.
 $consumerKey = $config['consumerKey']; // Selecting the Learnosity account (consumer key).
