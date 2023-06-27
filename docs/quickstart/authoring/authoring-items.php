@@ -23,7 +23,7 @@
     ];
 
     // Public & private security keys required to access Learnosity APIs and
-    // data. These keys grant access to Learnosity's public demos account, 
+    // data. These keys grant access to Learnosity's public demos account,
     // loaded from a configuration file on line 13.
     // Learnosity will provide keys for your own private account.
     $consumerKey = $config['consumerKey'];
@@ -56,7 +56,7 @@
         <div id='learnosity-author'></div>
 
         <!-- Include the Author API library. -->
-        <script src='https://authorapi.learnosity.com?v2021.2.LTS'></script>
+        <script src='https://authorapi.learnosity.com?latest-lts'></script>
 
         <!-- Initiate Author API rendering, using the JSON blob of signed params. -->
         <script>

@@ -37,7 +37,7 @@
     ];
 
     // Public & private security keys required to access Learnosity APIs and
-    // data. These keys grant access to Learnosity's public demos account, 
+    // data. These keys grant access to Learnosity's public demos account,
     // loaded from a configuration file on line 12.
     // Learnosity will provide keys for your own private account.
     $consumerKey = $config['consumerKey'];
@@ -76,7 +76,7 @@
         <span class="learnosity-report" id="quickstart-report-2"></span>
 
         <!-- Load the Reports API library -->
-        <script src="https://reports.learnosity.com/?v2021.2.LTS"></script>
+        <script src="https://reports.learnosity.com/?latest-lts"></script>
 
         <!-- Initiate Reports API rendering, using the JSON blob of signed params.  -->
         <script>

@@ -5,17 +5,17 @@
      * Basic example of pulling information from the Learnosity cloud using Data API.
      */
 
-// Setup to load the necessary classes from the example directory, 
+// Setup to load the necessary classes from the example directory,
 // and set up variables related to user access.
 require_once __DIR__ . '/../../../bootstrap.php';
 $config = require_once __DIR__ . '/../config.php'; // Load security keys from config.php.
 use LearnositySdk\Request\DataApi;
 use LearnositySdk\Request\Remote;
 
-$itembank_uri = 'https://data.learnosity.com/v2023.1.lts/itembank/items';
+$itembank_uri = 'https://data.learnosity.com/latest-lts/itembank/items';
 
 // Public & private security keys required to access Learnosity APIs and
-// data. These keys grant access to Learnosity's public demos account, 
+// data. These keys grant access to Learnosity's public demos account,
 // loaded from a configuration file on line 11.
 // Learnosity will provide keys for your own private account.
 $consumerKey = $config['consumerKey'];
