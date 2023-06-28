@@ -10,6 +10,9 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 ### Added
 - PSR-4 compliance
 
+### Security
+- Upgraded signature to match the security standard.
+
 ## [v1.0.0] - 2021-06-01
 ### Added
 - PHP 7 to PHP 8 are supported.

@@ -6,3 +6,4 @@ tests/coverage.xml
 learnosity_sdk-*
 composer.lock
 .phpunit.result.cache
+.idea/
