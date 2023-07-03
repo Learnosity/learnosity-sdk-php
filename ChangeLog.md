@@ -7,6 +7,8 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v1.0.2] - 2023-07-03
 ### Added
 - PHP 7.1 is now the minimum supported version.
 
