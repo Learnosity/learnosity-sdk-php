@@ -1,11 +1,12 @@
 DOCKER := $(if $(LRN_SDK_NO_DOCKER),,$(shell which docker))
-PHP_VERSION = 7.4
+PHP_VERSION = 8.3
+DEBIAN_VERSION = bookworm
 IMAGE = php-cli-composer:$(PHP_VERSION)
 
 TARGETS = all build devbuild prodbuild \
 	quickstart install-vendor \
 	dist dist-test dist-zip release \
-	test test-integration-env test-unit \
+	test test-coverage test-integration-env test-unit \
 	clean clean-dist clean-test clean-vendor
 .PHONY: $(TARGETS)
 .default: all
@@ -25,7 +26,7 @@ $(TARGETS): $(if $(shell docker image ls -q --filter reference=$(IMAGE)),,docker
 	$(DKR) make -e MAKEFLAGS="$(MAKEFLAGS)" $@
 
 docker-build:
-	docker image build --progress plain --build-arg PHP_VERSION=$(PHP_VERSION) -t $(IMAGE) .
+	docker image build --progress plain --build-arg PHP_VERSION=$(PHP_VERSION) --build-arg DEBIAN_VERSION=$(DEBIAN_VERSION) -t $(IMAGE) .
 .PHONY: docker-build
 
 else
@@ -43,7 +44,7 @@ PHPUNIT = ./vendor/bin/phpunit
 ###
 quickstart: VENDOR_FLAGS = --no-dev
 quickstart: install-vendor
-	cd docs/quickstart && php -S localhost:8000
+	cd docs/quickstart && php -S $(LOCALHOST):8000
 
 ###
 # internal tooling rules
@@ -95,10 +96,9 @@ dist-test: dist-zip install-vendor
 ###
 # install vendor rules
 ###
-install-vendor:
-	if [[ ! -f vendor/autoload.php && ! -f ../../../vendor/autoload.php ]]; then \
-		$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS) $(VENDOR_FLAGS)
-	fi
+install-vendor: vendor/autoload.php
+vendor/autoload.php: composer.json
+	$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS) $(VENDOR_FLAGS)
 
 clean: clean-dist clean-test clean-vendor
 	rm -rf $(DIST_PREFIX)*.zip
