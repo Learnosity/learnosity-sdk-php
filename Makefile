@@ -1,44 +1,74 @@
-SED=$(shell which gsed || which sed)
-VERSION=$(shell git describe | $(SED) s/^v//)
-DIST_PREFIX=learnosity_sdk-
-DIST=$(DIST_PREFIX)$(VERSION)
+DOCKER := $(if $(LRN_SDK_NO_DOCKER),,$(shell which docker))
+PHP_VERSION = 8.3
+DEBIAN_VERSION = bookworm
+IMAGE = php-cli-composer:$(PHP_VERSION)
 
-COMPOSER=composer
-COMPOSER_INSTALL_FLAGS=--no-interaction --optimize-autoloader --classmap-authoritative
+TARGETS = all build devbuild prodbuild \
+	quickstart install-vendor \
+	dist dist-test dist-zip release \
+	test test-coverage test-integration-env test-unit \
+	clean clean-dist clean-test clean-vendor
+.PHONY: $(TARGETS)
+.default: all
 
-PHPUNIT=./vendor/bin/phpunit
+ifneq (,$(DOCKER))
+# Re-run the make command in a container
+DKR = docker container run -t --rm \
+		-v $(CURDIR):/srv/sdk/php:z,delegated \
+		-v lrn-sdk-php_cache:/root/.composer \
+		-w /srv/sdk/php \
+		-e LRN_SDK_NO_DOCKER=1 \
+		-e ENV -e REGION -e VER \
+		$(if $(findstring dev,$(ENV)),--net host) \
+		$(IMAGE)
+
+$(TARGETS): $(if $(shell docker image ls -q --filter reference=$(IMAGE)),,docker-build)
+	$(DKR) make -e MAKEFLAGS="$(MAKEFLAGS)" $@
+
+docker-build:
+	docker image build --progress plain --build-arg PHP_VERSION=$(PHP_VERSION) --build-arg DEBIAN_VERSION=$(DEBIAN_VERSION) -t $(IMAGE) .
+.PHONY: docker-build
+
+else
+DIST_PREFIX = learnosity_sdk-
+SRC_VERSION := $(shell git describe | sed s/^v//)
+DIST = $(DIST_PREFIX)$(SRC_VERSION)
+
+COMPOSER = composer
+COMPOSER_INSTALL_FLAGS = --no-interaction --optimize-autoloader --classmap-authoritative
+
+PHPUNIT = ./vendor/bin/phpunit
 
 ###
 # quickstart rules
 ###
-quickstart: check-quickstart
-	cd docs/quickstart && php -S localhost:8000
-
-check-quickstart:
-	if [[ ! -f vendor/autoload.php && ! -f ../../../vendor/autoload.php ]]; then \
-		$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS) --no-dev; \
-	fi
+quickstart: VENDOR_FLAGS = --no-dev
+quickstart: install-vendor
+	cd docs/quickstart && php -S $(LOCALHOST):8000
 
 ###
 # internal tooling rules
-###
-devbuild: clean install-vendor-dev
+####
+build: install-vendor
 
-prodbuild: clean install-vendor
+devbuild: build
+
+prodbuild: VENDOR_FLAGS = --no-dev
+prodbuild: install-vendor
 
 release:
 	@./release.sh
 
-test: install-vendor-dev
+test: install-vendor
 	$(PHPUNIT) --do-not-cache-result
 
-test-coverage: install-vendor-dev
+test-coverage: install-vendor
 	XDEBUG_MODE=coverage $(PHPUNIT) --do-not-cache-result
 
-test-unit: install-vendor-dev
+test-unit: install-vendor
 	$(PHPUNIT) --do-not-cache-result --testsuite unit
 
-test-integration-env: install-vendor-dev
+test-integration-env: install-vendor
 	$(PHPUNIT) --do-not-cache-result --testsuite integration
 
 ###
@@ -60,25 +90,16 @@ dist-zip: clean-test clean-dist
 	zip -qr $(DIST).zip $(DIST)
 
 # run tests in the distdir
-dist-test: dist-zip install-vendor-dev
+dist-test: dist-zip install-vendor
 	$(PHPUNIT) --do-not-cache-result --no-logging --configuration=$(DIST)/phpunit.xml
 
 ###
 # install vendor rules
 ###
-install-vendor:
-	if [[ ! -f vendor/autoload.php && ! -f ../../../vendor/autoload.php ]]; then \
-		$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS) --no-dev
-	fi
+install-vendor: vendor/autoload.php
+vendor/autoload.php: composer.json
+	$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS) $(VENDOR_FLAGS)
 
-install-vendor-dev:
-	if [[ ! -f vendor/autoload.php && ! -f ../../../vendor/autoload.php ]]; then \
-		$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS); \
-	fi
-
-###
-# cleaning rules
-###
 clean: clean-dist clean-test clean-vendor
 	rm -rf $(DIST_PREFIX)*.zip
 
@@ -91,12 +112,31 @@ clean-test:
 	test ! -d tests/coverage || rm -rf tests/coverage
 
 clean-vendor:
-	test ! -d vendor || rm -r vendor
-	test ! -f composer.lock || rm -f composer.lock
+	rm -rf vendor
+	rm -f composer.lock
 
-###
+# Aliases
 
-.PHONY: quickstart check-quickstart devbuild prodbuild release test \
-	test-coverage test-unit test-integration-env \
-	dist dist-zip dist-test install-vendor install-vendor-dev \
-	clean clean-test clean-dev clean-vendor clean-dist
+devbuild: build
+prodbuild: dist
+
+# The following are real targets, not phony ones
+
+vendor:
+	$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS)
+
+PKG_CONTENTS = .version \
+	CONTRIBUTING.md LICENSE.md README.md REFERENCE.md ChangeLog.md \
+	composer.json bootstrap.php phpunit.xml \
+	docs src
+
+$(DIST):
+	mkdir -p $(DIST)
+	cp -R $(PKG_CONTENTS) $(DIST)
+
+$(DIST)/vendor: $(DIST)
+	cd $(DIST) && $(COMPOSER) install $(COMPOSER_INSTALL_FLAGS) --no-dev
+
+$(DIST).zip: $(DIST)/vendor
+	zip -qr $(DIST).zip $(DIST)
+endif
