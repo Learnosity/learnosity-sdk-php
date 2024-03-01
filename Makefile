@@ -1,3 +1,5 @@
+ARGS_PHPUNIT ?=
+
 DOCKER := $(if $(LRN_SDK_NO_DOCKER),,$(shell which docker))
 PHP_VERSION = 8.3
 DEBIAN_VERSION = bookworm
@@ -62,16 +64,16 @@ release:
 	@./release.sh
 
 test: install-vendor
-	$(PHPUNIT) --do-not-cache-result
+	$(PHPUNIT) --do-not-cache-result $(ARGS_PHPUNIT)
 
 test-coverage: install-vendor
-	XDEBUG_MODE=coverage $(PHPUNIT) --do-not-cache-result
+	XDEBUG_MODE=coverage $(PHPUNIT) --do-not-cache-result $(ARGS_PHPUNIT)
 
 test-unit: install-vendor
-	$(PHPUNIT) --do-not-cache-result --testsuite unit
+	$(PHPUNIT) --do-not-cache-result --testsuite unit $(ARGS_PHPUNIT)
 
 test-integration-env: install-vendor
-	$(PHPUNIT) --do-not-cache-result --testsuite integration
+	$(PHPUNIT) --do-not-cache-result --testsuite integration $(ARGS_PHPUNIT)
 
 ###
 # dist rules
