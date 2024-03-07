@@ -39,6 +39,7 @@ class Init
      * Valid values (see also `$validServices`):
      *  - assess
      *  - author
+     *  - author-aide
      *  - data
      *  - events
      *  - items
@@ -109,7 +110,7 @@ class Init
      * Service names that are valid for `$service`
      * @var array
      */
-    private $validServices = ['assess', 'author', 'data', 'events', 'items', 'questions', 'reports'];
+    private $validServices = ['assess', 'author', 'author-aide', 'data', 'events', 'items', 'questions', 'reports'];
 
     /**
      * @var SignatureFactory
@@ -246,6 +247,7 @@ class Init
                     $this->requestPacket;
                 break;
             case 'author':
+            case 'author-aide':
             case 'items':
             case 'reports':
                 // Add the security packet (with signature) to the output
