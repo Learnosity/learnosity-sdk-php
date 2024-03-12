@@ -1,4 +1,5 @@
 <?php
+
     /**
      * Copyright (c) 2021 Learnosity, MIT License
      *
@@ -40,9 +41,10 @@
         'author',
         $security,
         $consumerSecret,
-        $request);
+        $request
+    );
     $initOptions = $init->generate();
-?>
+    ?>
 
 <!-- Section 2: Web page content. -->
 <!DOCTYPE html>

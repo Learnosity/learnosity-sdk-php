@@ -53,7 +53,7 @@ class Json
 
         $highPrecisionFloatMap = static::getHighPrecisionFloatMap($array);
 
-        $jsonOptions = JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES;
+        $jsonOptions = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
         if (!empty($options)) {
             foreach ($options as $o) {
                 $jsonOptions += $o;
@@ -62,7 +62,7 @@ class Json
 
         $result = json_encode($array, (int)$jsonOptions);
 
-        foreach($highPrecisionFloatMap as $scientificValueString => $floatValueString) {
+        foreach ($highPrecisionFloatMap as $scientificValueString => $floatValueString) {
             // Replace all scientific values by equivalent floatValues
             $result = str_ireplace($scientificValueString, $floatValueString, $result);
         }

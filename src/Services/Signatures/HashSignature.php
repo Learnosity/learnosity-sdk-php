@@ -53,5 +53,4 @@ class HashSignature implements SignatureInterface
     {
         return static::SIGNATURE_VERSION;
     }
-
 }

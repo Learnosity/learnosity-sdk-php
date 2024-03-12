@@ -34,7 +34,8 @@ class HmacSignature implements SignatureInterface
         if (strpos($preHashString, $secretKey)) {
             throw new ValidationException(static::EXCEPTION_MESSAGE);
         }
-        return '$' . static::SIGNATURE_VERSION . '$' . hash_hmac(static::ALGORITHM,
+        return '$' . static::SIGNATURE_VERSION . '$' . hash_hmac(
+            static::ALGORITHM,
             $preHashString,
             $secretKey
         );
@@ -58,5 +59,4 @@ class HmacSignature implements SignatureInterface
     {
         return static::SIGNATURE_VERSION;
     }
-
 }

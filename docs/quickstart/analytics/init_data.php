@@ -1,4 +1,5 @@
 <?php
+
 /**
      * Copyright (c) 2021 Learnosity, MIT License
      *

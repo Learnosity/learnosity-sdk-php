@@ -1,9 +1,10 @@
 <?php
+
 /* Copyright (c) 2023 Learnosity, MIT License
  * Basic example code for pulling information from the Learnosity cloud using Data API. */
 
 // Setup to load the necessary classes from the example directory, & set up variables for access.
-require_once __DIR__ . '/../../../bootstrap.php'; 
+require_once __DIR__ . '/../../../bootstrap.php';
 $config = require_once __DIR__ . '/../config.php'; // Load security keys from config.php, for Learnosity's public demos account.
 use LearnositySdk\Request\DataApi; // Load core Data API library.
 $itembank_uri = 'https://data.learnosity.com/v2023.1.LTS/sessions/responses'; // Choosing the Data API endpoint for sessions/responses.
