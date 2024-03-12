@@ -20,12 +20,12 @@ use LearnositySdk\Services\SignatureFactory;
 
 class Init
 {
-    const VERSION_FILE_PATH = __DIR__ . '/../../.version';
+    protected const VERSION_FILE_PATH = __DIR__ . '/../../.version';
 
     /**
-     * The algorithm used in the hashing function to create the signature
+     * The algorithm used in the hashing function to create the api-events signature
      */
-    const ALGORITHM = 'sha256';
+    protected const ALGORITHM = 'sha256';
 
     /**
      * We use telemetry to enable better support and feature planning. It is however not advised to
