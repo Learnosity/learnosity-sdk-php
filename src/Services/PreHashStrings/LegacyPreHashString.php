@@ -76,7 +76,7 @@ class LegacyPreHashString implements PreHashStringInterface
      * @var array
      * TODO: make this protected when the legacy signing code is gone
      */
-    public const VALID_SECURITY_KEYS = [
+    protected const VALID_SECURITY_KEYS = [
         'consumer_key',
         'domain',
         'timestamp',

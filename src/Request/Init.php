@@ -143,7 +143,6 @@ class Init
 
         // First validate the arguments passed
         list ($requestPacket, $securityPacket) = $this->validate($service, $secret, $securityPacket, $requestPacket);
-        /* list ($requestPacket, $securityPacket) = $this->legacyValidate($service, $secret, $securityPacket, $requestPacket); */
 
         if (self::$telemetryEnabled) {
             $requestPacket = $this->addMeta($requestPacket);
@@ -281,83 +280,6 @@ class Init
         return $encode ? Json::encode($output) : $output;
     }
 
-    /* TODO: make  LegacyPreHashString::VALID_SECURITY_KEYS protected when this legacy signing code is gone */
-    public function legacyValidate(string $service, string $secret, $securityPacket, $requestPacket): array
-    {
-        if (is_string($requestPacket)) {
-            $requestPacket = json_decode($requestPacket, true);
-            $this->requestPassedAsString = true;
-        }
-
-        if (is_null($requestPacket)) {
-            $requestPacket = [];
-        }
-
-        // In case the user gave us a JSON securityPacket, convert to an array
-        if (!is_array($securityPacket) && is_string($securityPacket)) {
-            $securityPacket = json_decode($securityPacket, true);
-        }
-
-        if (empty($service)) {
-            throw new ValidationException('The `service` argument wasn\'t found or was empty');
-        } elseif (!in_array(strtolower($service), $this->preHashStringFactory->getValidServices())) {
-            throw new ValidationException("The service provided ($service) is not valid");
-        }
-
-        if (empty($securityPacket) || !is_array($securityPacket)) {
-            throw new ValidationException('The security packet must be an array or a valid JSON string');
-        }
-
-        foreach (array_keys($securityPacket) as $key) {
-            if (!in_array($key, LegacyPreHashString::VALID_SECURITY_KEYS)) {
-                throw new ValidationException('Invalid key found in the security packet: ' . $key);
-            }
-        }
-        if ($service === "questions" && !array_key_exists('user_id', $securityPacket)) {
-            throw new ValidationException('Questions API requires a `user_id` in the security packet');
-        }
-        if (!array_key_exists('timestamp', $securityPacket)) {
-            $securityPacket['timestamp'] = gmdate('Ymd-Hi');
-        }
-
-        if (empty($secret)) {
-            throw new ValidationException('The `secret` argument must be a valid string');
-        }
-
-        if (!empty($requestPacket) && !is_array($requestPacket)) {
-            throw new ValidationException('The request packet must be an array or a valid JSON string');
-        }
-
-        return [$requestPacket, $securityPacket];
-    }
-
-    /* TODO: make  LegacyPreHashString::VALID_SECURITY_KEYS protected when this legacy signing code is gone */
-    public function generatePreHashString()
-    {
-          $signatureArray = [];
-
-        // Create a pre-hash string based on the security credentials
-        // The order is important
-        foreach (LegacyPreHashString::VALID_SECURITY_KEYS as $key) {
-            if (array_key_exists($key, $this->securityPacket)) {
-                $signatureArray[] = $this->securityPacket[$key];
-            }
-        }
-
-        // Add the requestPacket if necessary
-        if ($this->signRequestData && !empty($this->requestPacket)) {
-            $signatureArray[] = Json::encode($this->requestPacket);
-        }
-
-        // Add the action if necessary
-        if (!empty($this->action)) {
-            $signatureArray[] = $this->action;
-        }
-
-        $preHashString = implode('_', $signatureArray);
-        return $preHashString;
-    }
-
     /**
      * Generate a signature hash for the request, this includes:
      *  - the security credentials
@@ -373,7 +295,6 @@ class Init
             $this->requestPacket,
             $this->action
         );
-        /* $preHashString  = $this->generatePreHashString(); */
 
         // As we only support v2 from this point onwards
         // we do not need to check the version at this point,
