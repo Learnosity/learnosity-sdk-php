@@ -6,6 +6,14 @@ use LearnositySdk\Services\Signatures\HmacSignature;
 
 // XXX: should be in a Test namespace
 
+/**
+ * Fixture providing example requests for the various APIs. It also provides some well-known signatures using various of
+ * our historical schemes.
+ *
+ * /!\ Please do not modify those requests lightly. They are used to test backward compatibility of the signature modes,
+ * and changing those requests would require changing the expected signatures, based on legacy code that we no longer
+ * have in our codebase. /!\
+ */
 class ParamsFixture
 {
     const TEST_CONSUMER_KEY = 'yis0TYCu7U9V4o7M';
