@@ -434,18 +434,17 @@ class InitTest extends AbstractTestCase
         ];
         $testCases['api-data_get'] = $dataApiGet;
 
-        $dataApiPost = [
+        $dataApiSet = [
             [
                 'security' =>
                     '{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"'
-                    . '$02$9d1971fb9ac51482f7e73dcf87fc029d4a3dfffa05314f71af9d89fb3c2bcf16"}',
+                    . '$02$d9d0406c92100fff171233a3846d3e2d4ee9b27319a2db5f854909996328437a"}',
                 'request'  => '{"limit":100}',
-                'action'   => 'post'
+                'action'   => 'set',
             ],
-            $service, $security, $secret, $request, 'post',
+            $service, $security, $secret, $request, 'set',
         ];
-        // XXX: post is not a valid action; should be set
-        $testCases['api-data_post'] = $dataApiPost;
+        $testCases['api-data_set'] = $dataApiSet;
 
         /* Events */
         list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingEventsApiParams();
@@ -538,12 +537,11 @@ class InitTest extends AbstractTestCase
         $testCases['api-data'] = $dataApi;
 
         /* Events */
-        $dataApiPost = [
-        '$02$9d1971fb9ac51482f7e73dcf87fc029d4a3dfffa05314f71af9d89fb3c2bcf16',
-        $service, $security, $secret, $request, 'post',
+        $dataApiSet = [
+            '$02$d9d0406c92100fff171233a3846d3e2d4ee9b27319a2db5f854909996328437a',
+            $service, $security, $secret, $request, 'set',
         ];
-        // XXX: post is not a valid action; should be set
-        $testCases['api-data_post'] = $dataApiPost;
+        $testCases['api-data_set'] = $dataApiSet;
 
         $securityExpires = $security;
         $securityExpires['expires'] = '20160621-1716';
