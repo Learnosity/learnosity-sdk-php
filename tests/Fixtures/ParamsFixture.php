@@ -87,24 +87,26 @@ class ParamsFixture
         ];
         $action = null;
 
-        if ($assoc) {
-            return [
-                'service' => $service,
-                'security' => $security,
-                'secret' => $secret,
-                'request' => $request,
-                'action' => $action,
-            ];
-        } else {
-            return [
-                $service,
-                $security,
-                $secret,
-                $request,
-                $action,
-            ];
+        $params = [
+            'service' => $service,
+            'security' => $security,
+            'secret' => $secret,
+            'request' => $request,
+            'action' => $action,
+        ];
+
+        if (!$assoc) {
+            return array_values($params);
         }
+
+        return $params;
     }
+
+    public static function getAssessApiSignatureForVersion(string $version): string
+    {
+        return static::getQuestionsApiSignatureForVersion($version);
+    }
+
 
     /**
      * @param  bool $assoc If true, associative array will be returned
@@ -116,38 +118,44 @@ class ParamsFixture
         $security = static::getSecurity();
         $secret = static::TEST_CONSUMER_SECRET;
         $request = [
-            "mode" => "item_list",
-            "config" => [
-                "item_list" => [
-                    "item" => [
-                        "status" => true
-                    ]
+        "mode" => "item_list",
+        "config" => [
+            "item_list" => [
+                "item" => [
+                    "status" => true
                 ]
-            ],
-            "user" => [
-                "id" => "walterwhite",
-                "firstname" => "walter",
-                "lastname" => "white"
             ]
+        ],
+        "user" => [
+            "id" => "walterwhite",
+            "firstname" => "walter",
+            "lastname" => "white"
+        ]
         ];
         $action = null;
 
-        if ($assoc) {
-            return [
-                'service' => $service,
-                'security' => $security,
-                'secret' => $secret,
-                'request' => $request,
-                'action' => $action,
-            ];
-        } else {
-            return [
-                $service,
-                $security,
-                $secret,
-                $request,
-                $action,
-            ];
+        $params = [
+            'service' => $service,
+            'security' => $security,
+            'secret' => $secret,
+            'request' => $request,
+            'action' => $action,
+        ];
+
+        if (!$assoc) {
+            return array_values($params);
+        }
+
+        return $params;
+    }
+
+    public static function getAuthorApiSignatureForVersion(string $version): string
+    {
+        switch ($version) {
+            case '02':
+                return '$02$ca2769c4be77037cf22e0f7a2291fe48c470ac6db2f45520a259907370eff861';
+            default:
+                throw new \Exception(__FUNCTION__ . ' not re-implemented for signature version ' . $version);
         }
     }
 
@@ -172,22 +180,28 @@ class ParamsFixture
         ];
         $action = null;
 
-        if ($assoc) {
-            return [
-                'service' => $service,
-                'security' => $security,
-                'secret' => $secret,
-                'request' => $request,
-                'action' => $action,
-            ];
-        } else {
-            return [
-                $service,
-                $security,
-                $secret,
-                $request,
-                $action,
-            ];
+        $params = [
+            'service' => $service,
+            'security' => $security,
+            'secret' => $secret,
+            'request' => $request,
+            'action' => $action,
+        ];
+
+        if (!$assoc) {
+            return array_values($params);
+        }
+
+        return $params;
+    }
+
+    public static function getAuthorAideApiSignatureForVersion(string $version): string
+    {
+        switch ($version) {
+            case '02':
+                return '$02$f2ce1da2fdead193d53ab954b8a3660548ed9b0e3ce60599d751130deba7a138';
+            default:
+                throw new \Exception(__FUNCTION__ . ' not re-implemented for signature version ' . $version);
         }
     }
 
@@ -208,22 +222,28 @@ class ParamsFixture
         ];
         $action = 'get';
 
-        if ($assoc) {
-            return [
-                'service' => $service,
-                'security' => $security,
-                'secret' => $secret,
-                'request' => $request,
-                'action' => $action,
-            ];
-        } else {
-            return [
-                $service,
-                $security,
-                $secret,
-                $request,
-                $action
-            ];
+        $params = [
+            'service' => $service,
+            'security' => $security,
+            'secret' => $secret,
+            'request' => $request,
+            'action' => $action,
+        ];
+
+        if (!$assoc) {
+            return array_values($params);
+        }
+
+        return $params;
+    }
+
+    public static function getDataApiSignatureForVersion(string $version): string
+    {
+        switch ($version) {
+            case '02':
+                return '$02$e19c8a62fba81ef6baf2731e2ab0512feaf573ca5ca5929c2ee9a77303d2e197';
+            default:
+                throw new \Exception(__FUNCTION__ . ' not re-implemented for signature version ' . $version);
         }
     }
 
@@ -246,22 +266,28 @@ class ParamsFixture
         ];
         $action = null;
 
-        if ($assoc) {
-            return [
-                'service' => $service,
-                'security' => $security,
-                'secret' => $secret,
-                'request' => $request,
-                'action' => $action,
-            ];
-        } else {
-            return [
-                $service,
-                $security,
-                $secret,
-                $request,
-                $action,
-            ];
+        $params = [
+            'service' => $service,
+            'security' => $security,
+            'secret' => $secret,
+            'request' => $request,
+            'action' => $action,
+        ];
+
+        if (!$assoc) {
+            return array_values($params);
+        }
+
+        return $params;
+    }
+
+    public static function getEventsApiSignatureForVersion(string $version): string
+    {
+        switch ($version) {
+            case '02':
+                return '$02$5c3160dbb9ab4d01774b5c2fc3b01a35ce4f9709c84571c27dfe333d1ca9d349';
+            default:
+                throw new \Exception(__FUNCTION__ . ' not re-implemented for signature version ' . $version);
         }
     }
 
@@ -304,22 +330,28 @@ class ParamsFixture
         ];
         $action = null;
 
-        if ($assoc) {
-            return [
-                'service' => $service,
-                'security' => $security,
-                'secret' => $secret,
-                'request' => $request,
-                'action' => $action,
-            ];
-        } else {
-            return [
-                $service,
-                $security,
-                $secret,
-                $request,
-                $action,
-            ];
+        $params = [
+            'service' => $service,
+            'security' => $security,
+            'secret' => $secret,
+            'request' => $request,
+            'action' => $action,
+        ];
+
+        if (!$assoc) {
+            return array_values($params);
+        }
+
+        return $params;
+    }
+
+    public static function getItemsApiSignatureForVersion(string $version): string
+    {
+        switch ($version) {
+            case '02':
+                return '$02$36c439e7d18f2347ce08ca4b8d4803a22325d54352650b19b6f4aaa521b613d9';
+            default:
+                throw new \Exception(__FUNCTION__ . ' not re-implemented for signature version ' . $version);
         }
     }
 
@@ -353,22 +385,28 @@ class ParamsFixture
         ];
         $action = null;
 
-        if ($assoc) {
-            return [
-                'service' => $service,
-                'security' => $security,
-                'secret' => $secret,
-                'request' => $request,
-                'action' => $action,
-            ];
-        } else {
-            return [
-                $service,
-                $security,
-                $secret,
-                $request,
-                $action,
-            ];
+        $params = [
+            'service' => $service,
+            'security' => $security,
+            'secret' => $secret,
+            'request' => $request,
+            'action' => $action,
+        ];
+
+        if (!$assoc) {
+            return array_values($params);
+        }
+
+        return $params;
+    }
+
+    public static function getQuestionsApiSignatureForVersion(string $version): string
+    {
+        switch ($version) {
+            case '02':
+                return '$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8';
+            default:
+                throw new \Exception(__FUNCTION__ . ' not re-implemented for signature version ' . $version);
         }
     }
 
@@ -395,22 +433,28 @@ class ParamsFixture
         ];
         $action = null;
 
-        if ($assoc) {
-            return [
-                'service' => $service,
-                'security' => $security,
-                'secret' => $secret,
-                'request' => $request,
-                'action' => $action,
-            ];
-        } else {
-            return [
-                $service,
-                $security,
-                $secret,
-                $request,
-                $action,
-            ];
+        $params = [
+            'service' => $service,
+            'security' => $security,
+            'secret' => $secret,
+            'request' => $request,
+            'action' => $action,
+        ];
+
+        if (!$assoc) {
+            return array_values($params);
+        }
+
+        return $params;
+    }
+
+    public static function getReportsApiSignatureForVersion(string $version): string
+    {
+        switch ($version) {
+            case '02':
+                return '$02$8e0069e7aa8058b47509f35be236c53fa1a878c64b12589fd42f48b568f6ac84';
+            default:
+                throw new \Exception(__FUNCTION__ . ' not re-implemented for signature version ' . $version);
         }
     }
 
