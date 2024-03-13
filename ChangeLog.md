@@ -8,6 +8,10 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [v1.0.3] - 2024-03-07
+### Added
+- Support author aide
+
 ## [v1.0.2] - 2023-07-03
 ### Added
 - PHP 7.1 is now the minimum supported version.

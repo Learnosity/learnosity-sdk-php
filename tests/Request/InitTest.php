@@ -357,6 +357,46 @@ class InitTest extends AbstractTestCase
     }
 
     /**
+     * @param  bool $assoc If true, associative array will be returned
+     * @return array
+     */
+    public static function getWorkingAuthorAideApiParams(bool $assoc = false): array
+    {
+        $service = 'author-aide';
+        $security = static::getSecurity();
+        $secret = static::TEST_CONSUMER_SECRET;
+        $request = [
+            "config" => [
+                "test-attribute" => "test"
+            ],
+            "user" => [
+                "id" => "walterwhite",
+                "firstname" => "walter",
+                "lastname" => "white"
+            ]
+        ];
+        $action = null;
+
+        if ($assoc) {
+            return [
+                'service' => $service,
+                'security' => $security,
+                'secret' => $secret,
+                'request' => $request,
+                'action' => $action,
+            ];
+        } else {
+            return [
+                $service,
+                $security,
+                $secret,
+                $request,
+                $action,
+            ];
+        }
+    }
+
+    /**
      * WARNING: RemoteTest is also using this params
      *
      * @param  bool $assoc If true, associative array will be returned
@@ -637,6 +677,13 @@ class InitTest extends AbstractTestCase
         ];
         $testCases[] = $authorApiV2;
 
+        list($service, $security, $secret, $request, $action) = static::getWorkingAuthorAideApiParams();
+        $authorAide = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$f2ce1da2fdead193d53ab954b8a3660548ed9b0e3ce60599d751130deba7a138"},"request":{"config":{"test-attribute":"test"},"user":{"id":"walterwhite","firstname":"walter","lastname":"white"}}}',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
+        ];
+        $testCases[] = $authorAide;
+
         /* Assess */
         list($service, $security, $secret, $request, $action) = static::getWorkingAssessApiParams();
         $assessApiV1 = [
@@ -767,6 +814,13 @@ class InitTest extends AbstractTestCase
         ];
         $testCases[] = $authorApiAsStringV2;
 
+        list($service, $security, $secret, $request, $action) = static::getWorkingAuthorAideApiParams();
+        $authorAideApiAsString = [
+            '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$f2ce1da2fdead193d53ab954b8a3660548ed9b0e3ce60599d751130deba7a138"},"request":"{\"config\":{\"test-attribute\":\"test\"},\"user\":{\"id\":\"walterwhite\",\"firstname\":\"walter\",\"lastname\":\"white\"}}"}',
+            new Init($service, $security, $secret, json_encode($request), $action, $this->signatureFactory)
+        ];
+        $testCases[] = $authorAideApiAsString;
+
         /* Items */
         list($service, $security, $secret, $request, $action) = static::getWorkingItemsApiParams();
         $itemsApiAsStringV1 = [
@@ -807,6 +861,13 @@ class InitTest extends AbstractTestCase
             new Init($service, $security, $secret, $request, $action, $this->signatureFactory, '02')
         ];
         $testCases[] = $authorApiV2;
+
+        list($service, $security, $secret, $request, $action) = static::getWorkingAuthorAideApiParams();
+        $authorAide = [
+            '$02$f2ce1da2fdead193d53ab954b8a3660548ed9b0e3ce60599d751130deba7a138',
+            new Init($service, $security, $secret, $request, $action, $this->signatureFactory)
+        ];
+        $testCases[] = $authorAide;
 
         /* Assess */
         list($service, $security, $secret, $request, $action) = static::getWorkingAssessApiParams();
@@ -936,6 +997,13 @@ class InitTest extends AbstractTestCase
             (new Init($service, $security, $secret, $request, $action, $this->signatureFactory))->generate()
         ];
         $testCases[] = $authorApi;
+
+        list($service, $security, $secret, $request, $action) = static::getWorkingAuthorAideApiParams();
+        $authorAideApi = [
+            'request.meta',
+            (new Init($service, $security, $secret, $request, $action, $this->signatureFactory))->generate()
+        ];
+        $testCases[] = $authorAideApi;
 
         /* Assess */
         list($service, $security, $secret, $request, $action) = static::getWorkingAssessApiParams();
