@@ -9,6 +9,8 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 ### Added
 - Added composable services for signature generation.
+### Refactor
+- Refactored the signature generation to use composable services.
 
 ## [v1.0.3] - 2024-03-07
 ### Added

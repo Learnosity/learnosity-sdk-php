@@ -253,35 +253,35 @@ class InitTest extends AbstractTestCase
         $wrongSecurity['wrongParam'] = '';
 
         return [
-        'valid-api-data' => [
-            $service,
-            $security,
-            $secret,
-            $request,
-            $action,
-            new Init($service, $security, $secret, $request, $action)
-        ],
-        'empty-service' => [
-            '',
-            $security,
-            $secret,
-            $request,
-            $action,
-            null,
-            ValidationException::class,
-            'The `service` argument wasn\'t found or was empty'
-        ],
-        'invalid-service' => [
-            'wrongService',
-            $security,
-            $secret,
-            $request,
-            $action,
-            null,
-            ValidationException::class,
-            'The service provided (wrongService) is not valid'
-        ],
-        'empty-security' => [
+            'valid-api-data' => [
+                $service,
+                $security,
+                $secret,
+                $request,
+                $action,
+                new Init($service, $security, $secret, $request, $action)
+            ],
+            'empty-service' => [
+                '',
+                $security,
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'The `service` argument wasn\'t found or was empty'
+            ],
+            'invalid-service' => [
+                'wrongService',
+                $security,
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'The service provided (wrongservice) is not valid'
+            ],
+            'empty-security' => [
 
             $service,
             '',
