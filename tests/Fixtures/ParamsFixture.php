@@ -30,6 +30,13 @@ class ParamsFixture
         // Needed to initialise Questions API
         $security['user_id'] = '$ANONYMIZED_USER_ID';
         $secret = static::TEST_CONSUMER_SECRET;
+
+        $questionsParams = static::getWorkingQuestionsApiParams(true);
+        $questionsApiActivity = $questionsParams['request'];
+        $questionsApiActivity['user_id'] = $security['user_id'];
+        $questionsApiActivity['name'] = 'Assess API - Demo';
+        $questionsApiActivity['id'] = 'assessdemo';
+
         $request = [
             "items" => [
                 [
@@ -75,37 +82,7 @@ class ParamsFixture
                 "idle_timeout" => true,
                 "questionsApiVersion" => "v2"
             ],
-            "questionsApiActivity" => [
-                "user_id" => '$ANONYMIZED_USER_ID',
-                "type" => "submit_practice",
-                "state" => "initial",
-                "id" => "assessdemo",
-                "name" => "Assess API - Demo",
-                "questions" => [
-                    [
-                        "response_id" => "demoscience1234",
-                        "type" => "sortlist",
-                        "description" => "In this question, the student needs to sort the events, chronologically earliest to latest.",
-                        "list" => ["Russian Revolution", "Discovery of the Americas", "Storming of the Bastille", "Battle of Plataea", "Founding of Rome", "First Crusade"],
-                        "instant_feedback" => true,
-                        "feedback_attempts" => 2,
-                        "validation" => [
-                            "valid_response" => [4, 3, 5, 1, 2, 0],
-                            "valid_score" => 1,
-                            "partial_scoring" => true,
-                            "penalty_score" => -1
-                        ]
-                    ],
-                    [
-                        "response_id" => "demoscience5678",
-                        "type" => "highlight",
-                        "description" => "The student needs to mark one of the flowers anthers in the image.",
-                        "img_src" => "http://www.learnosity.com/static/img/flower.jpg",
-                        "line_color" => "rgb(255, 20, 0)",
-                        "line_width" => "4"
-                    ]
-                ]
-            ],
+            "questionsApiActivity" => $questionsApiActivity,
             "type" => "activity"
         ];
         $action = null;
@@ -224,6 +201,7 @@ class ParamsFixture
     {
         $service = 'data';
         $security = static::getSecurity();
+        $security['timestamp'] = '20140626-0528';
         $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             'limit' => 100,
@@ -295,6 +273,7 @@ class ParamsFixture
     {
         $service = 'items';
         $security = static::getSecurity();
+        $security['user_id'] = '$ANONYMIZED_USER_ID';
         $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             'user_id' => '$ANONYMIZED_USER_ID',

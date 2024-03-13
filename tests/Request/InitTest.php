@@ -35,6 +35,10 @@ class InitTest extends AbstractTestCase
             $this->expectException($expectedException);
             $this->expectExceptionMessage($expectedExceptionMessage);
         }
+        // We disable telemetry to be able to reliably test signature generation. Added telemetry
+        // will differ on each platform tests would be run, and therefore fail.
+        Init::disableTelemetry();
+
 
         $init = new Init($service, $securityPacket, $secret, $requestPacket, $action);
 
@@ -191,6 +195,8 @@ class InitTest extends AbstractTestCase
 
     public function testRequestWithoutTelemetryPreservesEmptyMeta()
     {
+        // We disable telemetry to be able to reliably test signature generation. Added telemetry
+        // will differ on each platform tests would be run, and therefore fail.
         Init::disableTelemetry();
         list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingQuestionsApiParams();
 
@@ -204,6 +210,8 @@ class InitTest extends AbstractTestCase
 
     public function testRequestWithoutTelemetryPreservesFilledMeta()
     {
+        // We disable telemetry to be able to reliably test signature generation. Added telemetry
+        // will differ on each platform tests would be run, and therefore fail.
         Init::disableTelemetry();
         list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingQuestionsApiParams();
 
@@ -233,22 +241,123 @@ class InitTest extends AbstractTestCase
 
     public function constructorProvider(): array
     {
+        // We disable telemetry to be able to reliably test signature generation. Added telemetry
+        // will differ on each platform tests would be run, and therefore fail.
+        Init::disableTelemetry();
+
         list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingDataApiParams();
 
         $wrongSecurity = $security;
         $wrongSecurity['wrongParam'] = '';
 
         return [
-            [$service, $security, $secret, $request, $action, new Init($service, $security, $secret, $request, $action)],
-            ['', $security, $secret, $request, $action, null, ValidationException::class, 'The `service` argument wasn\'t found or was empty'],
-            ['wrongService', $security, $secret, $request, $action, null, ValidationException::class, 'The service provided (wrongService) is not valid'],
-            [$service, '', $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array or a valid JSON string'],
-            [$service, null, $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array or a valid JSON string'],
-            [$service, '', $secret, $request, $action, null, ValidationException::class, 'The security packet must be an array or a valid JSON string'],
-            [$service, $security, '', $request, $action, null, ValidationException::class, 'The `secret` argument must be a valid string'],
-            [$service, $wrongSecurity, $secret, $request, $action, null, ValidationException::class, 'Invalid key found in the security packet: wrongParam'],
-            ['questions', $security, $secret, $request, $action, null, ValidationException::class, 'Questions API requires a `user_id` in the security packet'],
-            [$service, $security, $secret, 25, $action, null, ValidationException::class, 'The request packet must be an array or a valid JSON string'],
+            'valid-api-data' => [
+                $service,
+                $security,
+                $secret,
+                $request,
+                $action,
+                new Init($service, $security, $secret, $request, $action)
+            ],
+            'empty-service' => [
+                '',
+                $security,
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'The `service` argument wasn\'t found or was empty'
+            ],
+            'invalid-service' => [
+                'wrongService',
+                $security,
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'The service provided (wrongService) is not valid'
+            ],
+            'empty-security' => [
+
+                $service,
+                '',
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'The security packet must be an array or a valid JSON string'
+            ],
+            'empty-security' => [
+
+                $service,
+                '',
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'The security packet must be an array or a valid JSON string'
+            ],
+            'null-security' => [
+
+                $service,
+                null,
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'The security packet must be an array or a valid JSON string'
+            ],
+            'empty-secret' => [
+
+                $service,
+                $security,
+                '',
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'The `secret` argument must be a valid string'
+            ],
+            'incorrect-security' => [
+
+                $service,
+                $wrongSecurity,
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'Invalid key found in the security packet: wrongParam'
+            ],
+            'missing-questions_user_id' =>
+            [
+
+                'questions',
+                $security,
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'Questions API requires a `user_id` in the security packet'
+            ],
+            'invalid-request' =>
+            [
+
+                $service,
+                $security,
+                $secret,
+                25,
+                $action,
+                null,
+                ValidationException::class,
+                'The request packet must be an array or a valid JSON string'
+            ],
         ];
     }
 
@@ -283,14 +392,13 @@ class InitTest extends AbstractTestCase
         /* Assess */
         list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingAssessApiParams();
         $assessApi = [
-            '{"items":[{"content":"<span class=\"learnosity-response question-demoscience1234\"></span>","response_ids":["demoscience1234"],"workflow":"","reference":"question-demoscience1"},{"content":"<span class=\"learnosity-response question-demoscience5678\"></span>","response_ids":["demoscience5678"],"workflow":"","reference":"question-demoscience2"}],"ui_style":"horizontal","name":"Demo (2 questions)","state":"initial","metadata":[],"navigation":{"show_next":true,"toc":true,"show_submit":true,"show_save":false,"show_prev":true,"show_title":true,"show_intro":true},"time":{"max_time":600,"limit_type":"soft","show_pause":true,"warning_time":60,"show_time":true},"configuration":{"onsubmit_redirect_url":"/assessment/","onsave_redirect_url":"/assessment/","idle_timeout":true,"questionsApiVersion":"v2"},"questionsApiActivity":{"user_id":"$ANONYMIZED_USER_ID","type":"submit_practice","state":"initial","id":"assessdemo","name":"Assess API - Demo","questions":[{"response_id":"demoscience1234","type":"sortlist","description":"In this question, the student needs to sort the events, chronologically earliest to latest.","list":["Russian Revolution","Discovery of the Americas","Storming of the Bastille","Battle of Plataea","Founding of Rome","First Crusade"],"instant_feedback":true,"feedback_attempts":2,"validation":{"valid_response":[4,3,5,1,2,0],"valid_score":1,"partial_scoring":true,"penalty_score":-1}},{"response_id":"demoscience5678","type":"highlight","description":"The student needs to mark one of the flowers anthers in the image.","img_src":"http://www.learnosity.com/static/img/flower.jpg","line_color":"rgb(255, 20, 0)","line_width":"4"}],"consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","signature":"$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8"},"type":"activity"}',
+            '{"items":[{"content":"<span class=\"learnosity-response question-demoscience1234\"></span>","response_ids":["demoscience1234"],"workflow":"","reference":"question-demoscience1"},{"content":"<span class=\"learnosity-response question-demoscience5678\"></span>","response_ids":["demoscience5678"],"workflow":"","reference":"question-demoscience2"}],"ui_style":"horizontal","name":"Demo (2 questions)","state":"initial","metadata":[],"navigation":{"show_next":true,"toc":true,"show_submit":true,"show_save":false,"show_prev":true,"show_title":true,"show_intro":true},"time":{"max_time":600,"limit_type":"soft","show_pause":true,"warning_time":60,"show_time":true},"configuration":{"onsubmit_redirect_url":"/assessment/","onsave_redirect_url":"/assessment/","idle_timeout":true,"questionsApiVersion":"v2"},"questionsApiActivity":{"type":"local_practice","state":"initial","questions":[{"response_id":"60005","type":"association","stimulus":"Match the cities to the parent nation.","stimulus_list":["London","Dublin","Paris","Sydney"],"possible_responses":["Australia","France","Ireland","England"],"validation":{"valid_responses":[["England"],["Ireland"],["France"],["Australia"]]}}],"user_id":"$ANONYMIZED_USER_ID","name":"Assess API - Demo","id":"assessdemo","consumer_key":"yis0TYCu7U9V4o7M","timestamp":"20140626-0528","signature":"$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8"},"type":"activity"}',
             $service, $security, $secret, $request, $action,
         ];
         $testCases['api-assess'] = $assessApi;
 
         /* Data */
         list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingDataApiParams();
-        $security['timestamp'] = '20140626-0528';
         $dataApiGet = [
             [
                 'security' => '{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"$02$e19c8a62fba81ef6baf2731e2ab0512feaf573ca5ca5929c2ee9a77303d2e197"}',
@@ -309,6 +417,7 @@ class InitTest extends AbstractTestCase
             ],
             $service, $security, $secret, $request, 'post',
         ];
+        // XXX: post is not a valid action; should be set
         $testCases['api-data_post'] = $dataApiPost;
 
         /* Events */
@@ -415,6 +524,7 @@ class InitTest extends AbstractTestCase
             '$02$9d1971fb9ac51482f7e73dcf87fc029d4a3dfffa05314f71af9d89fb3c2bcf16',
             $service, $security, $secret, $request, 'post',
         ];
+        // XXX: post is not a valid action; should be set
         $testCases['api-data_post'] = $dataApiPost;
 
         $dataApiExpire = [
@@ -533,8 +643,6 @@ class InitTest extends AbstractTestCase
             $service, $security, $secret, $request, $action,
         ];
         $testCases['api-reports'] = $reportsApi;
-
-        Init::disableTelemetry();
 
         return $testCases;
     }
