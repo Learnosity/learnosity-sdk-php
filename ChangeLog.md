@@ -11,6 +11,10 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 - Added composable services for signature generation.
 - Support authoraide.
 
+### Refactor
+- Refactored the signature generation to use composable services.
+
+
 ## [v1.0.2] - 2023-07-03
 ### Added
 - PHP 7.1 is now the minimum supported version.

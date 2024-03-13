@@ -2,11 +2,13 @@
 
 namespace LearnositySdk\Request;
 
+use LearnositySdk\Exceptions\ValidationException;
+use LearnositySdk\Services\PreHashStringFactory;
+use LearnositySdk\Services\PreHashStrings\LegacyPreHashString;
+use LearnositySdk\Services\SignatureFactory;
 use LearnositySdk\Services\Signatures\HashSignature;
 use LearnositySdk\Services\Signatures\HmacSignature;
 use LearnositySdk\Utils\Json;
-use LearnositySdk\Exceptions\ValidationException;
-use LearnositySdk\Services\SignatureFactory;
 
 /**
  *--------------------------------------------------------------------------
@@ -36,16 +38,8 @@ class Init
 
     /**
      * Which Learnosity service to generate a request packet for.
-     * Valid values (see also `$validServices`):
-     *  - assess
-     *  - author
-     *  - authoraide
-     *  - data
-     *  - events
-     *  - items
-     *  - questions
-     *  - reports
      * @var string
+     * @see PreHashStringFactory::getValidServices()
      */
     private $service;
 
@@ -100,22 +94,19 @@ class Init
     private $signRequestData = true;
 
     /**
-     * Keynames that are valid in the securityPacket, they are also in
-     * the correct order for signature generation.
-     * @var array
-     */
-    private $validSecurityKeys = ['consumer_key', 'domain', 'timestamp', 'expires', 'user_id'];
-
-    /**
-     * Service names that are valid for `$service`
-     * @var array
-     */
-    private $validServices = ['assess', 'author', 'authoraide', 'data', 'events', 'items', 'questions', 'reports'];
-
-    /**
      * @var SignatureFactory
      */
     private $signatureFactory;
+
+    /**
+     * @var PreHashStringFactory
+     */
+    private $preHashStringFactory;
+
+    /**
+     * @var PreHashStringInterface
+     */
+    private $preHashStringGenerator;
 
     /**
      * Instantiate this class with all security and request data. It
@@ -135,10 +126,24 @@ class Init
         string $secret,
         $requestPacket = null,
         string $action = null,
-        SignatureFactory $signatureFactory = null
+        SignatureFactory $signatureFactory = null,
+        PreHashStringFactory $preHashStringFactory = null
     ) {
+        $this->signatureFactory = $signatureFactory;
+        if (!isset($signatureFactory)) {
+            $this->signatureFactory = new SignatureFactory();
+        }
+
+        $this->preHashStringFactory = $preHashStringFactory;
+        if (!isset($preHashStringFactory)) {
+            $this->preHashStringFactory = new PreHashStringFactory();
+        }
+
+        $this->preHashStringGenerator = $this->preHashStringFactory->getPreHashStringGenerator($service);
+
         // First validate the arguments passed
         list ($requestPacket, $securityPacket) = $this->validate($service, $secret, $securityPacket, $requestPacket);
+        /* list ($requestPacket, $securityPacket) = $this->legacyValidate($service, $secret, $securityPacket, $requestPacket); */
 
         if (self::$telemetryEnabled) {
             $requestPacket = $this->addMeta($requestPacket);
@@ -150,12 +155,6 @@ class Init
         $this->secret             = $secret;
         $this->requestPacket      = $requestPacket;
         $this->action             = $action;
-
-        if (!isset($signatureFactory)) {
-            $this->signatureFactory = new SignatureFactory();
-        } else {
-            $this->signatureFactory = $signatureFactory;
-        }
 
         // Set any service specific options
         $this->setServiceOptions();
@@ -193,7 +192,7 @@ class Init
             'platform_version' => php_uname('r')
         ];
 
-        if (isset($requestPacket['meta'])){
+        if (isset($requestPacket['meta'])) {
             $requestPacket['meta']['sdk'] = $sdkMetricsMeta;
         } else {
             $requestPacket['meta'] = [
@@ -282,21 +281,64 @@ class Init
         return $encode ? Json::encode($output) : $output;
     }
 
-    /**
-     * Generate a signature hash for the request, this includes:
-     *  - the security credentials
-     *  - the `request` packet (a JSON string) if passed
-     *  - the `action` value if passed
-     *
-     * @return string A signature hash for the request authentication
-     */
-    public function generateSignature(): string
+    /* TODO: make  LegacyPreHashString::VALID_SECURITY_KEYS protected when this legacy signing code is gone */
+    public function legacyValidate(string $service, string $secret, $securityPacket, $requestPacket): array
     {
-        $signatureArray = [];
+        if (is_string($requestPacket)) {
+            $requestPacket = json_decode($requestPacket, true);
+            $this->requestPassedAsString = true;
+        }
+
+        if (is_null($requestPacket)) {
+            $requestPacket = [];
+        }
+
+        // In case the user gave us a JSON securityPacket, convert to an array
+        if (!is_array($securityPacket) && is_string($securityPacket)) {
+            $securityPacket = json_decode($securityPacket, true);
+        }
+
+        if (empty($service)) {
+            throw new ValidationException('The `service` argument wasn\'t found or was empty');
+        } elseif (!in_array(strtolower($service), $this->preHashStringFactory->getValidServices())) {
+            throw new ValidationException("The service provided ($service) is not valid");
+        }
+
+        if (empty($securityPacket) || !is_array($securityPacket)) {
+            throw new ValidationException('The security packet must be an array or a valid JSON string');
+        }
+
+        foreach (array_keys($securityPacket) as $key) {
+            if (!in_array($key, LegacyPreHashString::VALID_SECURITY_KEYS)) {
+                throw new ValidationException('Invalid key found in the security packet: ' . $key);
+            }
+        }
+        if ($service === "questions" && !array_key_exists('user_id', $securityPacket)) {
+            throw new ValidationException('Questions API requires a `user_id` in the security packet');
+        }
+        if (!array_key_exists('timestamp', $securityPacket)) {
+            $securityPacket['timestamp'] = gmdate('Ymd-Hi');
+        }
+
+        if (empty($secret)) {
+            throw new ValidationException('The `secret` argument must be a valid string');
+        }
+
+        if (!empty($requestPacket) && !is_array($requestPacket)) {
+            throw new ValidationException('The request packet must be an array or a valid JSON string');
+        }
+
+        return [$requestPacket, $securityPacket];
+    }
+
+    /* TODO: make  LegacyPreHashString::VALID_SECURITY_KEYS protected when this legacy signing code is gone */
+    public function generatePreHashString()
+    {
+          $signatureArray = [];
 
         // Create a pre-hash string based on the security credentials
         // The order is important
-        foreach ($this->validSecurityKeys as $key) {
+        foreach (LegacyPreHashString::VALID_SECURITY_KEYS as $key) {
             if (array_key_exists($key, $this->securityPacket)) {
                 $signatureArray[] = $this->securityPacket[$key];
             }
@@ -313,6 +355,25 @@ class Init
         }
 
         $preHashString = implode('_', $signatureArray);
+        return $preHashString;
+    }
+
+    /**
+     * Generate a signature hash for the request, this includes:
+     *  - the security credentials
+     *  - the `request` packet (a JSON string) if passed
+     *  - the `action` value if passed
+     *
+     * @return string A signature hash for the request authentication
+     */
+    public function generateSignature(): string
+    {
+        $preHashString = $this->preHashStringGenerator->getPreHashString(
+            $this->securityPacket,
+            $this->requestPacket,
+            $this->action
+        );
+        /* $preHashString  = $this->generatePreHashString(); */
 
         // As we only support v2 from this point onwards
         // we do not need to check the version at this point,
@@ -379,7 +440,8 @@ class Init
             case 'reports':
                 // The Events API requires a user_id, so we make sure it's a part
                 // of the security packet as we share the signature in some cases
-                if (array_key_exists('user_id', $this->requestPacket)
+                if (
+                    array_key_exists('user_id', $this->requestPacket)
                     && !array_key_exists('user_id', $this->securityPacket)
                 ) {
                     $this->securityPacket['user_id'] = $this->requestPacket['user_id'];
@@ -432,31 +494,13 @@ class Init
             $requestPacket = [];
         }
 
-        // In case the user gave us a JSON securityPacket, convert to an array
-        if (!is_array($securityPacket) && is_string($securityPacket)) {
-            $securityPacket = json_decode($securityPacket, true);
-        }
-
-        if (empty($service)) {
-            throw new ValidationException('The `service` argument wasn\'t found or was empty');
-        } elseif (!in_array(strtolower($service), $this->validServices)) {
-            throw new ValidationException("The service provided ($service) is not valid");
-        }
-
         if (empty($securityPacket) || !is_array($securityPacket)) {
             throw new ValidationException('The security packet must be an array or a valid JSON string');
         }
 
-        foreach (array_keys($securityPacket) as $key) {
-            if (!in_array($key, $this->validSecurityKeys)) {
-                throw new ValidationException('Invalid key found in the security packet: ' . $key);
-            }
-        }
-        if ($service === "questions" && !array_key_exists('user_id', $securityPacket)) {
-            throw new ValidationException('Questions API requires a `user_id` in the security packet');
-        }
-        if (!array_key_exists('timestamp', $securityPacket)) {
-            $securityPacket['timestamp'] = gmdate('Ymd-Hi');
+        // In case the user gave us a JSON securityPacket, convert to an array
+        if (!is_array($securityPacket) && is_string($securityPacket)) {
+            $securityPacket = json_decode($securityPacket, true);
         }
 
         if (empty($secret)) {
@@ -467,7 +511,7 @@ class Init
             throw new ValidationException('The request packet must be an array or a valid JSON string');
         }
 
-        return [$requestPacket, $securityPacket];
+        return $this->preHashStringGenerator->validate($securityPacket, $requestPacket);
     }
 
     /**

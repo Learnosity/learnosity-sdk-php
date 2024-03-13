@@ -9,7 +9,7 @@ class LegacyPreHashString implements PreHashStringInterface
     protected const SERVICE_ASSESS_API = 'assess';
     protected const SERVICE_ANNOTATIONS_API = 'annotations';
     protected const SERVICE_AUTHOR_API = 'author';
-    protected const SERVICE_AUTHOR_AIDE_API = 'author-aide';
+    protected const SERVICE_AUTHOR_AIDE_API = 'authoraide';
     protected const SERVICE_DATA_API = 'data';
     protected const SERVICE_EVENTS_API = 'events';
     protected const SERVICE_ITEMS_API = 'items';
