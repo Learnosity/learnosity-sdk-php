@@ -152,6 +152,8 @@ class ParamsFixture
     public static function getAuthorApiSignatureForVersion(string $version): string
     {
         switch ($version) {
+            case '01':
+                return '108b985a4db36ef03905572943a514fc02ed7cc6b700926183df7babc2cd1c96';
             case '02':
                 return '$02$ca2769c4be77037cf22e0f7a2291fe48c470ac6db2f45520a259907370eff861';
             default:
@@ -240,6 +242,8 @@ class ParamsFixture
     public static function getDataApiSignatureForVersion(string $version): string
     {
         switch ($version) {
+            case '01':
+                return 'e1eae0b86148df69173cb3b824275ea73c9c93967f7d17d6957fcdd299c8a4fe';
             case '02':
                 return '$02$e19c8a62fba81ef6baf2731e2ab0512feaf573ca5ca5929c2ee9a77303d2e197';
             default:
@@ -284,6 +288,8 @@ class ParamsFixture
     public static function getEventsApiSignatureForVersion(string $version): string
     {
         switch ($version) {
+            case '01':
+                return '20739eed410d54a135e8cb3745628834886ab315bfc01693ce9acc0d14dc98bf';
             case '02':
                 return '$02$5c3160dbb9ab4d01774b5c2fc3b01a35ce4f9709c84571c27dfe333d1ca9d349';
             default:
@@ -348,6 +354,8 @@ class ParamsFixture
     public static function getItemsApiSignatureForVersion(string $version): string
     {
         switch ($version) {
+            case '01':
+                return '82edaf80c2abb55c7a78d089f5b6f89393e621ef4a85150489ac2cfdd6a32f9a';
             case '02':
                 return '$02$36c439e7d18f2347ce08ca4b8d4803a22325d54352650b19b6f4aaa521b613d9';
             default:
@@ -403,6 +411,8 @@ class ParamsFixture
     public static function getQuestionsApiSignatureForVersion(string $version): string
     {
         switch ($version) {
+            case '01':
+                return '03f4869659eeaca81077785135d5157874f4800e57752bf507891bf39c4d4a90';
             case '02':
                 return '$02$8de51b7601f606a7f32665541026580d09616028dde9a929ce81cf2e88f56eb8';
             default:
@@ -451,6 +461,8 @@ class ParamsFixture
     public static function getReportsApiSignatureForVersion(string $version): string
     {
         switch ($version) {
+            case '01':
+                return '91085beccf57bf0df77c89df94d1055e631b36bc11941e61460b445b4ed774bc';
             case '02':
                 return '$02$8e0069e7aa8058b47509f35be236c53fa1a878c64b12589fd42f48b568f6ac84';
             default:
