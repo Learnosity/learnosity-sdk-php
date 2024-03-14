@@ -16,7 +16,6 @@ class LegacyPreHashStringTest extends AbstractTestCase
         array|string $request,
         ?string $action,
         bool $v1Compat,
-        bool $requestAsString,
         string $expected
     ) {
         $preHashString = new LegacyPreHashString($service, $v1Compat);
@@ -31,14 +30,11 @@ class LegacyPreHashStringTest extends AbstractTestCase
      *   array|string $request
      *   ?string $action
      *   bool $v1Compat
-     *   bool $requestAsString
      *   string $expected
      * > */
     public function preHashStringProvider()
     {
         $testCases = [];
-
-        $requestAsString = true;
 
         /* Hardcoded prehash strings generated with the last version of the legacy code,
          * based on queries from the ParamsFixture, depending on v1Compat mode */
@@ -68,28 +64,21 @@ class LegacyPreHashStringTest extends AbstractTestCase
 
         foreach ([true, false] as $v1Compat) {
             foreach (LegacyPreHashString::getSupportedServices() as $service) {
-            $camelCaseService = str_replace(
-                ' ',
-                '',
-                ucwords(str_replace('-', ' ', $service))
-            );
-            $getParams = 'getWorking' . $camelCaseService . 'ApiParams';
-                $tc = array_merge(
-                    ParamsFixture::$getParams(true),
+                $case = array_merge(
+                    ParamsFixture::getWorkingParamsForService($service, true),
                     [
-                    'v1Compat' => $v1Compat,
-                    'requestAsString' => $requestAsString,
+                        'v1Compat' => $v1Compat,
                     ]
                 );
 
-                $tc['expected'] = $preHashStrings[$v1Compat][$service];
+                $case['expected'] = $preHashStrings[$v1Compat][$service];
 
                 if (is_null($case['expected'])) {
                     /* New APIs don't need v1Compat support */
                     continue;
                 }
 
-                $testCases["api-{$service}" . ($v1Compat ? '-v1Compat' : '')] = $tc;
+                $testCases["api-{$service}" . ($v1Compat ? '-v1Compat' : '')] = $case;
             }
         }
 
