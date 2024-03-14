@@ -66,16 +66,19 @@ class LegacySignaturesTest extends AbstractTestCase
 
         foreach ([HashSignature::SIGNATURE_VERSION, HmacSignature::SIGNATURE_VERSION] as $signatureVersion) {
             foreach (LegacyPreHashString::getSupportedServices() as $service) {
-                $getParams = 'getWorking' . ucfirst($service) . 'ApiParams';
-                $getSig = 'get' . ucfirst($service) . 'ApiSignatureForVersion';
+                $expectedSig = ParamsFixture::getSignatureForService($service, $signatureVersion);
+
+                if (empty($expectedSig)) {
+                    /* The deprecation of this signature version predates the addition of this service */
+                    continue;
+                }
 
                 $case = array_merge(
                     [
-                        'expected' =>
-                            ParamsFixture::$getSig($signatureVersion),
+                        'expected' => $expectedSig,
                         'signatureVersion' => $signatureVersion,
                     ],
-                    ParamsFixture::$getParams(true)
+                    ParamsFixture::getWorkingParamsForService($service, true)
                 );
 
                 $testCases["sig-{$signatureVersion}_api-{$service}"] = $case;

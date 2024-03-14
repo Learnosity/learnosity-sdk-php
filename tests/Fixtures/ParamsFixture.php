@@ -2,6 +2,8 @@
 
 namespace LearnositySdk\Fixtures;
 
+use LearnositySdk\Services\Signatures\HmacSignature;
+
 // XXX: should be in a Test namespace
 
 class ParamsFixture
@@ -17,6 +19,50 @@ class ParamsFixture
             'domain'       => static::TEST_DOMAIN,
             'timestamp'    => '20140626-0528',
         ];
+    }
+
+    /**
+     * @param  bool $assoc If true, associative array will be returned
+     * @return array
+     */
+    public static function getWorkingParamsForService(string $service, bool $assoc = false): array
+    {
+        $camelCaseService = static::kebab2Camel($service);
+        $getParams = 'getWorking' . $camelCaseService . 'ApiParams';
+
+        return static::$getParams($assoc);
+    }
+
+    /**
+     * Return the signature of the selected version for the working params for this service.
+     *
+     * The signature may be an empty string if the deprecation of the signature version predates the introduction of the
+     * service.
+     *
+     * @return string $service
+     * @param  string $signatureVersion, defaults to the HMAC's version (02)
+     */
+    public static function getSignatureForService(
+        string $service,
+        string $signatureVersion = HmacSignature::SIGNATURE_VERSION
+    ): string {
+        $camelCaseService = static::kebab2Camel($service);
+        $getSig = 'get' . ucfirst($camelCaseService) . 'ApiSignatureForVersion';
+
+        return static::$getSig($signatureVersion);
+    }
+
+    /* Convert kebab-case to camelCase
+     * @param string $kebab
+     * @return string CamelCase
+     */
+    protected static function kebab2Camel(string $kebab): string
+    {
+        return str_replace(
+            ' ',
+            '',
+            ucwords(str_replace('-', ' ', $kebab))
+        );
     }
 
     /**
@@ -197,9 +243,19 @@ class ParamsFixture
         return $params;
     }
 
+    /**
+     * Return the signature of the selected version for the working params for this service.
+     * The signature may be an empty string if the deprecation of the signature version predates the introduction of the
+     * service
+     * @param  string $version
+     * @return string
+     * @see getWorkingAuthorAideApiParams
+     */
     public static function getAuthorAideApiSignatureForVersion(string $version): string
     {
         switch ($version) {
+            case '01':
+                return '';
             case '02':
                 return '$02$f2ce1da2fdead193d53ab954b8a3660548ed9b0e3ce60599d751130deba7a138';
             default:
