@@ -1,12 +1,14 @@
+ARGS_PHPUNIT ?=
+
 DOCKER := $(if $(LRN_SDK_NO_DOCKER),,$(shell which docker))
 PHP_VERSION = 8.3
 DEBIAN_VERSION = bookworm
 IMAGE = php-cli-composer:$(PHP_VERSION)
 
 TARGETS = all build devbuild prodbuild \
-	quickstart install-vendor \
+	quickstart check-quickstart install-vendor \
 	dist dist-test dist-zip release \
-	test test-coverage test-integration-env test-unit \
+	lint test test-coverage test-integration-env test-unit \
 	clean clean-dist clean-test clean-vendor
 .PHONY: $(TARGETS)
 .default: all
@@ -37,6 +39,7 @@ DIST = $(DIST_PREFIX)$(SRC_VERSION)
 COMPOSER = composer
 COMPOSER_INSTALL_FLAGS = --no-interaction --optimize-autoloader --classmap-authoritative
 
+PHPCS= ./vendor/bin/phpcs
 PHPUNIT = ./vendor/bin/phpunit
 
 ###
@@ -46,6 +49,8 @@ quickstart: VENDOR_FLAGS = --no-dev
 quickstart: install-vendor
 	cd docs/quickstart && php -S $(LOCALHOST):8000
 
+check-quickstart: vendor/autoload.php
+	$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS) --no-dev;
 ###
 # internal tooling rules
 ####
@@ -59,17 +64,20 @@ prodbuild: install-vendor
 release:
 	@./release.sh
 
+lint: install-vendor
+	$(PHPCS) src
+
 test: install-vendor
-	$(PHPUNIT) --do-not-cache-result
+	$(PHPUNIT) --do-not-cache-result $(ARGS_PHPUNIT)
 
 test-coverage: install-vendor
-	XDEBUG_MODE=coverage $(PHPUNIT) --do-not-cache-result
+	XDEBUG_MODE=coverage $(PHPUNIT) --do-not-cache-result $(ARGS_PHPUNIT)
 
 test-unit: install-vendor
-	$(PHPUNIT) --do-not-cache-result --testsuite unit
+	$(PHPUNIT) --do-not-cache-result --testsuite unit $(ARGS_PHPUNIT)
 
 test-integration-env: install-vendor
-	$(PHPUNIT) --do-not-cache-result --testsuite integration
+	$(PHPUNIT) --do-not-cache-result --testsuite integration $(ARGS_PHPUNIT)
 
 ###
 # dist rules

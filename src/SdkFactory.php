@@ -7,8 +7,8 @@ use LearnositySdk\Request\Init;
 
 class SdkFactory
 {
-    const REQUIRED_ARGUMENTS = ['service', 'securityPacket', 'secret'];
-    const OPTIONAL_ARGUMENTS = ['requestPacket', 'action', 'signatureFactory'];
+    private const REQUIRED_ARGUMENTS = ['service', 'securityPacket', 'secret'];
+    private const OPTIONAL_ARGUMENTS = ['requestPacket', 'action', 'signatureFactory'];
 
 
     /**
