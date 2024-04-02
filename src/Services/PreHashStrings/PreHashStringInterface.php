@@ -6,12 +6,12 @@ interface PreHashStringInterface
 {
     /* Generate a string ready to be signed
      * @param array $security
-     * @param array $request
+     * @param array|null $request
      * @param string|null $action
      * @param string|null $secret only for legacy pre-hash string generation when $v1Compat is true
      * @return string the pre-hash string
      */
-    public function getPreHashString(array $security, array $request, ?string $action, ?string $secret): string;
+    public function getPreHashString(array $security, ?array $request, ?string $action, ?string $secret): string;
 
     /** Return a list of all supported services
      * @return string[]

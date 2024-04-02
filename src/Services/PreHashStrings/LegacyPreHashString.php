@@ -108,7 +108,7 @@ class LegacyPreHashString implements PreHashStringInterface
 
     public function getPreHashString(
         array $security,
-        array $request,
+        ?array $request,
         ?string $action = 'get',
         ?string $secret = null
     ): string {
