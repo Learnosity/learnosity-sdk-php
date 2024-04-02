@@ -44,7 +44,7 @@ class SdkFactoryTest extends AbstractTestCase
                 [
                     'error_message' => 'Argument securityPacket must be set',
                     'arguments' => [
-                        'service' => 'author-aide'
+                        'service' => 'authoraide'
                     ]
                 ]
             ],
@@ -52,7 +52,7 @@ class SdkFactoryTest extends AbstractTestCase
                 [
                     'error_message' => 'Argument secret must be set',
                     'arguments' => [
-                        'service' => 'author-aide',
+                        'service' => 'authoraide',
                         'securityPacket' => [
                             'domain' => 'test'
                         ]
@@ -62,7 +62,7 @@ class SdkFactoryTest extends AbstractTestCase
             'all required parameters set' => [
                 [
                     'arguments' => [
-                        'service' => 'author-aide',
+                        'service' => 'authoraide',
                         'securityPacket' => [
                             'domain' => 'test'
                         ],

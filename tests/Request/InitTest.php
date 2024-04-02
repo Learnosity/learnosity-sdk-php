@@ -362,7 +362,7 @@ class InitTest extends AbstractTestCase
      */
     public static function getWorkingAuthorAideApiParams(bool $assoc = false): array
     {
-        $service = 'author-aide';
+        $service = 'authoraide';
         $security = static::getSecurity();
         $secret = static::TEST_CONSUMER_SECRET;
         $request = [

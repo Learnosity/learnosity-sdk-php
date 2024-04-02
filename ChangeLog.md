@@ -7,6 +7,10 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [v1.0.3] - 2024-04-07
+### Added
+- Rename author-aide to authoraide
+
 
 ## [v1.0.3] - 2024-03-07
 ### Added
