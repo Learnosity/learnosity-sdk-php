@@ -8,17 +8,17 @@ use LearnositySdk\Exceptions\ValidationException;
 
 class HmacSignature implements SignatureInterface
 {
-    public const ALGORITHM = 'sha256';
-
     public const SIGNATURE_VERSION = '02';
 
-    public const CONSUMER_KEY_LENGTH = 16;
+    private const ALGORITHM = 'sha256';
 
-    public const TIMESTAMP_KEY_LENGTH = 13;
+    private const CONSUMER_KEY_LENGTH = 16;
 
-    public const SIGNATURE_KEY_LENGTH = 68;
+    private const TIMESTAMP_KEY_LENGTH = 13;
 
-    public const EXCEPTION_MESSAGE =
+    private const SIGNATURE_KEY_LENGTH = 68;
+
+    private const EXCEPTION_MESSAGE =
         'The pre hash string for this signature type must not contain the secret key';
 
     /**

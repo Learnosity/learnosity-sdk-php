@@ -6,17 +6,17 @@ use LearnositySdk\Exceptions\ValidationException;
 
 class HashSignature implements SignatureInterface
 {
-    public const ALGORITHM = 'sha256';
-
     public const SIGNATURE_VERSION = '01';
 
-    public const CONSUMER_KEY_LENGTH = 16;
+    private const ALGORITHM = 'sha256';
 
-    public const TIMESTAMP_KEY_LENGTH = 13;
+    private const CONSUMER_KEY_LENGTH = 16;
 
-    public const SIGNATURE_KEY_LENGTH = 64;
+    private const TIMESTAMP_KEY_LENGTH = 13;
 
-    public const EXCEPTION_MESSAGE =
+    private const SIGNATURE_KEY_LENGTH = 64;
+
+    private const EXCEPTION_MESSAGE =
         'The pre hash string for this signature type must contain the secret key';
 
     /**
