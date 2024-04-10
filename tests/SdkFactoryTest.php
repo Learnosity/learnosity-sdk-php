@@ -7,7 +7,7 @@ use LearnositySdk\Request\Init;
 
 class SdkFactoryTest extends AbstractTestCase
 {
-    private  $sdkFactory;
+    private $sdkFactory;
 
     public function setUp(): void
     {
@@ -54,6 +54,7 @@ class SdkFactoryTest extends AbstractTestCase
                     'arguments' => [
                         'service' => 'authoraide',
                         'securityPacket' => [
+                            'consumer_key' => 'test',
                             'domain' => 'test'
                         ]
                     ]
@@ -64,6 +65,7 @@ class SdkFactoryTest extends AbstractTestCase
                     'arguments' => [
                         'service' => 'authoraide',
                         'securityPacket' => [
+                            'consumer_key' => 'test',
                             'domain' => 'test'
                         ],
                         'secret' => 'test'

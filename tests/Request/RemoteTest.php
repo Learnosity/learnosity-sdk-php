@@ -3,12 +3,13 @@
 namespace LearnositySdk\Request;
 
 use LearnositySdk\AbstractTestCase;
+use LearnositySdk\Fixtures\ParamsFixture;
 
 class RemoteTest extends AbstractTestCase
 {
     public function testPost()
     {
-        list($service, $security, $secret, $request, $action) = InitTest::getWorkingDataApiParams();
+        list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingDataApiParams();
         unset($security['timestamp']);
         $init = new Init($service, $security, $secret, $request, $action);
 

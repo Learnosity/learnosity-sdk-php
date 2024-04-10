@@ -17,5 +17,4 @@ interface SignatureInterface
     public function validateParameterLengths(array $security): bool;
 
     public function getVersion(): string;
-
 }

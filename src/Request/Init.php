@@ -2,11 +2,13 @@
 
 namespace LearnositySdk\Request;
 
+use LearnositySdk\Exceptions\ValidationException;
+use LearnositySdk\Services\PreHashStringFactory;
+use LearnositySdk\Services\PreHashStrings\LegacyPreHashString;
+use LearnositySdk\Services\SignatureFactory;
 use LearnositySdk\Services\Signatures\HashSignature;
 use LearnositySdk\Services\Signatures\HmacSignature;
 use LearnositySdk\Utils\Json;
-use LearnositySdk\Exceptions\ValidationException;
-use LearnositySdk\Services\SignatureFactory;
 
 /**
  *--------------------------------------------------------------------------
@@ -20,12 +22,12 @@ use LearnositySdk\Services\SignatureFactory;
 
 class Init
 {
-    const VERSION_FILE_PATH = __DIR__ . '/../../.version';
+    protected const VERSION_FILE_PATH = __DIR__ . '/../../.version';
 
     /**
-     * The algorithm used in the hashing function to create the signature
+     * The algorithm used in the hashing function to create the api-events signature
      */
-    const ALGORITHM = 'sha256';
+    protected const ALGORITHM = 'sha256';
 
     /**
      * We use telemetry to enable better support and feature planning. It is however not advised to
@@ -36,16 +38,8 @@ class Init
 
     /**
      * Which Learnosity service to generate a request packet for.
-     * Valid values (see also `$validServices`):
-     *  - assess
-     *  - author
-     *  - authoraide
-     *  - data
-     *  - events
-     *  - items
-     *  - questions
-     *  - reports
      * @var string
+     * @see PreHashStringFactory::getValidServices()
      */
     private $service;
 
@@ -100,22 +94,19 @@ class Init
     private $signRequestData = true;
 
     /**
-     * Keynames that are valid in the securityPacket, they are also in
-     * the correct order for signature generation.
-     * @var array
-     */
-    private $validSecurityKeys = ['consumer_key', 'domain', 'timestamp', 'expires', 'user_id'];
-
-    /**
-     * Service names that are valid for `$service`
-     * @var array
-     */
-    private $validServices = ['assess', 'author', 'authoraide', 'data', 'events', 'items', 'questions', 'reports'];
-
-    /**
      * @var SignatureFactory
      */
     private $signatureFactory;
+
+    /**
+     * @var PreHashStringFactory
+     */
+    private $preHashStringFactory;
+
+    /**
+     * @var PreHashStringInterface
+     */
+    private $preHashStringGenerator;
 
     /**
      * Instantiate this class with all security and request data. It
@@ -135,8 +126,21 @@ class Init
         string $secret,
         $requestPacket = null,
         string $action = null,
-        SignatureFactory $signatureFactory = null
+        SignatureFactory $signatureFactory = null,
+        PreHashStringFactory $preHashStringFactory = null
     ) {
+        $this->signatureFactory = $signatureFactory;
+        if (!isset($signatureFactory)) {
+            $this->signatureFactory = new SignatureFactory();
+        }
+
+        $this->preHashStringFactory = $preHashStringFactory;
+        if (!isset($preHashStringFactory)) {
+            $this->preHashStringFactory = new PreHashStringFactory();
+        }
+
+        $this->preHashStringGenerator = $this->preHashStringFactory->getPreHashStringGenerator($service);
+
         // First validate the arguments passed
         list ($requestPacket, $securityPacket) = $this->validate($service, $secret, $securityPacket, $requestPacket);
 
@@ -150,12 +154,6 @@ class Init
         $this->secret             = $secret;
         $this->requestPacket      = $requestPacket;
         $this->action             = $action;
-
-        if (!isset($signatureFactory)) {
-            $this->signatureFactory = new SignatureFactory();
-        } else {
-            $this->signatureFactory = $signatureFactory;
-        }
 
         // Set any service specific options
         $this->setServiceOptions();
@@ -193,7 +191,7 @@ class Init
             'platform_version' => php_uname('r')
         ];
 
-        if (isset($requestPacket['meta'])){
+        if (isset($requestPacket['meta'])) {
             $requestPacket['meta']['sdk'] = $sdkMetricsMeta;
         } else {
             $requestPacket['meta'] = [
@@ -292,27 +290,11 @@ class Init
      */
     public function generateSignature(): string
     {
-        $signatureArray = [];
-
-        // Create a pre-hash string based on the security credentials
-        // The order is important
-        foreach ($this->validSecurityKeys as $key) {
-            if (array_key_exists($key, $this->securityPacket)) {
-                $signatureArray[] = $this->securityPacket[$key];
-            }
-        }
-
-        // Add the requestPacket if necessary
-        if ($this->signRequestData && !empty($this->requestPacket)) {
-            $signatureArray[] = Json::encode($this->requestPacket);
-        }
-
-        // Add the action if necessary
-        if (!empty($this->action)) {
-            $signatureArray[] = $this->action;
-        }
-
-        $preHashString = implode('_', $signatureArray);
+        $preHashString = $this->preHashStringGenerator->getPreHashString(
+            $this->securityPacket,
+            $this->requestPacket,
+            $this->action
+        );
 
         // As we only support v2 from this point onwards
         // we do not need to check the version at this point,
@@ -379,7 +361,8 @@ class Init
             case 'reports':
                 // The Events API requires a user_id, so we make sure it's a part
                 // of the security packet as we share the signature in some cases
-                if (array_key_exists('user_id', $this->requestPacket)
+                if (
+                    array_key_exists('user_id', $this->requestPacket)
                     && !array_key_exists('user_id', $this->securityPacket)
                 ) {
                     $this->securityPacket['user_id'] = $this->requestPacket['user_id'];
@@ -432,31 +415,13 @@ class Init
             $requestPacket = [];
         }
 
-        // In case the user gave us a JSON securityPacket, convert to an array
-        if (!is_array($securityPacket) && is_string($securityPacket)) {
-            $securityPacket = json_decode($securityPacket, true);
-        }
-
-        if (empty($service)) {
-            throw new ValidationException('The `service` argument wasn\'t found or was empty');
-        } elseif (!in_array(strtolower($service), $this->validServices)) {
-            throw new ValidationException("The service provided ($service) is not valid");
-        }
-
         if (empty($securityPacket) || !is_array($securityPacket)) {
             throw new ValidationException('The security packet must be an array or a valid JSON string');
         }
 
-        foreach (array_keys($securityPacket) as $key) {
-            if (!in_array($key, $this->validSecurityKeys)) {
-                throw new ValidationException('Invalid key found in the security packet: ' . $key);
-            }
-        }
-        if ($service === "questions" && !array_key_exists('user_id', $securityPacket)) {
-            throw new ValidationException('Questions API requires a `user_id` in the security packet');
-        }
-        if (!array_key_exists('timestamp', $securityPacket)) {
-            $securityPacket['timestamp'] = gmdate('Ymd-Hi');
+        // In case the user gave us a JSON securityPacket, convert to an array
+        if (!is_array($securityPacket) && is_string($securityPacket)) {
+            $securityPacket = json_decode($securityPacket, true);
         }
 
         if (empty($secret)) {
@@ -467,7 +432,7 @@ class Init
             throw new ValidationException('The request packet must be an array or a valid JSON string');
         }
 
-        return [$requestPacket, $securityPacket];
+        return $this->preHashStringGenerator->validate($securityPacket, $requestPacket);
     }
 
     /**

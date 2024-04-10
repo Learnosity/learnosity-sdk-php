@@ -10,7 +10,7 @@ class JsonTest extends AbstractTestCase
     public function testCheckError()
     {
         $result = Json::checkError();
-        $this->assertTrue( is_null($result) || is_string($result) );
+        $this->assertTrue(is_null($result) || is_string($result));
     }
 
     public function dataProviderEncode(): array
@@ -64,7 +64,7 @@ class JsonTest extends AbstractTestCase
         ];
 
         $expectedResult =
-<<<JSON
+        <<<JSON
 {
     "test": "hello-world"
 }

@@ -8,17 +8,17 @@ use LearnositySdk\Exceptions\ValidationException;
 
 class HmacSignature implements SignatureInterface
 {
-    const ALGORITHM = 'sha256';
+    public const SIGNATURE_VERSION = '02';
 
-    const SIGNATURE_VERSION = '02';
+    private const ALGORITHM = 'sha256';
 
-    const CONSUMER_KEY_LENGTH = 16;
+    private const CONSUMER_KEY_LENGTH = 16;
 
-    const TIMESTAMP_KEY_LENGTH = 13;
+    private const TIMESTAMP_KEY_LENGTH = 13;
 
-    const SIGNATURE_KEY_LENGTH = 68;
+    private const SIGNATURE_KEY_LENGTH = 68;
 
-    const EXCEPTION_MESSAGE =
+    private const EXCEPTION_MESSAGE =
         'The pre hash string for this signature type must not contain the secret key';
 
     /**
@@ -34,7 +34,8 @@ class HmacSignature implements SignatureInterface
         if (strpos($preHashString, $secretKey)) {
             throw new ValidationException(static::EXCEPTION_MESSAGE);
         }
-        return '$' . static::SIGNATURE_VERSION . '$' . hash_hmac(static::ALGORITHM,
+        return '$' . static::SIGNATURE_VERSION . '$' . hash_hmac(
+            static::ALGORITHM,
             $preHashString,
             $secretKey
         );
@@ -58,5 +59,4 @@ class HmacSignature implements SignatureInterface
     {
         return static::SIGNATURE_VERSION;
     }
-
 }

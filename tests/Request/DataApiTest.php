@@ -3,6 +3,7 @@
 namespace LearnositySdk\Request;
 
 use LearnositySdk\AbstractTestCase;
+use LearnositySdk\Fixtures\ParamsFixture;
 
 class DataApiTest extends AbstractTestCase
 {
@@ -12,8 +13,8 @@ class DataApiTest extends AbstractTestCase
     public function testRequest()
     {
         $securityPacket = [
-            'consumer_key' => self::TEST_CONSUMER_KEY,
-            'domain' => self::TEST_DOMAIN,
+            'consumer_key' => ParamsFixture::TEST_CONSUMER_KEY,
+            'domain' => ParamsFixture::TEST_DOMAIN,
         ];
 
         $dataRequest = [
@@ -28,7 +29,7 @@ class DataApiTest extends AbstractTestCase
             $result = $dataApi->request(
                 self::ITEMBANK_ITEMS_URI,
                 $securityPacket,
-                self::TEST_CONSUMER_SECRET,
+                ParamsFixture::TEST_CONSUMER_SECRET,
                 $dataRequest,
                 'get'
             );
@@ -48,7 +49,8 @@ class DataApiTest extends AbstractTestCase
             $this->assertArrayHasKey('records', $response['meta']);
             $this->assertCount($response['meta']['records'], $response['data']);
 
-            if (isset($response['meta']['next'])
+            if (
+                isset($response['meta']['next'])
                 && isset($response['meta']['records'])
                 && $response['meta']['records'] > 0
             ) {
@@ -64,8 +66,8 @@ class DataApiTest extends AbstractTestCase
     public function testRequestRecursive()
     {
         $securityPacket = [
-            'consumer_key' => self::TEST_CONSUMER_KEY,
-            'domain' => self::TEST_DOMAIN,
+            'consumer_key' => ParamsFixture::TEST_CONSUMER_KEY,
+            'domain' => ParamsFixture::TEST_DOMAIN,
         ];
 
         $dataRequest = [
@@ -77,7 +79,7 @@ class DataApiTest extends AbstractTestCase
         $result = $dataApi->requestRecursive(
             self::ITEMBANK_ITEMS_URI,
             $securityPacket,
-            self::TEST_CONSUMER_SECRET,
+            ParamsFixture::TEST_CONSUMER_SECRET,
             $dataRequest,
             'get',
             null,
@@ -92,8 +94,8 @@ class DataApiTest extends AbstractTestCase
     public function testRequestRecursiveCallback()
     {
         $securityPacket = [
-            'consumer_key' => self::TEST_CONSUMER_KEY,
-            'domain' => self::TEST_DOMAIN,
+            'consumer_key' => ParamsFixture::TEST_CONSUMER_KEY,
+            'domain' => ParamsFixture::TEST_DOMAIN,
         ];
 
         $dataRequest = [
@@ -109,7 +111,7 @@ class DataApiTest extends AbstractTestCase
         $dataApi->requestRecursive(
             self::ITEMBANK_ITEMS_URI,
             $securityPacket,
-            self::TEST_CONSUMER_SECRET,
+            ParamsFixture::TEST_CONSUMER_SECRET,
             $dataRequest,
             'get',
             function (array $data) use (&$requestCount, &$results) {
@@ -461,8 +463,8 @@ JSON;
         $expectedResult = json_decode($expectedResult, true);
 
         $securityPacket = [
-            'consumer_key' => self::TEST_CONSUMER_KEY,
-            'domain' => self::TEST_DOMAIN,
+            'consumer_key' => ParamsFixture::TEST_CONSUMER_KEY,
+            'domain' => ParamsFixture::TEST_DOMAIN,
         ];
 
         $dataRequest = [
@@ -477,7 +479,7 @@ JSON;
         $results = $dataApi->requestRecursive(
             self::ITEMBANK_QUESTIONS_URI,
             $securityPacket,
-            self::TEST_CONSUMER_SECRET,
+            ParamsFixture::TEST_CONSUMER_SECRET,
             $dataRequest,
             'get'
         );

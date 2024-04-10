@@ -7,14 +7,13 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [v1.0.3] - 2024-04-07
 ### Added
-- Rename author-aide to authoraide
+- Added composable services for signature generation.
+- Support authoraide.
 
+### Refactor
+- Refactored the signature generation to use composable services.
 
-## [v1.0.3] - 2024-03-07
-### Added
-- Support author aide
 
 ## [v1.0.2] - 2023-07-03
 ### Added
