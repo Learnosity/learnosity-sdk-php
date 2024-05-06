@@ -137,7 +137,7 @@ class LegacyPreHashString implements PreHashStringInterface
         if (in_array($this->service, static::SERVICES_REQUIRING_SIGNED_REQUEST)) {
             $requestJson = $request;
             if (is_array($request)) {
-                $requestJson = json_encode($request, true);
+                $requestJson = json_encode($request);
             }
             $signatureArray[] = $requestJson;
         }
@@ -162,6 +162,11 @@ class LegacyPreHashString implements PreHashStringInterface
         return in_array($service, static::SUPPORTED_SERVICES);
     }
 
+    /**
+     * Validate and normalise the security and request packets.  Currently
+     * nothing is done with the request packet, but future pre-hash schemes
+     * may require it.
+     */
     public function validate(array $security, array $request): array
     {
         foreach (array_keys($security) as $key) {
