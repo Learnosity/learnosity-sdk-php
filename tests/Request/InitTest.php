@@ -55,7 +55,7 @@ class InitTest extends AbstractTestCase
         string $service,
         array $security,
         string $secret,
-        array|string $request,
+        /* array|string */ $request,
         ?string $action
     ) {
         // This test verifies the correctness of the added telemetry data
@@ -85,7 +85,7 @@ class InitTest extends AbstractTestCase
         string $service,
         array $security,
         string $secret,
-        array|string $request,
+        /* array|string */ $request,
         ?string $action
     ) {
         // We disable telemetry to be able to reliably test signature generation. Added telemetry
@@ -100,11 +100,11 @@ class InitTest extends AbstractTestCase
      * @dataProvider generateProvider
      */
     public function testGenerate(
-        array|string $expectedInitOptions,
+        /* array|string */ $expectedInitOptions,
         string $service,
         array $security,
         string $secret,
-        array|string $request,
+        /* array|string */ $request,
         ?string $action
     ) {
         // We disable telemetry to be able to reliably test signature generation. Added telemetry
@@ -282,84 +282,75 @@ class InitTest extends AbstractTestCase
                 'The service provided (wrongservice) is not valid'
             ],
             'empty-security' => [
-
-            $service,
-            '',
-            $secret,
-            $request,
-            $action,
-            null,
-            ValidationException::class,
-            'The security packet must be an array or a valid JSON string'
-        ],
-        'empty-security' => [
-
-            $service,
-            '',
-            $secret,
-            $request,
-            $action,
-            null,
-            ValidationException::class,
-            'The security packet must be an array or a valid JSON string'
-        ],
-        'null-security' => [
-
-            $service,
-            null,
-            $secret,
-            $request,
-            $action,
-            null,
-            ValidationException::class,
-            'The security packet must be an array or a valid JSON string'
-        ],
-        'empty-secret' => [
-
-            $service,
-            $security,
-            '',
-            $request,
-            $action,
-            null,
-            ValidationException::class,
-            'The `secret` argument must be a valid string'
-        ],
-        'incorrect-security' => [
-
-            $service,
-            $wrongSecurity,
-            $secret,
-            $request,
-            $action,
-            null,
-            ValidationException::class,
-            'Invalid key found in the security packet: wrongParam'
-        ],
-        'missing-questions_user_id' =>
-        [
-
-            'questions',
-            $security,
-            $secret,
-            $request,
-            $action,
-            null,
-            ValidationException::class,
-            'Questions API requires a `user_id` in the security packet'
-        ],
-        'invalid-request' =>
-        [
-
-            $service,
-            $security,
-            $secret,
-            25,
-            $action,
-            null,
-            ValidationException::class,
-            'The request packet must be an array or a valid JSON string'
-        ],
+                $service,
+                '',
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'The security packet must be an array or a valid JSON string'
+            ],
+            'empty-security' => [
+                $service,
+                '',
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'The security packet must be an array or a valid JSON string'
+            ],
+            'null-security' => [
+                $service,
+                null,
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'The security packet must be an array or a valid JSON string'
+            ],
+            'empty-secret' => [
+                $service,
+                $security,
+                '',
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'The `secret` argument must be a valid string'
+            ],
+            'incorrect-security' => [
+                $service,
+                $wrongSecurity,
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'Invalid key found in the security packet: wrongParam'
+            ],
+            'missing-questions_user_id' => [
+                'questions',
+                $security,
+                $secret,
+                $request,
+                $action,
+                null,
+                ValidationException::class,
+                'Questions API requires a `user_id` in the security packet'
+            ],
+            'invalid-request' => [
+                $service,
+                $security,
+                $secret,
+                25,
+                $action,
+                null,
+                ValidationException::class,
+                'The request packet must be an array or a valid JSON string'
+            ],
         ];
     }
 

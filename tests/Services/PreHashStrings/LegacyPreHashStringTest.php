@@ -13,29 +13,25 @@ class LegacyPreHashStringTest extends AbstractTestCase
         string $service,
         array $security,
         string $secret,
-        array|string $request,
+        ?array $request,
         ?string $action,
         bool $v1Compat,
         string $expected
     ) {
         $preHashString = new LegacyPreHashString($service, $v1Compat);
-        if (is_string($request)) {
-            $request = json_decode($request, true);
-            $this->assertTrue($request !==  false, 'Cannot decode JSON from string request');
-        }
         $result = $preHashString->getPreHashString($security, $request, $action, $v1Compat ? $secret : null);
         $this->assertEquals($expected, $result);
     }
 
-    /** @returns array <
+    /** @returns array<string, array<
      *   string $service
      *   array $security
      *   string $secret
-     *   array|string $request
+     *   array $request
      *   ?string $action
      *   bool $v1Compat
      *   string $expected
-     * > */
+     * >> */
     public function preHashStringProvider()
     {
         $testCases = [];
