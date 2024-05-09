@@ -29,7 +29,14 @@ TARGETS = all build devbuild prodbuild \
 ifneq (,$(DOCKER))
 # Re-run the make command in a container
 DKR = docker container run -t --rm \
-		-v $(CURDIR):/srv/sdk/php:z,delegated \
+		-v $(CURDIR)/v$(PHP_VERSION):/srv/sdk/php:z,delegated \
+		-v $(CURDIR)/.git:/srv/sdk/php/.git:z,delegated \
+		-v $(CURDIR)/src:/srv/sdk/php/src:z,delegated \
+		-v $(CURDIR)/tests:/srv/sdk/php/tests:z,delegated \
+		-v $(CURDIR)/composer.json:/srv/sdk/php/composer.json:delegated \
+		-v $(CURDIR)/Makefile:/srv/sdk/php/Makefile:delegated \
+		-v $(CURDIR)/phpunit.xml:/srv/sdk/php/phpunit.xml:delegated \
+		-v $(CURDIR)/bootstrap.php:/srv/sdk/php/bootstrap.php:delegated \
 		-v lrn-sdk-php_cache:/root/.composer \
 		-w /srv/sdk/php \
 		-e LRN_SDK_NO_DOCKER=1 \
@@ -49,6 +56,17 @@ docker-build:
 		-t $(IMAGE) .
 .PHONY: docker-build lrn-test-all lrn-test-clean
 
+# LRN targets for SDK testing
+
+lrn-test-all: $(addprefix lrn-test-v,$(SUPPORTED_PHP_VERSIONS))
+
+lrn-test-v%:
+	$(MAKE) -e PHP_VERSION=$* test
+
+lrn-clean-all: $(addprefix lrn-clean-v,$(SUPPORTED_PHP_VERSIONS))
+
+lrn-clean-v%:
+	$(MAKE) -e PHP_VERSION=$* clean
 
 else
 DIST_PREFIX = learnosity_sdk-
