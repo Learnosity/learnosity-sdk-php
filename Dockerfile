@@ -1,7 +1,8 @@
 ARG PHP_VERSION=8.3
 ARG DEBIAN_VERSION=bookworm
+ARG COMPOSER_VERSION=2.7.6
 
-FROM composer:2.7.1 as composer
+FROM composer:${COMPOSER_VERSION} as composer
 
 FROM php:${PHP_VERSION}-cli-${DEBIAN_VERSION}
 

@@ -1,9 +1,22 @@
 ARGS_PHPUNIT ?=
 
 DOCKER := $(if $(LRN_SDK_NO_DOCKER),,$(shell which docker))
-PHP_VERSION = 8.3
-DEBIAN_VERSION = bookworm
-IMAGE = php-cli-composer:$(PHP_VERSION)
+
+# PHP Evolution
+SUPPORTED_PHP_VERSIONS = 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3
+PHP_VERSION = $(lastword ${SUPPORTED_PHP_VERSIONS})
+DEBIAN_VERSION-7.1 = buster
+DEBIAN_VERSION-7.2 = buster
+DEBIAN_VERSION-7.3 = bullseye
+DEBIAN_VERSION-7.4 = bullseye
+DEBIAN_VERSION-8.0 = bullseye
+DEBIAN_VERSION-def = bookworm
+DEBIAN_VERSION = $(or $(DEBIAN_VERSION-$(PHP_VERSION)),$(DEBIAN_VERSION-def))
+COMPOSER_VERSION-7.1 = 2.2
+COMPOSER_VERSION-def = 2.7.6
+COMPOSER_VERSION = $(or $(COMPOSER_VERSION-$(PHP_VERSION)),$(COMPOSER_VERSION-def))
+
+IMAGE = php-cli-composer:$(PHP_VERSION)-$(DEBIAN_VERSION)-$(COMPOSER_VERSION)
 
 TARGETS = all build devbuild prodbuild \
 	quickstart check-quickstart install-vendor \
@@ -28,8 +41,14 @@ $(TARGETS): $(if $(shell docker image ls -q --filter reference=$(IMAGE)),,docker
 	$(DKR) make -e MAKEFLAGS="$(MAKEFLAGS)" $@
 
 docker-build:
-	docker image build --progress plain --build-arg PHP_VERSION=$(PHP_VERSION) --build-arg DEBIAN_VERSION=$(DEBIAN_VERSION) -t $(IMAGE) .
-.PHONY: docker-build
+	docker image build \
+		--progress plain \
+		--build-arg PHP_VERSION=$(PHP_VERSION) \
+		--build-arg DEBIAN_VERSION=$(DEBIAN_VERSION) \
+		--build-arg COMPOSER_VERSION=$(COMPOSER_VERSION) \
+		-t $(IMAGE) .
+.PHONY: docker-build lrn-test-all lrn-test-clean
+
 
 else
 DIST_PREFIX = learnosity_sdk-
@@ -64,19 +83,19 @@ prodbuild: install-vendor
 release:
 	@./release.sh
 
-lint: install-vendor
+lint: build
 	$(PHPCS) src
 
-test: install-vendor
-	$(PHPUNIT) --do-not-cache-result $(ARGS_PHPUNIT)
+test: build
+	$(PHPUNIT) $(if $(subst 7.1,,$(PHP_TARGET)),--do-not-cache-result) $(ARGS_PHPUNIT)
 
-test-coverage: install-vendor
+test-coverage: build
 	XDEBUG_MODE=coverage $(PHPUNIT) --do-not-cache-result $(ARGS_PHPUNIT)
 
-test-unit: install-vendor
+test-unit: build
 	$(PHPUNIT) --do-not-cache-result --testsuite unit $(ARGS_PHPUNIT)
 
-test-integration-env: install-vendor
+test-integration-env: build
 	$(PHPUNIT) --do-not-cache-result --testsuite integration $(ARGS_PHPUNIT)
 
 ###
@@ -104,8 +123,8 @@ dist-test: dist-zip install-vendor
 ###
 # install vendor rules
 ###
-install-vendor: vendor/autoload.php
-vendor/autoload.php: composer.json
+install-vendor: composer.lock
+composer.lock: composer.json
 	$(COMPOSER) install $(COMPOSER_INSTALL_FLAGS) $(VENDOR_FLAGS)
 
 clean: clean-dist clean-test clean-vendor
