@@ -13,7 +13,10 @@ class PreHashStringFactory
         LegacyPreHashString::class,
     ];
 
-    protected array $validServices;
+    /**
+     * @var array
+     */
+    protected /* array */ $validServices;
 
     public function __construct()
     {

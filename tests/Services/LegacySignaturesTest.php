@@ -11,7 +11,10 @@ use LearnositySdk\Services\Signatures\HmacSignature;
 
 class LegacySignaturesTest extends AbstractTestCase
 {
-    private SignatureFactory $signatureFactory;
+    /**
+     * @var SignatureFactory
+     */
+    private /* SignatureFactory */ $signatureFactory;
 
     public function setUp(): void
     {
