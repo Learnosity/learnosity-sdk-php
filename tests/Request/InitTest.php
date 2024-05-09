@@ -153,6 +153,9 @@ class InitTest extends AbstractTestCase
         $this->assertInstanceOf(Init::class, $initObject);
     }
 
+    /**
+     * @requires PHPUnit >= 9.6
+     */
     public function testMetaWithTelemetryOnlyAddsSdkProp()
     {
         list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingQuestionsApiParams();
@@ -170,6 +173,9 @@ class InitTest extends AbstractTestCase
         $this->assertEquals(1, count((array) $generatedObject->meta));
     }
 
+    /**
+     * @requires PHPUnit >= 9.6
+     */
     public function testRequestWithTelemetryPreservesOtherMetaProps()
     {
         list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingQuestionsApiParams();
@@ -195,6 +201,9 @@ class InitTest extends AbstractTestCase
         $this->assertObjectHasProperty('sdk', $generatedObject->meta);
     }
 
+    /**
+     * @requires PHPUnit >= 9.6
+     */
     public function testRequestWithoutTelemetryPreservesEmptyMeta()
     {
         // We disable telemetry to be able to reliably test signature generation. Added telemetry
@@ -210,6 +219,9 @@ class InitTest extends AbstractTestCase
         $this->assertObjectNotHasProperty('meta', $generatedObject);
     }
 
+    /**
+     * @requires PHPUnit >= 9.6
+     */
     public function testRequestWithoutTelemetryPreservesFilledMeta()
     {
         // We disable telemetry to be able to reliably test signature generation. Added telemetry

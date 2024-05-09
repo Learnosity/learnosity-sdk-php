@@ -94,11 +94,15 @@ class LegacyPreHashString implements PreHashStringInterface
         'domain',
     ];
 
-    /** Service name to generate a pre-hash string for */
-    protected string $service;
+    /** Service name to generate a pre-hash string for
+     * @var string
+     */
+    protected /* string */ $service;
 
-    /** V1-compat strings need the secret to be part of the pre-hash string */
-    protected bool $v1Compat;
+    /** V1-compat strings need the secret to be part of the pre-hash string
+     * @var bool
+     */
+    protected /* bool */ $v1Compat;
 
     public function __construct(string $service, bool $v1Compat = false)
     {
