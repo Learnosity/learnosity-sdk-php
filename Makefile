@@ -27,8 +27,9 @@ TARGETS = all build devbuild prodbuild \
 .default: all
 
 ifneq (,$(DOCKER))
+TTYFLAGS := $(shell if [ -t 0 ] ; then echo "-it"; else echo "-t"; fi)
 # Re-run the make command in a container
-DKR = docker container run -it --rm \
+DKR = docker container run $(TTYFLAGS) --rm \
 		-v $(CURDIR):/srv/sdk/php:z,delegated \
 		-v lrn-sdk-php_cache:/root/.composer \
 		-w /srv/sdk/php \
