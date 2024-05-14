@@ -28,7 +28,7 @@ TARGETS = all build devbuild prodbuild \
 
 ifneq (,$(DOCKER))
 # Re-run the make command in a container
-DKR = docker container run -t --rm \
+DKR = docker container run -it --rm \
 		-v $(CURDIR):/srv/sdk/php:z,delegated \
 		-v lrn-sdk-php_cache:/root/.composer \
 		-w /srv/sdk/php \
