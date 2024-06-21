@@ -56,6 +56,8 @@ DIST_PREFIX = learnosity_sdk-
 SRC_VERSION := $(shell git describe | sed s/^v//)
 DIST = $(DIST_PREFIX)$(SRC_VERSION)
 
+LOCALHOST = localhost
+
 COMPOSER = composer
 COMPOSER_INSTALL_FLAGS = --no-interaction --optimize-autoloader --classmap-authoritative
 
