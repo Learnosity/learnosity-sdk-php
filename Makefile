@@ -27,8 +27,9 @@ TARGETS = all build devbuild prodbuild \
 .default: all
 
 ifneq (,$(DOCKER))
+TTYFLAGS := $(shell if [ -t 0 ] ; then echo "-it"; else echo "-t"; fi)
 # Re-run the make command in a container
-DKR = docker container run -t --rm \
+DKR = docker container run $(TTYFLAGS) --rm \
 		-v $(CURDIR):/srv/sdk/php:z,delegated \
 		-v lrn-sdk-php_cache:/root/.composer \
 		-w /srv/sdk/php \
@@ -54,6 +55,8 @@ else
 DIST_PREFIX = learnosity_sdk-
 SRC_VERSION := $(shell git describe | sed s/^v//)
 DIST = $(DIST_PREFIX)$(SRC_VERSION)
+
+LOCALHOST = localhost
 
 COMPOSER = composer
 COMPOSER_INSTALL_FLAGS = --no-interaction --optimize-autoloader --classmap-authoritative
