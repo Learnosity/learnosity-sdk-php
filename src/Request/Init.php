@@ -71,8 +71,15 @@ class Init
      */
     private $requestPacket;
 
+    private $decodedRequestPacket;
+
     /**
-     * Tracking if the request was passed as a string
+     * Tracking if the request was passed as a string. If the request is indeed passed as string,
+     * there is an attempt to not alter the string in any way by decoding and encoding. This will
+     * only work if telemetry is disabled. Otherwise the metadata has to be set in the request
+     * meaning that decoding is required. It also does not work for assess if it has questions
+     * api settings
+     *
      * @var bool
      */
     private $requestPassedAsString = false;
@@ -141,19 +148,17 @@ class Init
 
         $this->preHashStringGenerator = $this->preHashStringFactory->getPreHashStringGenerator($service);
 
-        // First validate the arguments passed
-        list ($requestPacket, $securityPacket) = $this->validate($service, $secret, $securityPacket, $requestPacket);
-
-        if (self::$telemetryEnabled) {
-            $requestPacket = $this->addMeta($requestPacket);
-        }
-
         // Set instance variables based off the arguments passed
         $this->service            = $service;
         $this->securityPacket     = $securityPacket;
         $this->secret             = $secret;
         $this->requestPacket      = $requestPacket;
         $this->action             = $action;
+        $this->validate();
+
+        if (self::$telemetryEnabled) {
+            $this->addMeta();
+        }
 
         // Set any service specific options
         $this->setServiceOptions();
@@ -177,11 +182,8 @@ class Init
      *   }
      * }
      *
-     * @param array    $requestPacket
-     *
-     * @return array
      */
-    private function addMeta(array $requestPacket): array
+    private function addMeta()
     {
         $sdkMetricsMeta = [
             'version' => $this->getSDKVersion(),
@@ -191,15 +193,14 @@ class Init
             'platform_version' => php_uname('r')
         ];
 
-        if (isset($requestPacket['meta'])) {
-            $requestPacket['meta']['sdk'] = $sdkMetricsMeta;
+        if (isset($this->decodedRequestPacket['meta'])) {
+            $this->decodedRequestPacket['meta']['sdk'] = $sdkMetricsMeta;
         } else {
-            $requestPacket['meta'] = [
+            $this->decodedRequestPacket['meta'] = [
                 'sdk' => $sdkMetricsMeta
             ];
         }
-
-        return $requestPacket;
+        $this->requestPacket = Json::encode($this->decodedRequestPacket);
     }
 
     /**
@@ -230,7 +231,7 @@ class Init
                 // Add the security packet (with signature) to the output
                 $output['security'] = Json::encode($this->securityPacket);
 
-                $output['request'] = Json::encode($this->requestPacket);
+                $output['request'] = Json::encode($this->decodedRequestPacket);
 
                 if (!empty($this->action)) {
                     $output['action'] = $this->action;
@@ -241,8 +242,8 @@ class Init
             case 'assess':
                 // Stringify the request packet if necessary
                 $output = $this->requestPassedAsString ?
-                    Json::encode($this->requestPacket) :
-                    $this->requestPacket;
+                    $this->requestPacket :
+                    $this->decodedRequestPacket;
                 break;
             case 'author':
             case 'authoraide':
@@ -253,8 +254,8 @@ class Init
 
                 // Stringify the request packet if necessary
                 $output['request'] = $this->requestPassedAsString ?
-                    Json::encode($this->requestPacket) :
-                    $this->requestPacket;
+                    $this->requestPacket :
+                    $this->decodedRequestPacket;
                 break;
             case 'questions':
                 // Add the security packet (with signature) to the root of output
@@ -263,14 +264,14 @@ class Init
                 // Remove the `domain` key from the security packet
                 unset($output['domain']);
 
-                if (!empty($this->requestPacket)) {
-                    $output = array_merge($output, $this->requestPacket);
+                if (!empty($this->decodedRequestPacket)) {
+                    $output = array_merge($output, $this->decodedRequestPacket);
                 }
                 break;
             case 'events':
                 // Add the security packet (with signature) to the output
                 $output['security'] = $this->securityPacket;
-                $output['config'] = $this->requestPacket;
+                $output['config'] = $this->decodedRequestPacket;
                 break;
             default:
                 // no default
@@ -319,14 +320,14 @@ class Init
                 // security information and a signature. Retrieve the security
                 // information from $this and generate a signature for the
                 // Questions API
-                if (array_key_exists('questionsApiActivity', $this->requestPacket)) {
+                if (array_key_exists('questionsApiActivity', $this->decodedRequestPacket)) {
                     // prepare signature parts
                     $signatureParts = [];
                     $signatureParts['consumer_key'] = $this->securityPacket['consumer_key'];
                     if (isset($this->securityPacket['domain'])) {
                         $signatureParts['domain'] = $this->securityPacket['domain'];
-                    } elseif (isset($this->requestPacket['questionsApiActivity']['domain'])) {
-                        $signatureParts['domain'] = $this->requestPacket['questionsApiActivity']['domain'];
+                    } elseif (isset($this->decodedRequestPacket['questionsApiActivity']['domain'])) {
+                        $signatureParts['domain'] = $this->decodedRequestPacket['questionsApiActivity']['domain'];
                     } else {
                         $signatureParts['domain'] = 'assess.learnosity.com';
                     }
@@ -338,7 +339,7 @@ class Init
                     $signatureParts['secret'] = $this->secret;
 
                     // override security parameters in questionsApiActivity
-                    $questionsApi = $this->requestPacket['questionsApiActivity'];
+                    $questionsApi = $this->decodedRequestPacket['questionsApiActivity'];
                     $questionsApi['consumer_key'] = $signatureParts['consumer_key'];
                     unset($questionsApi['domain']);
                     $questionsApi['timestamp'] = $signatureParts['timestamp'];
@@ -351,7 +352,8 @@ class Init
                     $this->securityPacket = $signatureParts;
                     $questionsApi['signature'] = $this->generateSignature();
 
-                    $this->requestPacket['questionsApiActivity'] = $questionsApi;
+                    $this->decodedRequestPacket['questionsApiActivity'] = $questionsApi;
+                    $this->requestPacket = Json::encode($this->decodedRequestPacket);
                 }
                 break;
             case 'questions':
@@ -362,15 +364,15 @@ class Init
                 // The Events API requires a user_id, so we make sure it's a part
                 // of the security packet as we share the signature in some cases
                 if (
-                    array_key_exists('user_id', $this->requestPacket)
-                    && !array_key_exists('user_id', $this->securityPacket)
+                    array_key_exists('user_id', $this->decodedRequestPacket) &&
+                    !array_key_exists('user_id', $this->securityPacket)
                 ) {
-                    $this->securityPacket['user_id'] = $this->requestPacket['user_id'];
+                    $this->securityPacket['user_id'] = $this->decodedRequestPacket['user_id'];
                 }
                 break;
             case 'events':
                 $this->signRequestData = false;
-                $users = $this->requestPacket['users'];
+                $users = $this->decodedRequestPacket['users'];
                 $hashedUsers = [];
                 if (!$this->isAssocArray($users)) {
                     throw new ValidationException('Passing an array of user IDs is deprecated,' .
@@ -385,7 +387,8 @@ class Init
                     );
                 }
                 if (count($hashedUsers)) {
-                    $this->requestPacket['users'] = $hashedUsers;
+                    $this->decodedRequestPacket['users'] = $hashedUsers;
+                    $this->requestPacket = Json::encode($this->decodedRequestPacket);
                 }
                 break;
             default:
@@ -397,42 +400,52 @@ class Init
     /**
      * Validate the arguments passed to the constructor
      *
-     * @param string $service
-     * @param string $secret
-     * @param array|string $securityPacket
-     * @param array|string $requestPacket
      * @return array
      * @throws ValidationException
      */
-    public function validate(string $service, string $secret, $securityPacket, $requestPacket): array
+    public function validate()
     {
-        if (is_string($requestPacket)) {
-            $requestPacket = json_decode($requestPacket, true);
-            $this->requestPassedAsString = true;
+        $this->validateAndSetRequestPacket();
+        // In case the user gave us a JSON securityPacket, convert to an array
+        if (is_string($this->securityPacket)) {
+            $this->securityPacket = json_decode($this->securityPacket, true);
         }
 
-        if (is_null($requestPacket)) {
-            $requestPacket = [];
-        }
-
-        if (empty($securityPacket) || !is_array($securityPacket)) {
+        if (empty($this->securityPacket) || !is_array($this->securityPacket)) {
             throw new ValidationException('The security packet must be an array or a valid JSON string');
         }
 
-        // In case the user gave us a JSON securityPacket, convert to an array
-        if (!is_array($securityPacket) && is_string($securityPacket)) {
-            $securityPacket = json_decode($securityPacket, true);
-        }
-
-        if (empty($secret)) {
+        if (empty($this->secret)) {
             throw new ValidationException('The `secret` argument must be a valid string');
         }
 
-        if (!empty($requestPacket) && !is_array($requestPacket)) {
-            throw new ValidationException('The request packet must be an array or a valid JSON string');
+        $this->securityPacket = $this->preHashStringGenerator->validate($this->securityPacket);
+    }
+
+    private function validateAndSetRequestPacket()
+    {
+        $this->requestPassedAsString = $this->isRequestNonEmptyString();
+        if ($this->requestPassedAsString) {
+            $this->decodedRequestPacket = json_decode($this->requestPacket, true);
+            if (!is_array($this->decodedRequestPacket)) {
+                throw new ValidationException('The request packet must be an array or a valid JSON string');
+            }
+            return;
         }
 
-        return $this->preHashStringGenerator->validate($securityPacket, $requestPacket);
+        if (!empty($this->requestPacket) && !is_array($this->requestPacket)) {
+            throw new ValidationException('The request packet must be an array or a valid JSON string');
+        }
+        if (empty($this->requestPacket)) {
+            $this->requestPacket = [];
+        }
+        $this->decodedRequestPacket = $this->requestPacket;
+        $this->requestPacket = Json::encode($this->decodedRequestPacket);
+    }
+
+    private function isRequestNonEmptyString(): bool
+    {
+        return is_string($this->requestPacket) && !empty($this->requestPacket);
     }
 
     /**

@@ -452,7 +452,7 @@ class InitTest extends AbstractTestCase
         /* Events */
         list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingEventsApiParams();
         $eventsApiSig = ParamsFixture::getEventsApiSignatureForVersion(static::SDK_SIGNATURE_VERSION);
-        $eventsApiExpected = '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"'
+        $eventsApiExpected = '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"events-proctor","signature":"'
             . $eventsApiSig . '"},"config":{"users":{"$ANONYMIZED_USER_ID_1":"64ccf06154cf4133624372459ebcccb8b2f8bd7458a73df681acef4e742e175c","$ANONYMIZED_USER_ID_2":"7fa4d6ef8926add8b6411123fce916367250a6a99f50ab8ec39c99d768377adb","$ANONYMIZED_USER_ID_3":"3d5b26843da9192319036b67f8c5cc26e1e1763811270ba164665d0027296952","$ANONYMIZED_USER_ID_4":"3b6ac78f60f3e3eb7a85cec8b48bdca0f590f959e0a87a9c4222898678bd50c8"}}}';
         $eventsApi = [
             $eventsApiExpected,
@@ -585,6 +585,39 @@ class InitTest extends AbstractTestCase
         $service, $security, $secret, $request, $action,
         ];
         $testCases['api-reports'] = $reportsApi;
+
+        /* Author with empty request array */
+        $requestAsEmptyArray = [];
+        list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingAuthorApiParamsWithRequest($requestAsEmptyArray);
+        $authorApi = [
+            '$02$a863357d50c59921e8263cf49383ac2b02bf48ec4402dab183bf5d7160d721c9',
+            $service, $security, $secret, $request, $action,
+        ];
+
+        $testCases['api-author-empty-array'] = $authorApi;
+
+        /* Author with empty request object */
+        $requestAsEmptyJsonString = '{}';
+        list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingAuthorApiParamsWithRequest($requestAsEmptyJsonString);
+        $authorApi = [
+            '$02$7aaad82e101617545a04bdd2513f425b5bf82bc77f9d86c2f7e8972a18e8d6b5',
+            $service, $security, $secret, $request, $action,
+        ];
+
+        $testCases['api-author-empty-json'] = $authorApi;
+
+        /* Author with line breaks in request object */
+        $requestWithLineBreaks = '{
+            "mode":"item_list",
+            "config":{"item_list":{"item":{}}},"user":{"id":"briammoser"}
+        }';
+        list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingAuthorApiParamsWithRequest($requestWithLineBreaks);
+        $authorApi = [
+            '$02$9f5541fe7ef9e74d9dd17f9df3c8d5d17534695f576ddb573635d9bb510d1ac0',
+            $service, $security, $secret, $request, $action,
+        ];
+
+        $testCases['api-author-with-line-breaks'] = $authorApi;
 
         return $testCases;
     }

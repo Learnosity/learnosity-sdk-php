@@ -44,7 +44,7 @@ class LegacyPreHashStringTest extends AbstractTestCase
                 'author' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_{"mode":"item_list","config":{"item_list":{"item":{"status":true}}},"user":{"id":"walterwhite","firstname":"walter","lastname":"white"}}',
                 'authoraide' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_{"config":{"test-attribute":"test"},"user":{"id":"walterwhite","firstname":"walter","lastname":"white"}}',
                 'data' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_{"limit":100}_get',
-                'events' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528',
+                'events' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_events-proctor',
                 'items' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_$ANONYMIZED_USER_ID_{"user_id":"$ANONYMIZED_USER_ID","rendering_type":"assess","name":"Items API demo - assess activity demo","state":"initial","activity_id":"items_assess_demo","session_id":"demo_session_uuid","type":"submit_practice","config":{"configuration":{"responsive_regions":true},"navigation":{"scrolling_indicator":true},"regions":"main","time":{"show_pause":true,"max_time":300},"title":"ItemsAPI Assess Isolation Demo","subtitle":"Testing Subtitle Text"},"items":["Demo3"]}',
                 'questions' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_$ANONYMIZED_USER_ID',
                 'reports' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_{"reports":[{"id":"report-1","type":"sessions-summary","user_id":"$ANONYMIZED_USER_ID","session_ids":["AC023456-2C73-44DC-82DA28894FCBC3BF"]}]}',
@@ -55,7 +55,7 @@ class LegacyPreHashStringTest extends AbstractTestCase
                 'author' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_74c5fd430cf1242a527f6223aebd42d30464be22_{"mode":"item_list","config":{"item_list":{"item":{"status":true}}},"user":{"id":"walterwhite","firstname":"walter","lastname":"white"}}',
                 'authoraide' => null, /* no need for v1 compat, let's make this explicit */
                 'data' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_74c5fd430cf1242a527f6223aebd42d30464be22_{"limit":100}_get',
-                'events' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_74c5fd430cf1242a527f6223aebd42d30464be22',
+                'events' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_events-proctor_74c5fd430cf1242a527f6223aebd42d30464be22',
                 'items' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_$ANONYMIZED_USER_ID_74c5fd430cf1242a527f6223aebd42d30464be22_{"user_id":"$ANONYMIZED_USER_ID","rendering_type":"assess","name":"Items API demo - assess activity demo","state":"initial","activity_id":"items_assess_demo","session_id":"demo_session_uuid","type":"submit_practice","config":{"configuration":{"responsive_regions":true},"navigation":{"scrolling_indicator":true},"regions":"main","time":{"show_pause":true,"max_time":300},"title":"ItemsAPI Assess Isolation Demo","subtitle":"Testing Subtitle Text"},"items":["Demo3"]}',
                 'questions' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_$ANONYMIZED_USER_ID_74c5fd430cf1242a527f6223aebd42d30464be22',
                 'reports' => 'yis0TYCu7U9V4o7M_localhost_20140626-0528_74c5fd430cf1242a527f6223aebd42d30464be22_{"reports":[{"id":"report-1","type":"sessions-summary","user_id":"$ANONYMIZED_USER_ID","session_ids":["AC023456-2C73-44DC-82DA28894FCBC3BF"]}]}',
@@ -101,6 +101,8 @@ class LegacyPreHashStringTest extends AbstractTestCase
     {
         return [
             'api-items-json_encode-bug' => $this->jsonEncodeBugParams(),
+            'api-items-json_encode-url' => $this->jsonEncodeUrlParams(),
+            'api-data-optional-user_id' => $this->unnecessaryUserId(),
         ];
     }
 
@@ -122,6 +124,48 @@ class LegacyPreHashStringTest extends AbstractTestCase
         $params['request']['name'] = str_replace('-', '<&\'>', $params['request']['name']);
         $params['v1Compat'] = false;
         $params['expected'] = 'yis0TYCu7U9V4o7M_localhost_20140626-0528_$ANONYMIZED_USER_ID_{"user_id":"$ANONYMIZED_USER_ID","rendering_type":"assess","name":"' . $params['request']['name'] . '","state":"initial","activity_id":"items_assess_demo","session_id":"demo_session_uuid","type":"submit_practice","config":{"configuration":{"responsive_regions":true},"navigation":{"scrolling_indicator":true},"regions":"main","time":{"show_pause":true,"max_time":300},"title":"ItemsAPI Assess Isolation Demo","subtitle":"Testing Subtitle Text"},"items":["Demo3"]}';
+        return $params;
+    }
+
+    /**
+     * Test case for correct JSON encoding of URLs.
+     * @returns array <
+     *  string $service
+     *  array $security
+     *  string $secret
+     *  array $request
+     *  ?string $action
+     *  bool $v1Compat
+     *  string $expected
+     * >
+     */
+    public function jsonEncodeUrlParams(): array
+    {
+        $params = ParamsFixture::getWorkingItemsApiParams(true);
+        $params['request']['config']['configuration']['onsave_redirect_url'] = '/learning/assessments/';
+        $params['v1Compat'] = false;
+        $params['expected'] = 'yis0TYCu7U9V4o7M_localhost_20140626-0528_$ANONYMIZED_USER_ID_{"user_id":"$ANONYMIZED_USER_ID","rendering_type":"assess","name":"Items API demo - assess activity demo","state":"initial","activity_id":"items_assess_demo","session_id":"demo_session_uuid","type":"submit_practice","config":{"configuration":{"responsive_regions":true,"onsave_redirect_url":"/learning/assessments/"},"navigation":{"scrolling_indicator":true},"regions":"main","time":{"show_pause":true,"max_time":300},"title":"ItemsAPI Assess Isolation Demo","subtitle":"Testing Subtitle Text"},"items":["Demo3"]}';
+        return $params;
+    }
+
+    /**
+     * Test case for optional presence of the user_id in the security packet.
+     * @returns array <
+     * string $service
+     * array $security
+     * string $secret
+     * array $request
+     * ?string $action
+     * bool $v1Compat
+     * string $expected
+     * >
+     */
+    public function unnecessaryUserId(): array
+    {
+        $params = ParamsFixture::getWorkingDataApiParams(true);
+        $params['security']['user_id'] = 'a-user-id';
+        $params['v1Compat'] = false;
+        $params['expected'] = 'yis0TYCu7U9V4o7M_localhost_20140626-0528_a-user-id_{"limit":100}_get';
         return $params;
     }
 }
