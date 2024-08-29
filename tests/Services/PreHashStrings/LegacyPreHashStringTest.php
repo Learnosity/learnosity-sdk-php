@@ -101,6 +101,7 @@ class LegacyPreHashStringTest extends AbstractTestCase
     {
         return [
             'api-items-json_encode-bug' => $this->jsonEncodeBugParams(),
+            'api-items-json_encode-url' => $this->jsonEncodeUrlParams(),
         ];
     }
 
@@ -122,6 +123,27 @@ class LegacyPreHashStringTest extends AbstractTestCase
         $params['request']['name'] = str_replace('-', '<&\'>', $params['request']['name']);
         $params['v1Compat'] = false;
         $params['expected'] = 'yis0TYCu7U9V4o7M_localhost_20140626-0528_$ANONYMIZED_USER_ID_{"user_id":"$ANONYMIZED_USER_ID","rendering_type":"assess","name":"' . $params['request']['name'] . '","state":"initial","activity_id":"items_assess_demo","session_id":"demo_session_uuid","type":"submit_practice","config":{"configuration":{"responsive_regions":true},"navigation":{"scrolling_indicator":true},"regions":"main","time":{"show_pause":true,"max_time":300},"title":"ItemsAPI Assess Isolation Demo","subtitle":"Testing Subtitle Text"},"items":["Demo3"]}';
+        return $params;
+    }
+
+    /**
+     * Test case for correct JSON encoding of URLs.
+     * @returns array <
+     *  string $service
+     *  array $security
+     *  string $secret
+     *  array $request
+     *  ?string $action
+     *  bool $v1Compat
+     *  string $expected
+     * >
+     */
+    public function jsonEncodeUrlParams(): array
+    {
+        $params = ParamsFixture::getWorkingItemsApiParams(true);
+        $params['request']['config']['configuration']['onsave_redirect_url'] = '/learning/assessments/';
+        $params['v1Compat'] = false;
+        $params['expected'] = 'yis0TYCu7U9V4o7M_localhost_20140626-0528_$ANONYMIZED_USER_ID_{"user_id":"$ANONYMIZED_USER_ID","rendering_type":"assess","name":"Items API demo - assess activity demo","state":"initial","activity_id":"items_assess_demo","session_id":"demo_session_uuid","type":"submit_practice","config":{"configuration":{"responsive_regions":true,"onsave_redirect_url":"/learning/assessments/"},"navigation":{"scrolling_indicator":true},"regions":"main","time":{"show_pause":true,"max_time":300},"title":"ItemsAPI Assess Isolation Demo","subtitle":"Testing Subtitle Text"},"items":["Demo3"]}';
         return $params;
     }
 }

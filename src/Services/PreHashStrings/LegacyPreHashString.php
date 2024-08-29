@@ -3,6 +3,7 @@
 namespace LearnositySdk\Services\PreHashStrings;
 
 use LearnositySdk\Exceptions\ValidationException;
+use LearnositySdk\Utils\Json;
 
 class LegacyPreHashString implements PreHashStringInterface
 {
@@ -141,7 +142,7 @@ class LegacyPreHashString implements PreHashStringInterface
         if (in_array($this->service, static::SERVICES_REQUIRING_SIGNED_REQUEST)) {
             $requestJson = $request;
             if (is_array($request)) {
-                $requestJson = json_encode($request);
+                $requestJson = Json::encode($request);
             }
             $signatureArray[] = $requestJson;
         }
