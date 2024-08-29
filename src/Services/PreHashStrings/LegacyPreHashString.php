@@ -42,8 +42,8 @@ class LegacyPreHashString implements PreHashStringInterface
         self::SERVICE_ANNOTATIONS_API,
         self::SERVICE_AUTHOR_API,
         self::SERVICE_AUTHOR_AIDE_API,
+        self::SERVICE_ITEMS_API,
         self::SERVICE_DATA_API,
-        self::SERVICE_EVENTS_API,
         self::SERVICE_REPORTS_API,
     ];
 

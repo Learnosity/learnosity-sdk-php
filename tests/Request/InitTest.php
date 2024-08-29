@@ -452,7 +452,7 @@ class InitTest extends AbstractTestCase
         /* Events */
         list($service, $security, $secret, $request, $action) = ParamsFixture::getWorkingEventsApiParams();
         $eventsApiSig = ParamsFixture::getEventsApiSignatureForVersion(static::SDK_SIGNATURE_VERSION);
-        $eventsApiExpected = '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","signature":"'
+        $eventsApiExpected = '{"security":{"consumer_key":"yis0TYCu7U9V4o7M","domain":"localhost","timestamp":"20140626-0528","user_id":"events-proctor","signature":"'
             . $eventsApiSig . '"},"config":{"users":{"$ANONYMIZED_USER_ID_1":"64ccf06154cf4133624372459ebcccb8b2f8bd7458a73df681acef4e742e175c","$ANONYMIZED_USER_ID_2":"7fa4d6ef8926add8b6411123fce916367250a6a99f50ab8ec39c99d768377adb","$ANONYMIZED_USER_ID_3":"3d5b26843da9192319036b67f8c5cc26e1e1763811270ba164665d0027296952","$ANONYMIZED_USER_ID_4":"3b6ac78f60f3e3eb7a85cec8b48bdca0f590f959e0a87a9c4222898678bd50c8"}}}';
         $eventsApi = [
             $eventsApiExpected,

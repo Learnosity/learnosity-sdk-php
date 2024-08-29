@@ -323,6 +323,7 @@ class ParamsFixture
     {
         $service = 'events';
         $security = static::getSecurity();
+        $security['user_id'] = 'events-proctor';
         $secret = static::TEST_CONSUMER_SECRET;
         $request = [
             'users' => [
@@ -353,9 +354,9 @@ class ParamsFixture
     {
         switch ($version) {
             case '01':
-                return '20739eed410d54a135e8cb3745628834886ab315bfc01693ce9acc0d14dc98bf';
+                return 'fd236f3bc3e14bb291a222637fe86d71c3d4393ed7c51353a2f9a14b356fd605';
             case '02':
-                return '$02$5c3160dbb9ab4d01774b5c2fc3b01a35ce4f9709c84571c27dfe333d1ca9d349';
+                return '$02$e319a1c9c3e0118d1e81188a650b054a765e072a2d90e4b422ecca2ae9589449';
             default:
                 throw new \Exception(__FUNCTION__ . ' not re-implemented for signature version ' . $version);
         }
