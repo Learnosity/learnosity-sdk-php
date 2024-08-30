@@ -126,7 +126,11 @@ class LegacyPreHashString implements PreHashStringInterface
         if (isset($security['expires'])) {
             $signatureArray[] = $security['expires'];
         }
-        if (!in_array($this->service, static::SERVICES_NOT_REQUIRING_USER_ID)) { // || isset($security['user_id'])) {
+
+        if (!in_array($this->service, static::SERVICES_NOT_REQUIRING_USER_ID) || isset($security['user_id'])) {
+            if (!isset($security['user_id'])) {
+                throw new ValidationException('User ID is required for this service');
+            }
             $signatureArray[] = $security['user_id'];
         }
 
