@@ -151,11 +151,9 @@ class LegacyPreHashString implements PreHashStringInterface
             $signatureArray[] = $requestJson;
         }
 
-        if (in_array($this->service, static::SERVICES_REQUIRING_SIGNED_ACTION)) {
-            if (empty($action)) {
-                $action = 'get';
-            }
-            $signatureArray[] = $action;
+        // Add the action if necessary
+        if (!empty($this->action)) {
+            $signatureArray[] = $this->action;
         }
 
         return implode('_', $signatureArray);
