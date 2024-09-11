@@ -407,7 +407,8 @@ class Init
     public function validate(string $service, string $secret, $securityPacket, $requestPacket): array
     {
         if (is_string($requestPacket)) {
-            $requestPacket = json_decode($requestPacket, true);
+            $requestPacketObject = json_decode($requestPacket);
+            $requestPacket = (array)$requestPacketObject;
             $this->requestPassedAsString = true;
         }
 
