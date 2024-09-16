@@ -11,7 +11,7 @@ interface PreHashStringInterface
      * @param string|null $secret only for legacy pre-hash string generation when $v1Compat is true
      * @return string the pre-hash string
      */
-    public function getPreHashString(array $security, ?array $request, ?string $action, ?string $secret): string;
+    public function getPreHashString(array $security, string $request, ?string $action, ?string $secret): string;
 
     /** Return a list of all supported services
      * @return string[]
@@ -29,5 +29,5 @@ interface PreHashStringInterface
      * @param array $request
      * @return array <$updatedRequest, $updatedSecurity>
      * */
-    public function validate(array $security, array $request): array;
+    public function validate(array $security, string $request): array;
 }

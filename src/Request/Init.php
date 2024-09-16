@@ -179,9 +179,9 @@ class Init
      *
      * @param array    $requestPacket
      *
-     * @return array
+     * @return array|string
      */
-    private function addMeta(array $requestPacket): array
+    private function addMeta(string $requestPacket)
     {
         $sdkMetricsMeta = [
             'version' => $this->getSDKVersion(),
@@ -191,12 +191,19 @@ class Init
             'platform_version' => php_uname('r')
         ];
 
-        if (isset($requestPacket['meta'])) {
-            $requestPacket['meta']['sdk'] = $sdkMetricsMeta;
+        // Convert the SDK metrics meta array to a JSON string, and add "sdk" as the key
+        $sdkMetricsMetaJson = '"meta":{"sdk":' . json_encode($sdkMetricsMeta) . '}';
+
+        // Check if 'meta' already exists in the string
+        if (strpos($requestPacket, '"meta"') !== false) {
+            // If 'meta' exists, replace it with the new meta data
+            $requestPacket = preg_replace('/"meta":{.*?}/', '"meta":' . $sdkMetricsMetaJson, $requestPacket);
         } else {
-            $requestPacket['meta'] = [
-                'sdk' => $sdkMetricsMeta
-            ];
+            // If 'meta' does not exist, insert it before the last closing brace
+            $position = strrpos($requestPacket, '}'); // Find the position of the last closing curly brace
+
+            // Insert the SDK metrics meta string before the last closing curly brace
+            $requestPacket = substr_replace($requestPacket, ',' . $sdkMetricsMetaJson , $position, 0);
         }
 
         return $requestPacket;
@@ -290,7 +297,7 @@ class Init
      */
     public function generateSignature(): string
     {
-        $preHashString = $this->preHashStringGenerator->getPreHashString(
+        $preHashString = $this->preHashStringGenerator->getPreHashString (
             $this->securityPacket,
             $this->requestPacket,
             $this->action
@@ -407,8 +414,8 @@ class Init
     public function validate(string $service, string $secret, $securityPacket, $requestPacket): array
     {
         if (is_string($requestPacket)) {
-            $requestPacketObject = json_decode($requestPacket);
-            $requestPacket = (array)$requestPacketObject;
+            //$requestPacketObject = json_decode($requestPacket);
+            //$requestPacket = (array)$requestPacketObject;
             $this->requestPassedAsString = true;
         }
 
@@ -429,8 +436,14 @@ class Init
             throw new ValidationException('The `secret` argument must be a valid string');
         }
 
-        if (!empty($requestPacket) && !is_array($requestPacket)) {
-            throw new ValidationException('The request packet must be an array or a valid JSON string');
+        // Check if the JSON is valid by testing basic JSON object structure
+        if ($requestPacket === null || $requestPacket === '' ) {
+            throw new ValidationException('The request packet cannot be null or empty');
+        }
+
+        // Check if it's a JSON object (starts with { and ends with })
+        if (!preg_match('/^\{.*\}$/', $requestPacket)) {
+            throw new ValidationException('The request packet must be a valid JSON string');
         }
 
         return $this->preHashStringGenerator->validate($securityPacket, $requestPacket);

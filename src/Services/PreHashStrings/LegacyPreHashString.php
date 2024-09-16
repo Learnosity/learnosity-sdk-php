@@ -113,7 +113,7 @@ class LegacyPreHashString implements PreHashStringInterface
 
     public function getPreHashString(
         array $security,
-        ?array $request,
+        string $request,
         ?string $action = 'get',
         ?string $secret = null
     ): string {
@@ -144,11 +144,7 @@ class LegacyPreHashString implements PreHashStringInterface
         }
 
         if (in_array($this->service, static::SERVICES_REQUIRING_SIGNED_REQUEST)) {
-            $requestJson = $request;
-            if (is_array($request)) {
-                $requestJson = Json::encode($request);
-            }
-            $signatureArray[] = $requestJson;
+            $signatureArray[] = $request;
         }
 
         // Add the action if necessary
@@ -174,7 +170,7 @@ class LegacyPreHashString implements PreHashStringInterface
      * nothing is done with the request packet, but future pre-hash schemes
      * may require it.
      */
-    public function validate(array $security, array $request): array
+    public function validate(array $security, string $request): array
     {
         foreach (array_keys($security) as $key) {
             if (!in_array($key, static::VALID_SECURITY_KEYS)) {
