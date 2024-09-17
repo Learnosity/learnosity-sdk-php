@@ -148,8 +148,8 @@ class LegacyPreHashString implements PreHashStringInterface
         }
 
         // Add the action if necessary
-        if (!empty($this->action)) {
-            $signatureArray[] = $this->action;
+        if (!empty($action)) {
+            $signatureArray[] = $action;
         }
 
         return implode('_', $signatureArray);
