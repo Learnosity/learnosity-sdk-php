@@ -142,6 +142,9 @@ class Init
             $requestPacket = $this->addMeta($requestPacket);
         }
 
+
+
+
         // Set instance variables based off the arguments passed
         $this->service            = $service;
         $this->securityPacket     = $securityPacket;
@@ -151,6 +154,8 @@ class Init
 
         // Set any service specific options
         $this->setServiceOptions();
+
+
 
         // Generate the signature based on the arguments provided
         $this->securityPacket['signature'] = $this->generateSignature();
@@ -403,12 +408,22 @@ class Init
      */
     public function validate(string $service, string $secret, $securityPacket, $requestPacket): array
     {
+        // Check if the JSON is valid by testing basic JSON object structure
+        if ($requestPacket === null || $requestPacket === '' ) {
+            throw new ValidationException('The request packet cannot be null or empty');
+        }
+
+        // Check if it's a JSON object (starts with { and ends with })
+        if (!preg_match('/^\{.*\}$/', $requestPacket)) {
+            throw new ValidationException('The request packet must be a valid JSON string');
+        }
+
         if (!is_string($requestPacket)) {
             throw new ValidationException('The request packet must a JSON string');
         }
 
         if (is_null($requestPacket)) {
-            $requestPacket = [];
+            $requestPacket = '{}';
         }
 
         if (empty($securityPacket) || !is_array($securityPacket)) {
@@ -424,15 +439,7 @@ class Init
             throw new ValidationException('The `secret` argument must be a valid string');
         }
 
-        // Check if the JSON is valid by testing basic JSON object structure
-        if ($requestPacket === null || $requestPacket === '' ) {
-            throw new ValidationException('The request packet cannot be null or empty');
-        }
 
-        // Check if it's a JSON object (starts with { and ends with })
-        if (!preg_match('/^\{.*\}$/', $requestPacket)) {
-            throw new ValidationException('The request packet must be a valid JSON string');
-        }
 
         return $this->preHashStringGenerator->validate($securityPacket, $requestPacket);
     }
