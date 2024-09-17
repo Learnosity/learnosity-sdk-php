@@ -231,7 +231,7 @@ class Init
                 // Add the security packet (with signature) to the output
                 $output['security'] = Json::encode($this->securityPacket);
 
-                $output['request'] = Json::encode($this->requestPacket);
+                $output['request'] = $this->requestPacket;
 
                 if (!empty($this->action)) {
                     $output['action'] = $this->action;
