@@ -171,7 +171,7 @@ class ParamsFixture
         $service = 'author';
         $security = static::getSecurity();
         $secret = static::TEST_CONSUMER_SECRET;
-        $request = [
+        /*$request = [
         "mode" => "item_list",
         "config" => [
             "item_list" => [
@@ -185,7 +185,8 @@ class ParamsFixture
             "firstname" => "walter",
             "lastname" => "white"
         ]
-        ];
+        ];*/
+        $request = '{"mode":"item_list","config":{"item_list":{"item":{"status":true}}},"user":{"id":"walterwhite","firstname":"walter","lastname":"white"}}';
         $action = null;
 
         $params = [
@@ -224,7 +225,7 @@ class ParamsFixture
         $service = 'authoraide';
         $security = static::getSecurity();
         $secret = static::TEST_CONSUMER_SECRET;
-        $request = [
+        /*$request = [
             "config" => [
                 "test-attribute" => "test"
             ],
@@ -233,7 +234,10 @@ class ParamsFixture
                 "firstname" => "walter",
                 "lastname" => "white"
             ]
-        ];
+        ];*/
+
+        $request = '{"config":{"test-attribute":"test"},"user":{"id":"walterwhite","firstname":"walter","lastname":"white"}}';
+
         $action = null;
 
         $params = [
@@ -283,9 +287,7 @@ class ParamsFixture
         $security = static::getSecurity();
         $security['timestamp'] = '20140626-0528';
         $secret = static::TEST_CONSUMER_SECRET;
-        $request = [
-            'limit' => 100,
-        ];
+        $request = '{"limit" : 100}';
         $action = 'get';
 
         $params = [
