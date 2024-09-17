@@ -72,12 +72,6 @@ class Init
     private $requestPacket;
 
     /**
-     * Tracking if the request was passed as a string
-     * @var bool
-     */
-    private $requestPassedAsString = false;
-
-    /**
      * An optional value used to define what type of request is being
      * made. This is only required for certain requests made to the
      * Data API (http://docs.learnosity.com/dataapi/)
@@ -247,9 +241,7 @@ class Init
                 break;
             case 'assess':
                 // Stringify the request packet if necessary
-                $output = $this->requestPassedAsString ?
-                    Json::encode($this->requestPacket) :
-                    $this->requestPacket;
+                $output = $this->requestPacket;
                 break;
             case 'author':
             case 'authoraide':
@@ -259,9 +251,7 @@ class Init
                 $output['security'] = $this->securityPacket;
 
                 // Stringify the request packet if necessary
-                $output['request'] = $this->requestPassedAsString ?
-                    Json::encode($this->requestPacket) :
-                    $this->requestPacket;
+                $output['request'] = $this->requestPacket;
                 break;
             case 'questions':
                 // Add the security packet (with signature) to the root of output
@@ -271,7 +261,7 @@ class Init
                 unset($output['domain']);
 
                 if (!empty($this->requestPacket)) {
-                    $output = array_merge($output, $this->requestPacket);
+                    $output['request'] = $this->requestPacket;
                 }
                 break;
             case 'events':
@@ -297,7 +287,7 @@ class Init
      */
     public function generateSignature(): string
     {
-        $preHashString = $this->preHashStringGenerator->getPreHashString (
+        $preHashString = $this->preHashStringGenerator->getPreHashString(
             $this->securityPacket,
             $this->requestPacket,
             $this->action
@@ -413,10 +403,8 @@ class Init
      */
     public function validate(string $service, string $secret, $securityPacket, $requestPacket): array
     {
-        if (is_string($requestPacket)) {
-            //$requestPacketObject = json_decode($requestPacket);
-            //$requestPacket = (array)$requestPacketObject;
-            $this->requestPassedAsString = true;
+        if (!is_string($requestPacket)) {
+            throw new ValidationException('The request packet must a JSON string');
         }
 
         if (is_null($requestPacket)) {
