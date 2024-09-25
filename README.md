@@ -253,8 +253,8 @@ There are more quick start guides, going beyond the initial quick start topic of
 ### **Learnosity demos repository**
 On our [demo site](https://demos.learnosity.com/), browse through many examples of Learnosity API integration. You can also download the entire demo site source code, the code for any single demo, or browse the codebase directly on GitHub.
 
-### **Learnosity reference documentation**
-See full documentation for Learnosity API init options, methods and events in the [Learnosity reference site](https://reference.learnosity.com/).
+### **Learnosity developer documentation**
+See full documentation for Learnosity API init options, methods and events in the [Learnosity developer documentation](https://help.learnosity.com/hc/en-us/categories/16266193425053).
 
 ### **Technical use-cases documentation**
 Find guidance on how to select a development pattern and arrange the architecture of your application with Learnosity, in the [Technical Use-Cases Overview](https://help.learnosity.com/hc/en-us/articles/360000757777-Technical-Use-Cases-Overview).
@@ -297,8 +297,7 @@ We use this data to enable better support and feature planning.
 ## Further reading
 Thanks for reading to the end! Find more information about developing an app with Learnosity on our documentation sites: 
 
-* [help.learnosity.com](http://help.learnosity.com/hc/en-us) -- general help portal and tutorials,
-* [reference.learnosity.com](http://reference.learnosity.com) -- developer reference site, and
+* [help.learnosity.com](http://help.learnosity.com/hc/en-us) -- general help portal, tutorials, and developer reference.
 * [authorguide.learnosity.com](http://authorguide.learnosity.com) -- authoring documentation for content creators.
 
 [(Back to top)](#table-of-contents)
