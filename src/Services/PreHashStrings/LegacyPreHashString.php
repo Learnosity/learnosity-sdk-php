@@ -3,6 +3,7 @@
 namespace LearnositySdk\Services\PreHashStrings;
 
 use LearnositySdk\Exceptions\ValidationException;
+use LearnositySdk\Utils\Json;
 
 class LegacyPreHashString implements PreHashStringInterface
 {
@@ -41,8 +42,8 @@ class LegacyPreHashString implements PreHashStringInterface
         self::SERVICE_ANNOTATIONS_API,
         self::SERVICE_AUTHOR_API,
         self::SERVICE_AUTHOR_AIDE_API,
+        self::SERVICE_ITEMS_API,
         self::SERVICE_DATA_API,
-        self::SERVICE_EVENTS_API,
         self::SERVICE_REPORTS_API,
     ];
 
@@ -112,7 +113,7 @@ class LegacyPreHashString implements PreHashStringInterface
 
     public function getPreHashString(
         array $security,
-        ?array $request,
+        $request,
         ?string $action = 'get',
         ?string $secret = null
     ): string {
@@ -125,7 +126,11 @@ class LegacyPreHashString implements PreHashStringInterface
         if (isset($security['expires'])) {
             $signatureArray[] = $security['expires'];
         }
-        if (!in_array($this->service, static::SERVICES_NOT_REQUIRING_USER_ID)) { // || isset($security['user_id'])) {
+
+        if (!in_array($this->service, static::SERVICES_NOT_REQUIRING_USER_ID) || isset($security['user_id'])) {
+            if (!isset($security['user_id'])) {
+                throw new ValidationException('User ID is required for this service');
+            }
             $signatureArray[] = $security['user_id'];
         }
 
@@ -139,17 +144,11 @@ class LegacyPreHashString implements PreHashStringInterface
         }
 
         if (in_array($this->service, static::SERVICES_REQUIRING_SIGNED_REQUEST)) {
-            $requestJson = $request;
-            if (is_array($request)) {
-                $requestJson = json_encode($request);
-            }
-            $signatureArray[] = $requestJson;
+            $signatureArray[] = is_array($request) ? Json::encode($request) : $request;
         }
 
-        if (in_array($this->service, static::SERVICES_REQUIRING_SIGNED_ACTION)) {
-            if (empty($action)) {
-                $action = 'get';
-            }
+        // Add the action if necessary
+        if (!empty($action)) {
             $signatureArray[] = $action;
         }
 
@@ -171,7 +170,7 @@ class LegacyPreHashString implements PreHashStringInterface
      * nothing is done with the request packet, but future pre-hash schemes
      * may require it.
      */
-    public function validate(array $security, array $request): array
+    public function validate(array $security): array
     {
         foreach (array_keys($security) as $key) {
             if (!in_array($key, static::VALID_SECURITY_KEYS)) {
@@ -195,6 +194,6 @@ class LegacyPreHashString implements PreHashStringInterface
         }
         /* end XXX */
 
-        return [ $request, $security ];
+        return $security;
     }
 }

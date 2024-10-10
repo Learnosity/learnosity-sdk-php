@@ -7,6 +7,13 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fixed an inconsistency with encoding to JSON
+- Fixed incorrect replacement of SERVICE_ITEMS_API by SERVICE_EVENTS_API
+  in services not requiring `user_id` in the security packet
+- Fixed handling of `user_id` in security packet for services not
+  requiring it
+
 ## [v1.0.4] - 2024-07-11
 ### Added
 - Added composable services for signature generation.
