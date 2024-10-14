@@ -7,12 +7,9 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [v1.0.5] - 2024-10-14
-### Refactor
+### Fixed
 - Fixed the signature mismatch issue.
 - Fixed the issue while running the 'make quickstart'
-
-### Fixed
 - Fixed an inconsistency with encoding to JSON
 - Fixed incorrect replacement of SERVICE_ITEMS_API by SERVICE_EVENTS_API
   in services not requiring `user_id` in the security packet
