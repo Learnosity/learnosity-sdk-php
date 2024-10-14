@@ -15,6 +15,7 @@ DEBIAN_VERSION = $(or $(DEBIAN_VERSION-$(PHP_VERSION)),$(DEBIAN_VERSION-def))
 COMPOSER_VERSION-7.1 = 2.2
 COMPOSER_VERSION-def = 2.7.6
 COMPOSER_VERSION = $(or $(COMPOSER_VERSION-$(PHP_VERSION)),$(COMPOSER_VERSION-def))
+LOCALHOST = 0.0.0.0
 
 IMAGE = php-cli-composer:$(PHP_VERSION)-$(DEBIAN_VERSION)-$(COMPOSER_VERSION)
 
@@ -27,13 +28,15 @@ TARGETS = all build devbuild prodbuild \
 .default: all
 
 ifneq (,$(DOCKER))
+TTYFLAGS := $(shell if [ -t 0 ] ; then echo "-it"; else echo "-t"; fi)
 # Re-run the make command in a container
-DKR = docker container run -t --rm \
+DKR = docker container run $(TTYFLAGS) --rm \
 		-v $(CURDIR):/srv/sdk/php:z,delegated \
 		-v lrn-sdk-php_cache:/root/.composer \
 		-w /srv/sdk/php \
 		-e LRN_SDK_NO_DOCKER=1 \
 		-e ENV -e REGION -e VER \
+		-p 8000:8000 \
 		$(if $(findstring dev,$(ENV)),--net host) \
 		$(IMAGE)
 
