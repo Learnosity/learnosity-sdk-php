@@ -67,6 +67,17 @@ matrix:
       env:
         - COMPOSER_COMMAND=update
 
+    - php: '8.3'
+      language: php
+      dist: focal
+      env:
+        - COMPOSER_COMMAND=install
+    - php: '8.3'
+      language: php
+      dist: focal
+      env:
+        - COMPOSER_COMMAND=update
+
 before_install:
   # Login to docker hub
   - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
