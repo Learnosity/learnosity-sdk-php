@@ -6,6 +6,7 @@ networks:
 
 services:
   nginx:
+    container_name: learnosity-php-sdk-nginx
     build:
       context: .
       dockerfile: docker/nginx/Dockerfile
@@ -24,6 +25,7 @@ services:
           - nginx
 
   php:
+    container_name: learnosity-php-sdk-php-frm
     build:
       context: .
       dockerfile: docker/php/Dockerfile
