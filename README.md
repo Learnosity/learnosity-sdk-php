@@ -107,14 +107,14 @@ To run the quickstart application using Docker, ensure you have Docker and Docke
 
 1. Clone the repository (if you haven't already):
    
-   ```
+   ```bash
    git clone https://github.com/Learnosity/learnosity-sdk-php.git
    cd learnosity-sdk-php
    ```
 
 2. Start the Docker containers:
    
-   ```
+   ```bash
    make quickstart
    ```
 
@@ -123,7 +123,7 @@ If you prefer to run the application locally without Docker, follow these prereq
 
 1. Clone the repository (if you haven't already):
    
-   ```
+   ```bash
    git clone https://github.com/Learnosity/learnosity-sdk-php.git
    cd learnosity-sdk-php
    ```
@@ -133,7 +133,7 @@ If you prefer to run the application locally without Docker, follow these prereq
 
 4. Start the built-in PHP development server:
   
-   ```
+   ```bash
    make quickstart
    ```
 
