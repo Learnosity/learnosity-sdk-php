@@ -100,14 +100,39 @@ For production use, you should install the SDK using the Composer package manage
 ## Quick start guide
 Let's take a look at a simple example of the SDK in action. In this example, we'll load an assessment into the browser.
 
-### **Start up your web server**
-You can start the demo by running the following command in the SDK directory:
+### Running the Quickstart Application
 
-    make quickstart
+### **Option 1: Running with Docker (Recommended)**
+To run the quickstart application using Docker, ensure you have Docker and Docker Compose installed on your system. Then follow these steps:
 
-If your PHP server is up, we'll assume that your web server is available at this local address: 
+1. Clone the repository (if you haven't already):
+   ```
+   git clone https://github.com/Learnosity/learnosity-sdk-php.git
+   cd learnosity-sdk-php
+   ```
 
-    http://localhost:8000
+2. Start the Docker containers:
+   ```
+   make quickstart
+   ```
+
+### **Option 2: Running Locally**
+If you prefer to run the application locally without Docker, follow these prerequisites:
+
+1. Clone the repository (if you haven't already):
+   ```
+   git clone https://github.com/Learnosity/learnosity-sdk-php.git
+   cd learnosity-sdk-php
+   ```
+2. Ensure you have PHP 8.x installed
+3. Install Composer (https://getcomposer.org/download/)
+
+4. Start the built-in PHP development server:
+   ```
+   make quickstart
+   ```
+
+**Note:** Local setup requires PHP 8 runtime libraries and may have additional system dependencies. The Docker method provides a more consistent and isolated environment.
 
 (For more information about the web server configuration, [click here](https://help.learnosity.com/hc/en-us/articles/360000757757-Environment-Setup-Guide))
 
