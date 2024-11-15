@@ -106,12 +106,14 @@ Let's take a look at a simple example of the SDK in action. In this example, we'
 To run the quickstart application using Docker, ensure you have Docker and Docker Compose installed on your system. Then follow these steps:
 
 1. Clone the repository (if you haven't already):
+   
    ```
    git clone https://github.com/Learnosity/learnosity-sdk-php.git
    cd learnosity-sdk-php
    ```
 
 2. Start the Docker containers:
+   
    ```
    make quickstart
    ```
@@ -120,14 +122,17 @@ To run the quickstart application using Docker, ensure you have Docker and Docke
 If you prefer to run the application locally without Docker, follow these prerequisites:
 
 1. Clone the repository (if you haven't already):
+   
    ```
    git clone https://github.com/Learnosity/learnosity-sdk-php.git
    cd learnosity-sdk-php
    ```
+
 2. Ensure you have PHP 8.x installed
 3. Install Composer (https://getcomposer.org/download/)
 
 4. Start the built-in PHP development server:
+  
    ```
    make quickstart
    ```
