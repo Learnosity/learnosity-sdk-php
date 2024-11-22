@@ -52,6 +52,11 @@ docker-build:
 		-t $(IMAGE) .
 .PHONY: docker-build lrn-test-all lrn-test-clean
 
+lrn-test-all: $(addprefix lrn-test-v,$(SUPPORTED_PHP_VERSIONS))
+
+lrn-test-v%:
+	$(MAKE) -e PHP_VERSION=$* -e MAKEFLAGS="$(MAKEFLAGS)" test
+	$(MAKE) -e PHP_VERSION=$* -e MAKEFLAGS="$(MAKEFLAGS)" clean
 
 else
 DIST_PREFIX = learnosity_sdk-
