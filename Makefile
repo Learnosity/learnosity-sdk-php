@@ -17,10 +17,6 @@ COMPOSER_VERSION-7.1 = 2.2
 COMPOSER_VERSION-def = 2.7.6
 COMPOSER_VERSION ?= $(or $(COMPOSER_VERSION-$(PHP_VERSION)),$(COMPOSER_VERSION-def))
 
-export PHP_VERSION
-export DEBIAN_VERSION
-export COMPOSER_VERSION
-
 TARGETS = all build devbuild prodbuild \
 	quickstart check-quickstart install-vendor \
 	dist dist-test dist-zip release \
