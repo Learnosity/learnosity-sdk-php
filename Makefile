@@ -49,15 +49,7 @@ COMPOSER_INSTALL_FLAGS = --no-interaction --optimize-autoloader --classmap-autho
 PHPCS= ./vendor/bin/phpcs
 PHPUNIT = ./vendor/bin/phpunit
 
-###
-# quickstart rules
-###
-quickstart:
-ifneq (,$(DOCKER))
-	$(MAKE) docker-quickstart
-else
-	$(MAKE) local-quickstart
-endif
+quickstart: $(if $(DOCKER),docker-build) $(if $(DOCKER),docker,local)-quickstart
 
 docker-quickstart: VENDOR_FLAGS = --no-dev
 docker-quickstart: install-vendor
