@@ -26,13 +26,6 @@ TARGETS = all build devbuild prodbuild \
 .PHONY: $(TARGETS)
 .default: all
 
-ifneq (,$(DOCKER))
-# Docker-based targets
-docker-targets = quickstart 
-$(docker-targets): docker-build
-	$(DOCKER_COMPOSE) run --rm php make -e MAKEFLAGS="$(MAKEFLAGS)" $@
-endif
-
 docker-build: install-vendor
 	$(DOCKER_COMPOSE) build php nginx
 
