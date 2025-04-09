@@ -10,6 +10,9 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 ### Fixed
 - Fixed Quickstart app so that it runs in a Docker container or with a local PHP server
 
+### Refactor
+- Upgraded PHP version to 8.3
+
 ## [v1.0.5] - 2024-10-14
 ### Fixed
 - Fixed the signature mismatch issue.
