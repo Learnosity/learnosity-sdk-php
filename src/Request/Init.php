@@ -132,9 +132,9 @@ class Init
         $securityPacket,
         string $secret,
         $requestPacket = null,
-        string $action = null,
-        SignatureFactory $signatureFactory = null,
-        PreHashStringFactory $preHashStringFactory = null
+        ?string $action = null,
+        ?SignatureFactory $signatureFactory = null,
+        ?PreHashStringFactory $preHashStringFactory = null
     ) {
         $this->signatureFactory = $signatureFactory;
         if (!isset($signatureFactory)) {
