@@ -12,6 +12,8 @@ Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Refactor
 - Upgraded PHP version to 8.3
+- Update minimum supported version to PHP 7.2 and higher
+- Remove testing of older PHP versions
 
 ## [v1.0.5] - 2024-10-14
 ### Fixed

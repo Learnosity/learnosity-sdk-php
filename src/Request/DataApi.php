@@ -27,7 +27,7 @@ class DataApi
      * @param array $remoteOptions Overrides options array for a cURL request
      * @param RemoteInterface|null $remote Overrides default remote class with optional user supplied one
      */
-    public function __construct(array $remoteOptions = [], RemoteInterface $remote = null)
+    public function __construct(array $remoteOptions = [], ?RemoteInterface $remote = null)
     {
         $this->remote = is_null($remote) ? new Remote($remoteOptions) : $remote;
     }
@@ -49,7 +49,7 @@ class DataApi
         $securityPacket,
         string $secret,
         array $requestPacket = [],
-        string $action = null
+        ?string $action = null
     ): RemoteInterface {
         $init = new Init('data', $securityPacket, $secret, $requestPacket, $action);
         $params = $init->generate();
@@ -76,9 +76,9 @@ class DataApi
         $securityPacket,
         string $secret,
         array $requestPacket = [],
-        string $action = null,
-        callable $callback = null,
-        int $limit = null
+        ?string $action = null,
+        ?callable $callback = null,
+        ?int $limit = null
     ): array {
         $response = [];
 
