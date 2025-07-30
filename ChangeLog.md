@@ -7,6 +7,8 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v1.1.0] - 2025-07-30
 ### Fixed
 - Fixed Quickstart app so that it runs in a Docker container or with a local PHP server
 
