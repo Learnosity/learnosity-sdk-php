@@ -98,6 +98,7 @@ dist-zip: clean-test clean-dist
 	zip -qr $(DIST).zip $(DIST)
 
 dist-test: dist-zip install-vendor
+	cd $(DIST) && composer install $(COMPOSER_INSTALL_FLAGS)
 	cd $(DIST) && ./vendor/bin/phpunit --do-not-cache-result --no-logging
 
 ###
