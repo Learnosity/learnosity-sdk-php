@@ -98,7 +98,7 @@ dist-zip: clean-test clean-dist
 	zip -qr $(DIST).zip $(DIST)
 
 dist-test: dist-zip install-vendor
-	$(PHPUNIT) --do-not-cache-result --no-logging --configuration=$(DIST)/phpunit.xml
+	cd $(DIST) && ./vendor/bin/phpunit --do-not-cache-result --no-logging
 
 ###
 # install vendor rules
