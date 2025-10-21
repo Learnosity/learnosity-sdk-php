@@ -251,13 +251,13 @@ class Init
             return $this->action ?? 'unknown';
         }
 
-        // Extract the path from the endpoint URL
-        $parsedUrl = parse_url($this->endpoint);
-        if ($parsedUrl === false) {
-            // Invalid URL, fallback to action or unknown
+        // Extract the path from the endpoint URL using regex for security
+        // Match protocol://domain/path pattern and extract the path component
+        if (!preg_match('#^https?://[^/]+(/.*)?$#', $this->endpoint, $matches)) {
+            // Invalid URL format, fallback to action or unknown
             return $this->action ?? 'unknown';
         }
-        $path = $parsedUrl['path'] ?? '';
+        $path = $matches[1] ?? '/';
 
         // Remove version information from the path
         // (e.g., /v2023.1.lts/itembank/items -> /itembank/items, /v1/sessions -> /sessions)
