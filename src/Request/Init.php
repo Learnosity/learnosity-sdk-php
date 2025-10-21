@@ -255,7 +255,8 @@ class Init
         $parsedUrl = parse_url($this->endpoint);
         $path = $parsedUrl['path'] ?? '';
 
-        // Remove version information from the path (e.g., /v2023.1.lts/itembank/items -> /itembank/items, /v1/sessions -> /sessions)
+        // Remove version information from the path
+        // (e.g., /v2023.1.lts/itembank/items -> /itembank/items, /v1/sessions -> /sessions)
         $path = preg_replace('/\/v\d+(\.\d+)*(\.[a-zA-Z]+)?/', '', $path);
 
         // Ensure path starts with /
