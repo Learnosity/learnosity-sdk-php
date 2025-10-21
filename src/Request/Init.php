@@ -253,6 +253,10 @@ class Init
 
         // Extract the path from the endpoint URL
         $parsedUrl = parse_url($this->endpoint);
+        if ($parsedUrl === false) {
+            // Invalid URL, fallback to action or unknown
+            return $this->action ?? 'unknown';
+        }
         $path = $parsedUrl['path'] ?? '';
 
         // Remove version information from the path

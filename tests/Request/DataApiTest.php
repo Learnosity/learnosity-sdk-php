@@ -151,6 +151,8 @@ class DataApiTest extends AbstractTestCase
 
             public function request(string $url, array $post = [])
             {
+                // Suppress unused parameter warnings - required by interface
+                unset($url, $post);
                 // Not used in this test
             }
 
@@ -166,11 +168,15 @@ class DataApiTest extends AbstractTestCase
 
             public function getHeader(string $type = 'content_type')
             {
+                // Suppress unused parameter warning - required by interface
+                unset($type);
                 return 'application/json';
             }
 
             public function getSize(bool $format = true)
             {
+                // Suppress unused parameter warning - required by interface
+                unset($format);
                 return 100;
             }
 
