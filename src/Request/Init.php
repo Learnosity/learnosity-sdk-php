@@ -260,8 +260,8 @@ class Init
         $path = $matches[1] ?? '/';
 
         // Remove version information from the path
-        // (e.g., /v2023.1.lts/itembank/items -> /itembank/items, /v1/sessions -> /sessions)
-        $path = preg_replace('/\/(v\d+(\.\d+)*(\.[a-zA-Z]+)?|latest(-lts)?)/', '', $path);
+        // (e.g., /v2023.1.lts/itembank/items -> /itembank/items, /v1/sessions -> /sessions, /developer/items -> /items)
+        $path = preg_replace('/\/(v\d+(\.\d+)*(\.[a-zA-Z]+)?|latest(-lts)?|developer)/', '', $path);
 
         // Ensure path starts with /
         if (!empty($path) && $path[0] !== '/') {
