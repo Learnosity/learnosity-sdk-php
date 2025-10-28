@@ -51,7 +51,9 @@ class DataApi
         array $requestPacket = [],
         ?string $action = null
     ): RemoteInterface {
-        $init = new Init('data', $securityPacket, $secret, $requestPacket, $action);
+        // Pass endpoint to Init for automatic metadata generation (consumer/action)
+        // The two null values are for optional SignatureFactory and PreHashStringFactory parameters
+        $init = new Init('data', $securityPacket, $secret, $requestPacket, $action, null, null, $endpoint);
         $params = $init->generate();
         return $this->remote->post($endpoint, $params);
     }

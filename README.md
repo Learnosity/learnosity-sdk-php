@@ -322,6 +322,20 @@ Our SDKs include code to track the following information by adding it to the req
 
 We use this data to enable better support and feature planning.
 
+### Internal Metadata for Infrastructure Routing
+
+For Data API requests, the SDK automatically includes additional internal metadata that is used solely by Learnosity infrastructure for routing and operational purposes:
+
+- **API Consumer**: The consumer key identifier from your security packet
+- **Action**: The operation being performed (e.g., `get_/itembank/items`, `set_/session_scores`)
+
+This metadata is:
+- **Completely invisible to customers** - it requires no changes to your code or implementation
+- **Used only for internal infrastructure routing** - it helps our systems make intelligent routing decisions at the Application Load Balancer (ALB) layer
+- **Automatically derived** - the action is constructed from the endpoint URL and HTTP method you're already using
+
+This functionality is built into the SDK and works transparently with all existing Data API integrations.
+
 [(Back to top)](#table-of-contents)
 
 ## Further reading

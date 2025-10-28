@@ -2,6 +2,7 @@
 
 namespace LearnositySdk\Request;
 
+use Exception;
 use LearnositySdk\Utils\Conversion;
 
 /**
@@ -108,6 +109,45 @@ class Remote implements RemoteInterface
     }
 
     /**
+     * Add metadata headers for ALB layer access from Data API request data.
+     *
+     * @param array $headers - the existing headers array
+     * @param array $post - the POST data payload
+     * @return array - headers with metadata added
+     */
+    private function addMetadataHeaders(array $headers, array $post): array
+    {
+        // Only process Data API requests (they have 'request' and 'security' keys)
+        if (!isset($post['request']) || !isset($post['security'])) {
+            return $headers;
+        }
+
+        try {
+            // Decode the request packet to extract metadata
+            $requestData = json_decode($post['request'], true);
+            if (!is_array($requestData) || !isset($requestData['meta'])) {
+                return $headers;
+            }
+
+            $meta = $requestData['meta'];
+
+            // Add consumer header if available
+            if (isset($meta['consumer'])) {
+                $headers[] = 'X-Learnosity-Consumer: ' . $meta['consumer'];
+            }
+
+            // Add action header if available
+            if (isset($meta['action'])) {
+                $headers[] = 'X-Learnosity-Action: ' . $meta['action'];
+            }
+        } catch (Exception $e) {
+            // Silently ignore JSON decode errors to avoid breaking requests
+        }
+
+        return $headers;
+    }
+
+    /**
      * Makes a cURL request to an endpoint with an optional request
      * payload and cURL options.
      *
@@ -126,6 +166,9 @@ class Remote implements RemoteInterface
         ];
 
         $options = array_merge($defaults, $this->remoteOptions);
+
+        // Add metadata headers for ALB layer access
+        $options['headers'] = $this->addMetadataHeaders($options['headers'], $post);
 
         // normalize the headers
         $options['headers'] = $this->normalizeRequestHeaders($options['headers']);
