@@ -48,7 +48,7 @@ class RemoteTest extends AbstractTestCase
         // Create Data API request data with metadata
         $requestData = [
             'security' => '{"consumer_key":"test_consumer","domain":"localhost"}',
-            'request' => '{"meta":{"sdk":{"version":"test"},"consumer":"test_consumer","action":"get_/itembank/items"},"limit":100}',
+            'request' => '{"meta":{"sdk":{"version":"v1.1.0","lang":"php"},"consumer":"test_consumer","action":"get_/itembank/items"},"limit":100}',
             'action' => 'get'
         ];
 
@@ -58,6 +58,7 @@ class RemoteTest extends AbstractTestCase
         // Verify that metadata headers were added
         $consumerHeaderFound = false;
         $actionHeaderFound = false;
+        $sdkHeaderFound = false;
 
         foreach ($result as $header) {
             if (strpos($header, 'X-Learnosity-Consumer: test_consumer') === 0) {
@@ -66,10 +67,14 @@ class RemoteTest extends AbstractTestCase
             if (strpos($header, 'X-Learnosity-Action: get_/itembank/items') === 0) {
                 $actionHeaderFound = true;
             }
+            if (strpos($header, 'X-Learnosity-SDK: PHP:1.1.0') === 0) {
+                $sdkHeaderFound = true;
+            }
         }
 
         $this->assertTrue($consumerHeaderFound, 'Consumer header should be added');
         $this->assertTrue($actionHeaderFound, 'Action header should be added');
+        $this->assertTrue($sdkHeaderFound, 'SDK header should be added');
     }
 
     /**
@@ -92,7 +97,9 @@ class RemoteTest extends AbstractTestCase
         // Verify that no metadata headers were added
         $hasMetadataHeaders = false;
         foreach ($result as $header) {
-            if (strpos($header, 'X-Learnosity-Consumer:') !== false || strpos($header, 'X-Learnosity-Action:') !== false) {
+            if (strpos($header, 'X-Learnosity-Consumer:') !== false
+                || strpos($header, 'X-Learnosity-Action:') !== false
+                || strpos($header, 'X-Learnosity-SDK:') !== false) {
                 $hasMetadataHeaders = true;
                 break;
             }

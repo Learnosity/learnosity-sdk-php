@@ -307,6 +307,84 @@ class InitTest extends AbstractTestCase
                 'endpoint' => 'https://data.learnosity.com/v2023.1.lts/session_scores',
                 'action' => null, // should default to 'get'
                 'expected' => 'get_/session_scores'
+            ],
+            // Test uppercase LTS
+            [
+                'endpoint' => 'https://data.learnosity.com/v2025.3.LTS/itembank/items',
+                'action' => 'get',
+                'expected' => 'get_/itembank/items'
+            ],
+            // Test v2025.2.LTS
+            [
+                'endpoint' => 'https://data.learnosity.com/v2025.2.LTS/sessions',
+                'action' => 'get',
+                'expected' => 'get_/sessions'
+            ],
+            // Test simple v1
+            [
+                'endpoint' => 'https://data.learnosity.com/v1/items',
+                'action' => 'get',
+                'expected' => 'get_/items'
+            ],
+            // Test v1.85.0
+            [
+                'endpoint' => 'https://data.learnosity.com/v1.85.0/itembank/items',
+                'action' => 'get',
+                'expected' => 'get_/itembank/items'
+            ],
+            // Test latest
+            [
+                'endpoint' => 'https://data.learnosity.com/latest/itembank/items',
+                'action' => 'get',
+                'expected' => 'get_/itembank/items'
+            ],
+            // Test latest-lts
+            [
+                'endpoint' => 'https://data.learnosity.com/latest-lts/sessions',
+                'action' => 'get',
+                'expected' => 'get_/sessions'
+            ],
+            // Test developer
+            [
+                'endpoint' => 'https://data.learnosity.com/developer/items',
+                'action' => 'get',
+                'expected' => 'get_/items'
+            ],
+            // Test preview1 (alphanumeric suffix)
+            [
+                'endpoint' => 'https://data.learnosity.com/v2022.3.preview1/items',
+                'action' => 'get',
+                'expected' => 'get_/items'
+            ],
+            // Test preview2
+            [
+                'endpoint' => 'https://data.learnosity.com/v2022.2.preview2/sessions',
+                'action' => 'get',
+                'expected' => 'get_/sessions'
+            ],
+            // Test beta2
+            [
+                'endpoint' => 'https://data.learnosity.com/v1.2.3.beta2/test',
+                'action' => 'get',
+                'expected' => 'get_/test'
+            ],
+            // Test alpha1
+            [
+                'endpoint' => 'https://data.learnosity.com/v2024.1.alpha1/items',
+                'action' => 'get',
+                'expected' => 'get_/items'
+            ],
+            // Test URL with no version
+            [
+                'endpoint' => 'https://data.learnosity.com/items',
+                'action' => 'get',
+                'expected' => 'get_/items'
+            ],
+            // Test false positive: path starting with 'v' but not a version
+            [
+                'endpoint' => 'https://data.learnosity.com/validate/items',
+                'action' => 'get',
+                'expected' => 'get_/validate/items'
             ]
         ];
 

@@ -261,7 +261,8 @@ class Init
 
         // Remove version information from the path
         // (e.g., /v2023.1.lts/itembank/items -> /itembank/items, /v1/sessions -> /sessions, /developer/items -> /items)
-        $path = preg_replace('/\/(v\d+(\.\d+)*(\.[a-zA-Z]+)?|latest(-lts)?|developer)/', '', $path);
+        // Supports: v1, v1.85.0, v2023.1.lts, v2025.3.LTS, v2022.3.preview1, latest, latest-lts, developer
+        $path = preg_replace('/\/(v\d+(\.\d+)*(\.[a-zA-Z0-9]+)?|latest(-lts)?|developer)/', '', $path);
 
         // Ensure path starts with /
         if (!empty($path) && $path[0] !== '/') {
