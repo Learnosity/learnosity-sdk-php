@@ -140,6 +140,15 @@ class Remote implements RemoteInterface
             if (isset($meta['action'])) {
                 $headers[] = 'X-Learnosity-Action: ' . $meta['action'];
             }
+
+            // Add SDK header if available (format: language:version, e.g., "PHP:1.1.0")
+            if (isset($meta['sdk']['lang']) && isset($meta['sdk']['version'])) {
+                $lang = strtoupper($meta['sdk']['lang']);
+                $version = $meta['sdk']['version'];
+                // Remove 'v' prefix if present
+                $version = ltrim($version, 'v');
+                $headers[] = 'X-Learnosity-SDK: ' . $lang . ':' . $version;
+            }
         } catch (Exception $e) {
             // Silently ignore JSON decode errors to avoid breaking requests
         }
