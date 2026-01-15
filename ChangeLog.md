@@ -7,8 +7,6 @@ and this project adheres to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
-## [v1.2.0] - 2026-01-15
 ### Added
 - Added SDK info functionality to include SDK metadata in requests
 - Added new metadata to Data API request headers for better tracking and debugging
