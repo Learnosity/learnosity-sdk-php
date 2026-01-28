@@ -212,8 +212,6 @@ class Remote implements RemoteInterface
         $error_message = curl_error($ch);
         $response      = curl_getinfo($ch);
 
-        curl_close($ch);
-
         $response['error_code']    = $error_code;
         $response['error_message'] = $error_message;
         $response['body']          = $body;
