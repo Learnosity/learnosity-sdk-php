@@ -4,7 +4,7 @@ DOCKER := $(if $(LRN_SDK_NO_DOCKER),,$(shell which docker))
 DOCKER_COMPOSE := docker compose
 
 # PHP Evolution
-SUPPORTED_PHP_VERSIONS = 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3
+SUPPORTED_PHP_VERSIONS = 8.2 8.3 8.4 8.5
 PHP_VERSION ?= $(lastword ${SUPPORTED_PHP_VERSIONS})
 DEBIAN_VERSION-7.1 = buster
 DEBIAN_VERSION-7.2 = buster
